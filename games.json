@@ -1,0 +1,5 @@
+[
+  { "name": "Minecraft 1.8", "file": "1_8.html", "icon": "⛏️" },
+  { "name": "Slope",         "file": "slope.html","icon": "🏔️" },
+  { "name": "Snake",         "file": "snake.html","icon": "🐍" }
+]

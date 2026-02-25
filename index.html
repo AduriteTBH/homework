@@ -65,27 +65,41 @@
 
   /* ── FLOATING BACK BUTTON (shown while a game is running) ── */
   #back-btn{
-    position:fixed;top:12px;left:12px;z-index:200;
-    display:none;
-    align-items:center;gap:8px;
-    background:rgba(8,11,16,0.85);
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:8px 14px;
-    color:var(--text);
-    font-family:'Space Mono',monospace;
-    font-size:11px;letter-spacing:1px;
-    cursor:pointer;
-    backdrop-filter:blur(8px);
-    transition:all .2s;
-    user-select:none;
+    position:fixed;top:12px;left:0;z-index:200;
+    display:none;align-items:center;
+    background:rgba(8,11,16,0.75);
+    border:1px solid var(--border);border-left:none;
+    border-radius:0 8px 8px 0;
+    padding:7px 10px 7px 8px;
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;
+    cursor:default;backdrop-filter:blur(8px);
+    transition:all .35s cubic-bezier(.4,0,.2,1);
+    user-select:none;overflow:hidden;
+    max-width:28px;
   }
-  #back-btn:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--glow)}
   #back-btn.visible{display:flex}
-  #back-btn .game-name{
-    color:var(--accent);
-    max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  #back-btn:hover{max-width:340px;padding:7px 14px 7px 10px;border-color:#2a3a4d}
+
+  /* Grip — tiny always-visible handle */
+  #back-grip{font-size:12px;flex-shrink:0;opacity:.35;transition:all .2s;margin-right:0}
+  #back-btn:hover #back-grip{opacity:.8;margin-right:10px}
+
+  /* Expanded content — hidden until hovered */
+  #back-inner{display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none;transition:opacity .15s .12s;white-space:nowrap;overflow:hidden}
+  #back-btn:hover #back-inner{opacity:1;pointer-events:auto}
+
+  .back-label{color:var(--muted);font-size:10px}
+  .back-game{color:var(--accent);max-width:110px;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:middle}
+
+  /* Confirm button — only this triggers back */
+  #back-confirm{
+    padding:4px 11px;background:transparent;
+    border:1px solid #ff4757;border-radius:5px;
+    color:#ff4757;font-family:'Space Mono',monospace;
+    font-size:9px;letter-spacing:1px;cursor:pointer;
+    transition:all .15s;text-transform:uppercase;flex-shrink:0;
   }
+  #back-confirm:hover{background:rgba(255,71,87,.15);box-shadow:0 0 10px rgba(255,71,87,.25)}
 
   /* ── The actual game runs HERE — the whole page IS the game ── */
   #game-root{
@@ -131,9 +145,12 @@
 </div>
 
 <!-- ── FLOATING BACK BUTTON ── -->
-<div id="back-btn" onclick="backToLauncher()">
-  ← &nbsp;<span id="back-game-name" class="game-name">Launcher</span>
-  &nbsp;·&nbsp; Menu
+<div id="back-btn">
+  <span id="back-grip">☰</span>
+  <div id="back-inner">
+    <span class="back-label">Playing: <span id="back-game-name" class="back-game">—</span></span>
+    <button id="back-confirm" onclick="backToLauncher()">← Menu</button>
+  </div>
 </div>
 
 <!-- ── GAME CONTAINER ── -->

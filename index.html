@@ -6,25 +6,13 @@
 <title>H&H Inc.</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:      #080b10;
-    --surface: #0d1117;
-    --panel:   #111820;
-    --border:  #1e2d3d;
-    --accent:  #00d4ff;
-    --accent2: #7b68ee;
-    --text:    #c9d1d9;
-    --muted:   #4a5568;
-    --success: #2ed573;
-    --glow:    0 0 20px rgba(0,212,255,0.3);
-  }
+  :root{--bg:#080b10;--surface:#0d1117;--panel:#111820;--border:#1e2d3d;--accent:#00d4ff;--accent2:#7b68ee;--text:#c9d1d9;--muted:#4a5568;--success:#2ed573;--glow:0 0 20px rgba(0,212,255,0.3)}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:100%;height:100%;background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);overflow:hidden}
   body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none}
   #app{display:flex;width:100%;height:100%}
 
-  /* SIDEBAR */
-  #sidebar{width:260px;min-width:260px;height:100%;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .35s cubic-bezier(.4,0,.2,1),min-width .35s cubic-bezier(.4,0,.2,1);overflow:hidden;position:relative;z-index:5}
+  #sidebar{width:260px;min-width:260px;height:100%;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .35s cubic-bezier(.4,0,.2,1),min-width .35s;overflow:hidden;position:relative;z-index:5}
   #sidebar.collapsed{width:0;min-width:0;border:none}
 
   #logo{padding:22px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0;position:relative}
@@ -47,31 +35,25 @@
   .game-item:hover{background:rgba(0,212,255,.05);border-left-color:rgba(0,212,255,.4)}
   .game-item.active{background:rgba(0,212,255,.08);border-left-color:var(--accent)}
   .game-item.active .item-name{color:var(--accent)}
-
   .item-icon{width:36px;height:36px;border-radius:8px;background:var(--panel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:border-color .18s}
   .game-item.active .item-icon,.game-item:hover .item-icon{border-color:var(--accent)}
-
   .item-name{font-size:15px;font-weight:600;letter-spacing:.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .18s}
   .item-file{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px;margin-top:1px}
 
   .state-msg{padding:30px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
   .state-msg .big{font-size:28px;margin-bottom:8px}
-  .state-msg.error .big{filter:none}
 
   #refresh-btn{margin:0 16px 12px;padding:9px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all .2s;flex-shrink:0}
   #refresh-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.05)}
   @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
-  /* MAIN */
   #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
   #topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 16px;flex-shrink:0;z-index:4}
   #toggle-btn,#fullscreen-btn{background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text);width:34px;height:34px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
   #toggle-btn:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--glow)}
   #fullscreen-btn:hover{border-color:var(--accent2);color:var(--accent2)}
-
   #breadcrumb{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #breadcrumb span{color:var(--accent)}
-
   .dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);flex-shrink:0;animation:pulse 2s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
@@ -85,6 +67,12 @@
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   .welcome-title{font-size:32px;font-weight:700;letter-spacing:4px;text-transform:uppercase;background:linear-gradient(135deg,#fff 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
   .welcome-sub{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;position:relative;z-index:1}
+
+  /* Focus shield — invisible full-size click catcher that activates keyboard */
+  #focus-shield{position:absolute;inset:0;z-index:3;cursor:pointer;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px)}
+  #focus-shield.visible{display:flex}
+  #focus-shield p{color:#fff;font-size:15px;letter-spacing:2px;text-transform:uppercase}
+  #focus-shield small{color:var(--muted);font-size:11px;letter-spacing:1px}
 
   #gameframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:none;z-index:1;background:#000}
   @keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
@@ -117,16 +105,25 @@
     </div>
     <div id="content">
       <div id="loader"><div id="loader-bar"></div></div>
+
       <div id="welcome">
         <div class="welcome-grid"></div>
         <div class="welcome-icon">🎮</div>
         <div class="welcome-title">H&amp;H Inc.</div>
         <div class="welcome-sub">Select a game from the sidebar</div>
       </div>
+
+      <!-- Click this to re-capture keyboard if focus is lost -->
+      <div id="focus-shield" onclick="grabFocus()">
+        <p>🖱️ Click to regain keyboard control</p>
+        <small>Press any key once focused</small>
+      </div>
+
       <iframe id="gameframe"
         allow="autoplay; fullscreen; clipboard-read; clipboard-write; pointer-lock"
         allowfullscreen
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock">
+        tabindex="0"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals">
       </iframe>
     </div>
   </main>
@@ -134,32 +131,28 @@
 
 <script>
 "use strict";
-var BASE_URL = window.location.href.replace(/\/[^\/]*$/, '/');
-var allGames = [];
+var BASE_URL   = window.location.href.replace(/\/[^\/]*$/, '/');
+var allGames   = [];
 var sidebarOpen = true;
+var gameLoaded  = false;
 
+/* ── FETCH GAMES ── */
 function fetchGames() {
-  var btn = document.getElementById('refresh-btn');
+  var btn  = document.getElementById('refresh-btn');
   var list = document.getElementById('game-list');
   btn.style.animation = 'spin 1s linear infinite';
   list.innerHTML = '<div class="state-msg"><div class="big">⏳</div>Loading...</div>';
 
-  // Fetch games.json from same folder — no GitHub API, no rate limits, never blocked
   fetch(BASE_URL + 'games.json?t=' + Date.now())
-    .then(function(r) {
-      if (!r.ok) throw new Error('Could not load games.json (HTTP ' + r.status + ')');
-      return r.json();
-    })
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function(games) {
       allGames = games;
       renderList(allGames);
       btn.style.animation = '';
     })
     .catch(function(err) {
-      list.innerHTML = '<div class="state-msg error"><div class="big">⚠️</div>'
-        + 'Could not load games.json<br>'
-        + '<small style="color:#ff4757;font-size:10px">' + err.message + '</small><br><br>'
-        + '<small style="color:#4a5568">Make sure games.json is uploaded<br>to your GitHub repo!</small></div>';
+      list.innerHTML = '<div class="state-msg"><div class="big">⚠️</div>Could not load games.json<br>'
+        + '<small style="color:#ff4757">' + err.message + '</small></div>';
       btn.style.animation = '';
     });
 }
@@ -167,19 +160,17 @@ function fetchGames() {
 function renderList(games) {
   var list = document.getElementById('game-list');
   if (!games.length) {
-    list.innerHTML = '<div class="state-msg"><div class="big">📭</div>No games in games.json yet!<br>Add entries and refresh.</div>';
+    list.innerHTML = '<div class="state-msg"><div class="big">📭</div>No games yet!<br>Add entries to games.json</div>';
     return;
   }
   list.innerHTML = games.map(function(g, i) {
-    var safeName = g.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    var safeFile = g.file.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    return '<div class="game-item fade-in" style="animation-delay:' + (i * 0.05) + 's"'
-      + ' onclick="loadGame(\'' + safeFile + '\',\'' + safeName + '\',this)">'
-      + '<div class="item-icon">' + (g.icon || '🎮') + '</div>'
-      + '<div>'
-      + '<div class="item-name">' + esc(g.name) + '</div>'
-      + '<div class="item-file">' + esc(g.file) + '</div>'
-      + '</div></div>';
+    var sf = g.file.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    var sn = g.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<div class="game-item fade-in" style="animation-delay:' + (i*0.05) + 's"'
+      + ' onclick="loadGame(\'' + sf + '\',\'' + sn + '\',this)">'
+      + '<div class="item-icon">' + (g.icon||'🎮') + '</div>'
+      + '<div><div class="item-name">' + esc(g.name) + '</div>'
+      + '<div class="item-file">' + esc(g.file) + '</div></div></div>';
   }).join('');
 }
 
@@ -190,6 +181,7 @@ function filterGames(q) {
   }));
 }
 
+/* ── LOAD GAME ── */
 function loadGame(file, name, el) {
   document.querySelectorAll('.game-item').forEach(function(i) { i.classList.remove('active'); });
   if (el) el.classList.add('active');
@@ -202,15 +194,88 @@ function loadGame(file, name, el) {
   setTimeout(function() { bar.style.width = '70%'; }, 30);
 
   document.getElementById('welcome').style.display = 'none';
+  document.getElementById('focus-shield').classList.remove('visible');
+
   var frame = document.getElementById('gameframe');
   frame.style.display = 'block';
   frame.src = BASE_URL + file;
+
   frame.onload = function() {
     bar.style.width = '100%';
     setTimeout(function() { loader.style.display = 'none'; bar.style.width = '0%'; }, 400);
+    gameLoaded = true;
+    grabFocus();
+    startKeyboardForwarding();
   };
 }
 
+/* ── KEYBOARD FOCUS ENGINE ── */
+function grabFocus() {
+  var frame = document.getElementById('gameframe');
+  if (!frame || frame.style.display === 'none') return;
+  frame.focus();
+  try { frame.contentWindow.focus(); } catch(e) {}
+  document.getElementById('focus-shield').classList.remove('visible');
+}
+
+var keyboardForwardingActive = false;
+function startKeyboardForwarding() {
+  if (keyboardForwardingActive) return;
+  keyboardForwardingActive = true;
+
+  var frame = document.getElementById('gameframe');
+  var BLOCK = ['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'];
+
+  ['keydown','keyup','keypress'].forEach(function(type) {
+    window.addEventListener(type, function(e) {
+      // Forward into game iframe (same origin)
+      try {
+        frame.contentWindow.dispatchEvent(new KeyboardEvent(type, {
+          key:e.key, code:e.code, keyCode:e.keyCode, which:e.which,
+          charCode:e.charCode, shiftKey:e.shiftKey, ctrlKey:e.ctrlKey,
+          altKey:e.altKey, metaKey:e.metaKey, repeat:e.repeat,
+          bubbles:true, cancelable:true
+        }));
+      } catch(err) {}
+      if (BLOCK.indexOf(e.code) !== -1) e.preventDefault();
+    }, true);
+  });
+
+  // If the game iframe steals focus away (e.g. on blur), show re-focus shield
+  window.addEventListener('blur', function() {
+    if (gameLoaded) {
+      setTimeout(function() {
+        // Try silently re-focusing first
+        try {
+          var frame = document.getElementById('gameframe');
+          frame.focus();
+          frame.contentWindow.focus();
+        } catch(e) {
+          document.getElementById('focus-shield').classList.add('visible');
+        }
+      }, 200);
+    }
+  });
+
+  // Click anywhere on the content area to grab focus
+  document.getElementById('content').addEventListener('click', function() {
+    grabFocus();
+  });
+
+  // Keep polling focus back every 800ms
+  setInterval(function() {
+    if (gameLoaded) {
+      try {
+        var frame = document.getElementById('gameframe');
+        if (frame.style.display !== 'none') {
+          frame.contentWindow.focus();
+        }
+      } catch(e) {}
+    }
+  }, 800);
+}
+
+/* ── UI HELPERS ── */
 function toggleSidebar() {
   sidebarOpen = !sidebarOpen;
   document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);

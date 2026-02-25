@@ -1,4 +1,5 @@
 [
   { "name": "Minecraft 1.8", "file": "mc1_8.html", "icon": "⛏️" },
-  { "name": "Basket Random",         "file": "basketrandom.html","icon": "🏀" }
+  { "name": "Basket Random", "file": "basketrandom.html","icon": "🏀" }
+  
 ]

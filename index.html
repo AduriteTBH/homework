@@ -6,14 +6,20 @@
 <title>H&H Inc.</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#080b10;--surface:#0d1117;--panel:#111820;--border:#1e2d3d;--accent:#00d4ff;--accent2:#7b68ee;--text:#c9d1d9;--muted:#4a5568;--success:#2ed573;--glow:0 0 20px rgba(0,212,255,0.3)}
+  :root{
+    --bg:#080b10;--surface:#0d1117;--panel:#111820;
+    --border:#1e2d3d;--accent:#00d4ff;--accent2:#7b68ee;
+    --text:#c9d1d9;--muted:#4a5568;--success:#2ed573;
+    --glow:0 0 20px rgba(0,212,255,0.3);
+  }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:100%;height:100%;background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);overflow:hidden}
   body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none}
-  #app{display:flex;width:100%;height:100%}
 
-  #sidebar{width:260px;min-width:260px;height:100%;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .35s cubic-bezier(.4,0,.2,1),min-width .35s;overflow:hidden;position:relative;z-index:5}
-  #sidebar.collapsed{width:0;min-width:0;border:none}
+  /* ── LAUNCHER (full screen menu) ── */
+  #launcher{position:fixed;inset:0;z-index:100;display:flex;background:var(--bg)}
+
+  #sidebar{width:260px;min-width:260px;height:100%;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column}
 
   #logo{padding:22px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0;position:relative}
   #logo::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.6}
@@ -32,13 +38,11 @@
   .section-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);padding:10px 20px 6px;text-transform:uppercase}
 
   .game-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .18s}
-  .game-item:hover{background:rgba(0,212,255,.05);border-left-color:rgba(0,212,255,.4)}
-  .game-item.active{background:rgba(0,212,255,.08);border-left-color:var(--accent)}
-  .game-item.active .item-name{color:var(--accent)}
+  .game-item:hover{background:rgba(0,212,255,.06);border-left-color:rgba(0,212,255,.4)}
   .item-icon{width:36px;height:36px;border-radius:8px;background:var(--panel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:border-color .18s}
-  .game-item.active .item-icon,.game-item:hover .item-icon{border-color:var(--accent)}
-  .item-name{font-size:15px;font-weight:600;letter-spacing:.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .18s}
-  .item-file{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px;margin-top:1px}
+  .game-item:hover .item-icon{border-color:var(--accent)}
+  .item-name{font-size:15px;font-weight:600;letter-spacing:.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .item-file{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:1px}
 
   .state-msg{padding:30px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
   .state-msg .big{font-size:28px;margin-bottom:8px}
@@ -46,48 +50,70 @@
   #refresh-btn{margin:0 16px 12px;padding:9px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all .2s;flex-shrink:0}
   #refresh-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.05)}
   @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+  .fade-in{animation:fadeIn .3s ease forwards}
 
-  #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-  #topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 16px;flex-shrink:0;z-index:4}
-  #toggle-btn,#fullscreen-btn{background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text);width:34px;height:34px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-  #toggle-btn:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--glow)}
-  #fullscreen-btn:hover{border-color:var(--accent2);color:var(--accent2)}
-  #breadcrumb{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #breadcrumb span{color:var(--accent)}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);flex-shrink:0;animation:pulse 2s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-  #content{flex:1;position:relative;overflow:hidden}
-  #loader{position:absolute;top:0;left:0;right:0;height:2px;z-index:10;display:none}
-  #loader-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),var(--accent));box-shadow:0 0 10px var(--accent);transition:width .3s ease}
-
-  #welcome{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:var(--bg);z-index:2}
+  /* ── RIGHT PANEL (welcome) ── */
+  #welcome-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;position:relative;overflow:hidden}
   .welcome-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:40px 40px;-webkit-mask-image:radial-gradient(ellipse at center,black 30%,transparent 80%);mask-image:radial-gradient(ellipse at center,black 30%,transparent 80%)}
   .welcome-icon{font-size:56px;filter:drop-shadow(0 0 20px var(--accent));animation:float 3s ease-in-out infinite;position:relative;z-index:1}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   .welcome-title{font-size:32px;font-weight:700;letter-spacing:4px;text-transform:uppercase;background:linear-gradient(135deg,#fff 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
   .welcome-sub{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;position:relative;z-index:1}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);animation:pulse 2s ease-in-out infinite;position:relative;z-index:1}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-  /* Focus shield — invisible full-size click catcher that activates keyboard */
-  #focus-shield{position:absolute;inset:0;z-index:3;cursor:pointer;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px)}
-  #focus-shield.visible{display:flex}
-  #focus-shield p{color:#fff;font-size:15px;letter-spacing:2px;text-transform:uppercase}
-  #focus-shield small{color:var(--muted);font-size:11px;letter-spacing:1px}
+  /* ── FLOATING BACK BUTTON (shown while a game is running) ── */
+  #back-btn{
+    position:fixed;top:12px;left:12px;z-index:200;
+    display:none;
+    align-items:center;gap:8px;
+    background:rgba(8,11,16,0.85);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:8px 14px;
+    color:var(--text);
+    font-family:'Space Mono',monospace;
+    font-size:11px;letter-spacing:1px;
+    cursor:pointer;
+    backdrop-filter:blur(8px);
+    transition:all .2s;
+    user-select:none;
+  }
+  #back-btn:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--glow)}
+  #back-btn.visible{display:flex}
+  #back-btn .game-name{
+    color:var(--accent);
+    max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
 
-  #gameframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:none;z-index:1;background:#000}
-  @keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
-  .fade-in{animation:fadeIn .3s ease forwards}
+  /* ── The actual game runs HERE — the whole page IS the game ── */
+  #game-root{
+    position:fixed;inset:0;z-index:50;
+    display:none;
+    background:#000;
+  }
+  #game-root.visible{display:block}
+
+  /* We use an object tag — better native event passthrough than iframe */
+  #game-obj{
+    width:100%;height:100%;
+    border:none;display:block;
+    background:#000;
+  }
 </style>
 </head>
 <body>
-<div id="app">
+
+<!-- ── LAUNCHER MENU ── -->
+<div id="launcher">
   <aside id="sidebar">
     <div id="logo">
       <div class="wordmark">H&amp;H Inc.</div>
       <div class="tagline">Game Launcher v2</div>
     </div>
     <div id="search-wrap">
-      <input id="search" type="text" placeholder="Search games..." oninput="filterGames(this.value)" />
+      <input id="search" type="text" placeholder="Search games..." oninput="filterGames(this.value)">
     </div>
     <div id="game-list-wrap">
       <div class="section-label">Library</div>
@@ -95,46 +121,42 @@
     </div>
     <button id="refresh-btn" onclick="fetchGames()">↻ &nbsp;Refresh Library</button>
   </aside>
+  <div id="welcome-panel">
+    <div class="welcome-grid"></div>
+    <div class="welcome-icon">🎮</div>
+    <div class="welcome-title">H&amp;H Inc.</div>
+    <div class="welcome-sub">Select a game to begin</div>
+    <div class="dot"></div>
+  </div>
+</div>
 
-  <main id="main">
-    <div id="topbar">
-      <button id="toggle-btn" onclick="toggleSidebar()">☰</button>
-      <div id="breadcrumb">H&amp;H INC. › <span id="current-game">Select a game</span></div>
-      <div class="dot"></div>
-      <button id="fullscreen-btn" onclick="goFullscreen()">⛶</button>
-    </div>
-    <div id="content">
-      <div id="loader"><div id="loader-bar"></div></div>
+<!-- ── FLOATING BACK BUTTON ── -->
+<div id="back-btn" onclick="backToLauncher()">
+  ← &nbsp;<span id="back-game-name" class="game-name">Launcher</span>
+  &nbsp;·&nbsp; Menu
+</div>
 
-      <div id="welcome">
-        <div class="welcome-grid"></div>
-        <div class="welcome-icon">🎮</div>
-        <div class="welcome-title">H&amp;H Inc.</div>
-        <div class="welcome-sub">Select a game from the sidebar</div>
-      </div>
-
-      <!-- Click this to re-capture keyboard if focus is lost -->
-      <div id="focus-shield" onclick="grabFocus()">
-        <p>🖱️ Click to regain keyboard control</p>
-        <small>Press any key once focused</small>
-      </div>
-
-      <iframe id="gameframe"
-        allow="autoplay; fullscreen; clipboard-read; clipboard-write; pointer-lock"
-        allowfullscreen
-        tabindex="0"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals">
-      </iframe>
-    </div>
-  </main>
+<!-- ── GAME CONTAINER ── -->
+<div id="game-root">
+  <!--
+    Using iframe with allow="same-origin" so the game page runs
+    in the same origin context as index.html — giving it full
+    trusted native events from the real user interactions.
+    No event forwarding needed at all.
+  -->
+  <iframe id="game-obj"
+    src="about:blank"
+    allow="autoplay; fullscreen; clipboard-read; clipboard-write; accelerometer; gyroscope"
+    allowfullscreen
+    tabindex="0"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock allow-orientation-lock allow-presentation">
+  </iframe>
 </div>
 
 <script>
 "use strict";
-var BASE_URL   = window.location.href.replace(/\/[^\/]*$/, '/');
-var allGames   = [];
-var sidebarOpen = true;
-var gameLoaded  = false;
+var BASE_URL = window.location.href.replace(/\/[^\/]*$/, '/');
+var allGames = [];
 
 /* ── FETCH GAMES ── */
 function fetchGames() {
@@ -144,153 +166,84 @@ function fetchGames() {
   list.innerHTML = '<div class="state-msg"><div class="big">⏳</div>Loading...</div>';
 
   fetch(BASE_URL + 'games.json?t=' + Date.now())
-    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function(games) {
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(games){
       allGames = games;
       renderList(allGames);
       btn.style.animation = '';
     })
-    .catch(function(err) {
-      list.innerHTML = '<div class="state-msg"><div class="big">⚠️</div>Could not load games.json<br>'
-        + '<small style="color:#ff4757">' + err.message + '</small></div>';
+    .catch(function(err){
+      list.innerHTML = '<div class="state-msg"><div class="big">⚠️</div>'
+        +'Could not load games.json<br><small style="color:#ff4757">'+err.message+'</small><br>'
+        +'<small style="color:#4a5568">Upload games.json to your repo!</small></div>';
       btn.style.animation = '';
     });
 }
 
 function renderList(games) {
   var list = document.getElementById('game-list');
-  if (!games.length) {
-    list.innerHTML = '<div class="state-msg"><div class="big">📭</div>No games yet!<br>Add entries to games.json</div>';
+  if(!games.length){
+    list.innerHTML='<div class="state-msg"><div class="big">📭</div>No games found.<br>Add entries to games.json</div>';
     return;
   }
-  list.innerHTML = games.map(function(g, i) {
-    var sf = g.file.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    var sn = g.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    return '<div class="game-item fade-in" style="animation-delay:' + (i*0.05) + 's"'
-      + ' onclick="loadGame(\'' + sf + '\',\'' + sn + '\',this)">'
-      + '<div class="item-icon">' + (g.icon||'🎮') + '</div>'
-      + '<div><div class="item-name">' + esc(g.name) + '</div>'
-      + '<div class="item-file">' + esc(g.file) + '</div></div></div>';
+  list.innerHTML = games.map(function(g,i){
+    var sf = g.file.replace(/'/g,"\\'");
+    var sn = g.name.replace(/'/g,"\\'");
+    return '<div class="game-item fade-in" style="animation-delay:'+(i*0.05)+'s" onclick="launchGame(\''+sf+'\',\''+sn+'\')">'
+      +'<div class="item-icon">'+(g.icon||'🎮')+'</div>'
+      +'<div><div class="item-name">'+esc(g.name)+'</div>'
+      +'<div class="item-file">'+esc(g.file)+'</div></div></div>';
   }).join('');
 }
 
-function filterGames(q) {
-  q = q.toLowerCase().trim();
-  renderList(allGames.filter(function(g) {
-    return g.name.toLowerCase().includes(q) || g.file.toLowerCase().includes(q);
+function filterGames(q){
+  q=q.toLowerCase().trim();
+  renderList(allGames.filter(function(g){
+    return g.name.toLowerCase().includes(q)||g.file.toLowerCase().includes(q);
   }));
 }
 
-/* ── LOAD GAME ── */
-function loadGame(file, name, el) {
-  document.querySelectorAll('.game-item').forEach(function(i) { i.classList.remove('active'); });
-  if (el) el.classList.add('active');
-  document.getElementById('current-game').textContent = name;
+/* ── LAUNCH: navigate the game iframe directly to the file ──
+   The game iframe is same-origin (github.io) so it gets:
+   - Native trusted mouse events (clicks, right-click, scroll)
+   - Native trusted keyboard events (WASD, space, arrows, typing)
+   - pointer-lock works natively (same origin, user gesture inside frame)
+   - No event forwarding needed at all
+*/
+function launchGame(file, name) {
+  // Show game container, hide launcher
+  document.getElementById('launcher').style.display   = 'none';
+  document.getElementById('game-root').classList.add('visible');
 
-  var loader = document.getElementById('loader');
-  var bar    = document.getElementById('loader-bar');
-  loader.style.display = 'block';
-  bar.style.width = '0%';
-  setTimeout(function() { bar.style.width = '70%'; }, 30);
+  // Update back button
+  document.getElementById('back-game-name').textContent = name;
+  document.getElementById('back-btn').classList.add('visible');
 
-  document.getElementById('welcome').style.display = 'none';
-  document.getElementById('focus-shield').classList.remove('visible');
+  // Navigate the iframe to the game — same origin, real native events
+  var obj = document.getElementById('game-obj');
+  obj.src = BASE_URL + file;
 
-  var frame = document.getElementById('gameframe');
-  frame.style.display = 'block';
-  frame.src = BASE_URL + file;
-
-  frame.onload = function() {
-    bar.style.width = '100%';
-    setTimeout(function() { loader.style.display = 'none'; bar.style.width = '0%'; }, 400);
-    gameLoaded = true;
-    grabFocus();
-    startKeyboardForwarding();
+  // Focus the frame as soon as it loads
+  obj.onload = function(){
+    obj.focus();
+    try{ obj.contentWindow.focus(); }catch(e){}
   };
 }
 
-/* ── KEYBOARD FOCUS ENGINE ── */
-function grabFocus() {
-  var frame = document.getElementById('gameframe');
-  if (!frame || frame.style.display === 'none') return;
-  frame.focus();
-  try { frame.contentWindow.focus(); } catch(e) {}
-  document.getElementById('focus-shield').classList.remove('visible');
+function backToLauncher(){
+  // Stop the game
+  var obj = document.getElementById('game-obj');
+  obj.src = 'about:blank';
+
+  // Show launcher again
+  document.getElementById('game-root').classList.remove('visible');
+  document.getElementById('launcher').style.display = 'flex';
+  document.getElementById('back-btn').classList.remove('visible');
 }
 
-var keyboardForwardingActive = false;
-function startKeyboardForwarding() {
-  if (keyboardForwardingActive) return;
-  keyboardForwardingActive = true;
-
-  var frame = document.getElementById('gameframe');
-  var BLOCK = ['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'];
-
-  ['keydown','keyup','keypress'].forEach(function(type) {
-    window.addEventListener(type, function(e) {
-      // Forward into game iframe (same origin)
-      try {
-        frame.contentWindow.dispatchEvent(new KeyboardEvent(type, {
-          key:e.key, code:e.code, keyCode:e.keyCode, which:e.which,
-          charCode:e.charCode, shiftKey:e.shiftKey, ctrlKey:e.ctrlKey,
-          altKey:e.altKey, metaKey:e.metaKey, repeat:e.repeat,
-          bubbles:true, cancelable:true
-        }));
-      } catch(err) {}
-      if (BLOCK.indexOf(e.code) !== -1) e.preventDefault();
-    }, true);
-  });
-
-  // If the game iframe steals focus away (e.g. on blur), show re-focus shield
-  window.addEventListener('blur', function() {
-    if (gameLoaded) {
-      setTimeout(function() {
-        // Try silently re-focusing first
-        try {
-          var frame = document.getElementById('gameframe');
-          frame.focus();
-          frame.contentWindow.focus();
-        } catch(e) {
-          document.getElementById('focus-shield').classList.add('visible');
-        }
-      }, 200);
-    }
-  });
-
-  // Click anywhere on the content area to grab focus
-  document.getElementById('content').addEventListener('click', function() {
-    grabFocus();
-  });
-
-  // Keep polling focus back every 800ms
-  setInterval(function() {
-    if (gameLoaded) {
-      try {
-        var frame = document.getElementById('gameframe');
-        if (frame.style.display !== 'none') {
-          frame.contentWindow.focus();
-        }
-      } catch(e) {}
-    }
-  }, 800);
-}
-
-/* ── UI HELPERS ── */
-function toggleSidebar() {
-  sidebarOpen = !sidebarOpen;
-  document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
-}
-
-function goFullscreen() {
-  var frame = document.getElementById('gameframe');
-  if (frame.style.display !== 'none' && frame.requestFullscreen) {
-    frame.requestFullscreen();
-  }
-}
-
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, function(c) {
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+function esc(s){
+  return String(s).replace(/[&<>"']/g,function(c){
+    return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
   });
 }
 

@@ -9,5 +9,6 @@
   { "name": "Minecraft 1.12", "file": "1.12.html","icon": "🪓" },
   { "name": "Madalin Stunt Cars 2", "file": "madalinstuntcars2.html","icon": "🚘" },
   { "name": "The Backrooms", "file": "backrooms.html","icon": "⚠️" },
-  { "name": "Five Nights at Freddy's", "file": "fnaf.html","icon": "🐻" }
+  { "name": "Five Nights at Freddy's", "file": "fnaf.html","icon": "🐻" },
+  { "name": "Granny", "file": "granny.html","icon": "👵" }
 ]

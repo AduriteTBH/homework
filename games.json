@@ -11,7 +11,8 @@
   { "name": "The Backrooms", "file": "backrooms.html","icon": "⚠️" },
   { "name": "Five Nights at Freddy's", "file": "fnaf.html","icon": "🐻" },
   { "name": "Granny", "file": "granny.html","icon": "👵" },
-  { "name": "Among US", "file": "amongus.html","icon": "🔴" },
+  { "name": "Among US", "file": "amongus.html","icon": "🚨" },
+  { "name": "Grand Theft Auto 1", "file": "gta1.html","icon": "🔴" },
   { "name": "Boxing Random", "file": "boxingrandom.html","icon": "🥊" },
   { "name": "1v1LOL Reloaded", "file": "1v1lolreloaded.html","icon": "💥" },
   { "name": "Super Mario 64", "file": "sm64", "icon": "🍄" },
@@ -33,5 +34,12 @@
   { "name": "Monkey Mart", "file": "monkey-mart", "icon": "🐵" },
   { "name": "Rocket League 2D", "file": "rocket-league-2d", "icon": "🚀" },
   { "name": "Subway Surfers", "file": "subway-surfers", "icon": "🏄‍♂️" },
-  { "name": "Subway Surfers NY", "file": "subway-surfers-ny", "icon": "🏄" }
+  { "name": "Subway Surfers NY", "file": "subway-surfers-ny", "icon": "🏄" },
+  { "name": "Bloxorz", "file": "bloxorz", "icon": "🧊" },
+  { "name": "Crazy Taxi", "file": "crazy-taxi", "icon": "🚖" },
+  { "name": "Drift Boss", "file": "drift-boss", "icon": "🚘" },
+  { "name": "Drift Hunters", "file": "drift-hunters", "icon": "🚘" },
+  { "name": "Game Of Life", "file": "gameoflife", "icon": "🌿" },
+  { "name": "Soccer Random", "file": "soccer-random", "icon": "⚽" },
+  { "name": "Sonic Original", "file": "sonic-original", "icon": "🦔" }
 ]

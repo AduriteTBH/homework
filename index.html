@@ -1,270 +1,1279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>H&H Inc.</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#080b10;--surface:#0d1117;--panel:#111820;
-    --border:#1e2d3d;--accent:#00d4ff;--accent2:#7b68ee;
-    --text:#c9d1d9;--muted:#4a5568;--success:#2ed573;
-    --glow:0 0 20px rgba(0,212,255,0.3);
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:100%;height:100%;background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);overflow:hidden}
-  body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H&H Launcher | Discover</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+        I. DESIGN SYSTEM & VARIABLES
+        ======================================== */
+        :root {
+            --bg-deep: #020408;
+            --bg-surface: rgba(12, 16, 23, 0.7);
+            --bg-card: rgba(255, 255, 255, 0.02);
+            
+            --accent: #00d4ff;
+            --accent-glow: rgba(0, 212, 255, 0.4);
+            --accent-gradient: linear-gradient(135deg, #00d4ff 0%, #7b68ee 100%);
+            --danger: #ff4757;
+            --success: #00ff88;
+            
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 212, 255, 0.3);
+            
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 8px;
+            
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
+            --transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
 
-  /* ── LAUNCHER (full screen menu) ── */
-  #launcher{position:fixed;inset:0;z-index:100;display:flex;background:var(--bg)}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  #sidebar{width:260px;min-width:260px;height:100%;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column}
+        body, html {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+        }
 
-  #logo{padding:22px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0;position:relative}
-  #logo::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.6}
-  #logo .wordmark{font-size:22px;font-weight:700;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,#fff 30%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  #logo .tagline{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;text-transform:uppercase}
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at 50% -20%, #1a2332 0%, var(--bg-deep) 70%);
+        }
 
-  #search-wrap{padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
-  #search{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
-  #search:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,212,255,.1)}
-  #search::placeholder{color:var(--muted)}
+        .blob {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            background: var(--accent-glow);
+            filter: blur(150px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.15;
+            animation: moveBlob 25s infinite alternate ease-in-out;
+        }
 
-  #game-list-wrap{flex:1;overflow-y:auto;padding:10px 0}
-  #game-list-wrap::-webkit-scrollbar{width:4px}
-  #game-list-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+        @keyframes moveBlob {
+            from { transform: translate(-10%, -10%) scale(1); }
+            to { transform: translate(30%, 20%) scale(1.2); }
+        }
 
-  .section-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);padding:10px 20px 6px;text-transform:uppercase}
+        /* ========================================
+        II. NAVIGATION BAR
+        ======================================== */
+        nav {
+            height: 80px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            background: rgba(2, 4, 8, 0.5);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-  .game-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .18s}
-  .game-item:hover{background:rgba(0,212,255,.06);border-left-color:rgba(0,212,255,.4)}
-  .item-icon{width:36px;height:36px;border-radius:8px;background:var(--panel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:border-color .18s}
-  .game-item:hover .item-icon{border-color:var(--accent)}
-  .item-name{font-size:15px;font-weight:600;letter-spacing:.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .item-file{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:1px}
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-  .state-msg{padding:30px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
-  .state-msg .big{font-size:28px;margin-bottom:8px}
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
 
-  #refresh-btn{margin:0 16px 12px;padding:9px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all .2s;flex-shrink:0}
-  #refresh-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.05)}
-  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-  @keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
-  .fade-in{animation:fadeIn .3s ease forwards}
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-  /* ── RIGHT PANEL (welcome) ── */
-  #welcome-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;position:relative;overflow:hidden}
-  .welcome-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:40px 40px;-webkit-mask-image:radial-gradient(ellipse at center,black 30%,transparent 80%);mask-image:radial-gradient(ellipse at center,black 30%,transparent 80%)}
-  .welcome-icon{font-size:56px;filter:drop-shadow(0 0 20px var(--accent));animation:float 3s ease-in-out infinite;position:relative;z-index:1}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-  .welcome-title{font-size:32px;font-weight:700;letter-spacing:4px;text-transform:uppercase;background:linear-gradient(135deg,#fff 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
-  .welcome-sub{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;position:relative;z-index:1}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);animation:pulse 2s ease-in-out infinite;position:relative;z-index:1}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+        .nav-links {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
 
-  /* ── FLOATING BACK BUTTON (shown while a game is running) ── */
-  #back-btn{
-    position:fixed;top:12px;left:0;z-index:200;
-    display:none;align-items:center;
-    background:rgba(8,11,16,0.75);
-    border:1px solid var(--border);border-left:none;
-    border-radius:0 8px 8px 0;
-    padding:7px 10px 7px 8px;
-    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;
-    cursor:default;backdrop-filter:blur(8px);
-    transition:all .35s cubic-bezier(.4,0,.2,1);
-    user-select:none;overflow:hidden;
-    max-width:28px;
-  }
-  #back-btn.visible{display:flex}
-  #back-btn:hover{max-width:340px;padding:7px 14px 7px 10px;border-color:#2a3a4d}
+        .nav-link {
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
 
-  /* Grip — tiny always-visible handle */
-  #back-grip{font-size:12px;flex-shrink:0;opacity:.35;transition:all .2s;margin-right:0}
-  #back-btn:hover #back-grip{opacity:.8;margin-right:10px}
+        .nav-link:hover { color: #fff; }
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
 
-  /* Expanded content — hidden until hovered */
-  #back-inner{display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none;transition:opacity .15s .12s;white-space:nowrap;overflow:hidden}
-  #back-btn:hover #back-inner{opacity:1;pointer-events:auto}
+        .status-cluster {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .version-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            padding-right: 15px;
+            border-right: 1px solid var(--border);
+        }
 
-  .back-label{color:var(--muted);font-size:10px}
-  .back-game{color:var(--accent);max-width:110px;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:middle}
+        /* ========================================
+        III. VIEW CONTAINER & ANIMATIONS
+        ======================================== */
+        #app-viewport {
+            height: calc(100vh - 80px);
+            width: 100%;
+            overflow-y: auto;
+            padding: 40px;
+            scroll-behavior: smooth;
+        }
 
-  /* Confirm button — only this triggers back */
-  #back-confirm{
-    padding:4px 11px;background:transparent;
-    border:1px solid #ff4757;border-radius:5px;
-    color:#ff4757;font-family:'Space Mono',monospace;
-    font-size:9px;letter-spacing:1px;cursor:pointer;
-    transition:all .15s;text-transform:uppercase;flex-shrink:0;
-  }
-  #back-confirm:hover{background:rgba(255,71,87,.15);box-shadow:0 0 10px rgba(255,71,87,.25)}
+        #app-viewport::-webkit-scrollbar { width: 6px; }
+        #app-viewport::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        #app-viewport::-webkit-scrollbar-track { background: transparent; }
 
-  /* ── The actual game runs HERE — the whole page IS the game ── */
-  #game-root{
-    position:fixed;inset:0;z-index:50;
-    display:none;
-    background:#000;
-  }
-  #game-root.visible{display:block}
+        .view {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: viewEnter 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .view.active { display: block; }
 
-  /* We use an object tag — better native event passthrough than iframe */
-  #game-obj{
-    width:100%;height:100%;
-    border:none;display:block;
-    background:#000;
-  }
-</style>
+        @keyframes viewEnter {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========================================
+        IV. HERO BANNER
+        ======================================== */
+        .hero-banner {
+            width: 100%;
+            height: 480px;
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 60px;
+            transition: border-color 0.4s ease;
+        }
+
+        .hero-banner:hover {
+            border-color: var(--border-hover);
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(-45deg, #020408, #111827, #0f172a, rgba(0, 212, 255, 0.15));
+            background-size: 400% 400%;
+            animation: gradientPulse 15s ease infinite;
+        }
+
+        .hero-video-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+        }
+
+        @keyframes gradientPulse {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--accent-gradient);
+            color: #000;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Skeleton shimmer for loading state */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
+        }
+
+        .hero-title.loading {
+            height: 60px;
+            width: 280px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        .hero-desc {
+            color: var(--text-dim);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 36px;
+            background: #fff;
+            color: #000;
+            font-weight: 700;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 15px;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            background: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ========================================
+        V. DISCOVERY GRIDS & CARDS
+        ======================================== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 { font-size: 24px; font-weight: 700; }
+
+        .section-meta {
+            color: var(--text-dim);
+            font-size: 13px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .game-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            padding: 24px;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Skeleton card */
+        .card-skeleton {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .card-skeleton .skel-visual {
+            width: 100%;
+            height: 160px;
+            border-radius: var(--radius-sm);
+        }
+        .card-skeleton .skel-title {
+            height: 22px;
+            width: 70%;
+            border-radius: 6px;
+        }
+        .card-skeleton .skel-sub {
+            height: 14px;
+            width: 50%;
+            border-radius: 6px;
+        }
+
+        .new-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--success);
+            color: #000;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 10px;
+            letter-spacing: 1px;
+            z-index: 10;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+            animation: pulseBadge 2s infinite;
+        }
+
+        @keyframes pulseBadge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .card-visual {
+            width: 100%;
+            height: 160px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.02);
+            transition: var(--transition);
+        }
+
+        .game-card:hover .card-visual {
+            background: rgba(0, 212, 255, 0.05);
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+
+        .card-visual svg {
+            width: 50px;
+            height: 50px;
+            color: var(--text-dim);
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .game-card:hover .card-visual svg {
+            transform: scale(1.15);
+            opacity: 1;
+            color: var(--accent);
+            filter: drop-shadow(0 0 12px var(--accent-glow));
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+            border-radius: var(--radius-sm);
+        }
+
+        .game-card:hover .play-overlay { opacity: 1; }
+        
+        .play-btn-mini {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            transform: translateY(10px);
+            transition: var(--transition);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .game-card:hover .play-btn-mini { transform: translateY(0); }
+
+        .card-info h3 {
+            font-size: 17px;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-info p {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* "View All" button in section headers */
+        .view-all-btn {
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(0,212,255,0.2);
+            transition: var(--transition);
+            background: rgba(0,212,255,0.05);
+        }
+        .view-all-btn:hover {
+            background: rgba(0,212,255,0.15);
+            border-color: var(--accent);
+        }
+
+        /* ========================================
+        VI. SEARCH & FILTER (LIBRARY VIEW)
+        ======================================== */
+        .filter-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            height: 50px;
+            width: 100%;
+            font-size: 15px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .search-box input::placeholder { color: var(--text-dim); }
+
+        /* Clear search button */
+        .search-clear {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: none;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        .search-clear:hover { color: #fff; }
+        .search-clear.visible { display: flex; }
+
+        .select-sort {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0 24px;
+            border-radius: var(--radius-sm);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 45px;
+            transition: var(--transition);
+            height: 50px;
+        }
+        .select-sort:hover { border-color: var(--accent); }
+        .select-sort option { background: var(--bg-deep); color: #fff; }
+
+        /* Library header row with game count */
+        .library-header {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+        .library-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 700;
+            background: rgba(0,212,255,0.08);
+            border: 1px solid rgba(0,212,255,0.15);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        /* Empty / error state */
+        .empty-state {
+            grid-column: 1 / -1;
+            color: var(--text-dim);
+            text-align: center;
+            padding: 60px 40px;
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .empty-state svg { opacity: 0.3; }
+        .empty-state strong { font-size: 16px; color: #fff; }
+
+        /* Error banner */
+        #error-banner {
+            display: none;
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 12px;
+            padding: 16px 24px;
+            color: var(--danger);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            align-items: center;
+            gap: 12px;
+        }
+        #error-banner.visible { display: flex; }
+
+        /* ========================================
+        VII. HUD & GAME LAUNCHER
+        ======================================== */
+        #launcher-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 2000;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #game-frame { width: 100%; height: 100%; border: none; }
+
+        .hud-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2001;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hud-grip {
+            width: 100px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0.5;
+        }
+
+        .hud-menu {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            transition: var(--transition);
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(15px);
+        }
+
+        .hud-container:hover .hud-grip {
+            background: var(--accent);
+            color: #000;
+            opacity: 1;
+            height: 30px;
+            box-shadow: 0 5px 20px var(--accent-glow);
+        }
+        
+        .hud-container:hover .hud-menu {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .hud-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            transition: var(--transition);
+        }
+
+        .hud-btn:hover { background: var(--danger); border-color: var(--danger); }
+
+        /* ========================================
+        VIII. EXIT CONFIRMATION MODAL
+        ======================================== */
+        #exit-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            animation: viewEnter 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .modal-content h3 { font-size: 24px; margin-bottom: 15px; }
+        .modal-content p { color: var(--text-dim); font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
+        
+        .modal-actions { display: flex; gap: 15px; }
+        .modal-actions button {
+            flex: 1;
+            padding: 14px 0;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .btn-cancel { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .btn-cancel:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: #ff6b81; box-shadow: 0 0 20px rgba(255, 71, 87, 0.4); }
+
+    </style>
 </head>
 <body>
 
-<!-- ── LAUNCHER MENU ── -->
-<div id="launcher">
-  <aside id="sidebar">
-    <div id="logo">
-      <div class="wordmark">H&amp;H Inc.</div>
-      <div class="tagline">Game Launcher v2</div>
+    <div class="ambient-bg"></div>
+    <div class="blob"></div>
+
+    <nav>
+        <div class="logo-group">
+            <div class="logo-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: #000"><path d="m21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div class="brand-name">H&H LAUNCHER</div>
+        </div>
+
+        <div class="nav-links">
+            <div class="nav-link active" id="nav-discover" onclick="switchView('discovery', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="m16 8-8 8"/><path d="m17 11-1-1"/><path d="m11 17-1-1"/></svg>
+                Discover
+            </div>
+            <div class="nav-link" id="nav-library" onclick="switchView('library', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+                Library
+            </div>
+        </div>
+
+        <div class="status-cluster">
+            <div class="version-tag">v0.5.0</div>
+            <div id="status-label" style="font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); font-weight: 700;">SYNCING...</div>
+            <div id="status-dot" style="width: 8px; height: 8px; background: var(--text-dim); border-radius: 50%;"></div>
+        </div>
+    </nav>
+
+    <div id="app-viewport">
+        
+        <!-- Error Banner -->
+        <div id="error-banner" style="max-width:1400px; margin: 0 auto 0 auto;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="error-message">Failed to load games.json. Make sure the file exists in your repository.</span>
+        </div>
+
+        <!-- DISCOVER VIEW -->
+        <div id="discovery" class="view active">
+            
+            <div class="hero-banner" id="hero-spotlight">
+                <div class="hero-video-bg"></div>
+                <div class="hero-content">
+                    <span class="badge" id="hero-badge">Latest Game</span>
+                    <h1 class="hero-title loading" id="featured-title">&nbsp;</h1>
+                    <p class="hero-desc">Discover the newest games added to the H&H Launcher. Click below to launch the latest game.</p>
+                    <button class="btn-primary" id="hero-btn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="m7 4 12 8-12 8V4z"/></svg>
+                        Launch
+                    </button>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2>New Games</h2>
+                <span class="section-meta" id="new-games-meta"></span>
+            </div>
+            <div class="game-grid" id="new-grid"></div>
+
+            <div class="section-header" style="margin-top: 10px;">
+                <h2>All Games</h2>
+                <span class="view-all-btn" onclick="goToLibrary()">Browse Library &rarr;</span>
+            </div>
+            <div class="game-grid" id="featured-grid"></div>
+
+        </div>
+
+        <!-- LIBRARY VIEW -->
+        <div id="library" class="view">
+            <div class="library-header">
+                <h1 style="font-size: 32px; font-weight: 800;">Library</h1>
+                <span class="library-count" id="lib-count">0 games</span>
+            </div>
+            <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 28px;">All available modules in the H&H repository.</p>
+
+            <div class="filter-bar">
+                <div class="search-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" id="lib-search" placeholder="Search games..." oninput="handleSearch(this.value)">
+                    <button class="search-clear" id="search-clear-btn" onclick="clearSearch()" title="Clear search">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+                
+                <select id="lib-sort" class="select-sort" onchange="handleSort(this.value)">
+                    <option value="default">Sort: Default</option>
+                    <option value="newest">Sort: Newest First</option>
+                    <option value="az">Sort: A → Z</option>
+                    <option value="za">Sort: Z → A</option>
+                </select>
+            </div>
+
+            <div class="game-grid" id="full-library-list"></div>
+        </div>
+
     </div>
-    <div id="search-wrap">
-      <input id="search" type="text" placeholder="Search games..." oninput="filterGames(this.value)">
+
+    <!-- Game Overlay -->
+    <div id="launcher-overlay">
+        <div class="hud-container">
+            <div class="hud-grip" title="Hover for menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="hud-menu">
+                <div id="hud-name" class="hud-btn" style="pointer-events: none; border-color: transparent; background: transparent; color: var(--accent);">GAME_NAME</div>
+                <button class="hud-btn" onclick="requestExit()">Exit Game</button>
+            </div>
+        </div>
+        <iframe id="game-frame" src="about:blank"></iframe>
     </div>
-    <div id="game-list-wrap">
-      <div class="section-label">Library</div>
-      <div id="game-list"><div class="state-msg"><div class="big">⏳</div>Loading games...</div></div>
+
+    <!-- Exit Confirmation Modal -->
+    <div id="exit-modal">
+        <div class="modal-backdrop" onclick="cancelExit()"></div>
+        <div class="modal-content">
+            <h3>Exit Game?</h3>
+            <p>Are you sure you want to close this Game Session? Any unsaved progress will be permanently lost.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="cancelExit()">Cancel</button>
+                <button class="btn-danger" onclick="confirmExit()">Confirm</button>
+            </div>
+        </div>
     </div>
-    <button id="refresh-btn" onclick="fetchGames()">↻ &nbsp;Refresh Library</button>
-  </aside>
-  <div id="welcome-panel">
-    <div class="welcome-grid"></div>
-    <div class="welcome-icon">🎮</div>
-    <div class="welcome-title">H&amp;H Inc.</div>
-    <div class="welcome-sub">Select a game to begin</div>
-    <div class="dot"></div>
-  </div>
-</div>
 
-<!-- ── FLOATING BACK BUTTON ── -->
-<div id="back-btn">
-  <span id="back-grip">☰</span>
-  <div id="back-inner">
-    <span class="back-label">Playing: <span id="back-game-name" class="back-game">—</span></span>
-    <button id="back-confirm" onclick="backToLauncher()">← Menu</button>
-  </div>
-</div>
+    <script>
+        "use strict";
 
-<!-- ── GAME CONTAINER ── -->
-<div id="game-root">
-  <!--
-    Using iframe with allow="same-origin" so the game page runs
-    in the same origin context as index.html — giving it full
-    trusted native events from the real user interactions.
-    No event forwarding needed at all.
-  -->
-  <iframe id="game-obj"
-    src="about:blank"
-    allow="autoplay; fullscreen; clipboard-read; clipboard-write; accelerometer; gyroscope"
-    allowfullscreen
-    tabindex="0"
-    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock allow-orientation-lock allow-presentation">
-  </iframe>
-</div>
+        // ─── Constants & State ───────────────────────────────────────────────
+        
+        /**
+         * FIX: Derive the base URL correctly for GitHub Pages and any host.
+         * window.location.href.replace(/\/[^\/]*$/, '/') breaks when the URL
+         * already ends with '/' (strips a path segment). Instead, use pathname
+         * manipulation which is reliable in all cases.
+         */
+        function getBaseUrl() {
+            const loc = window.location;
+            // Strip trailing filename if present (index.html, index__3_.html, etc.)
+            const path = loc.pathname.replace(/\/[^\/]*\.html?$/i, '/');
+            return loc.origin + path;
+        }
 
-<script>
-"use strict";
-var BASE_URL = window.location.href.replace(/\/[^\/]*$/, '/');
-var allGames = [];
+        const BASE_URL = getBaseUrl();
+        let GAMES_DB = [];
+        let currentSearchQuery = "";
+        let currentSortMethod = "default";
 
-/* ── FETCH GAMES ── */
-function fetchGames() {
-  var btn  = document.getElementById('refresh-btn');
-  var list = document.getElementById('game-list');
-  btn.style.animation = 'spin 1s linear infinite';
-  list.innerHTML = '<div class="state-msg"><div class="big">⏳</div>Loading...</div>';
+        // Dynamic Icon Pool
+        const ICON_POOL = [
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg>`,
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>`,
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-9 5 18 2-9h5"/></svg>`,
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg>`,
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
+        ];
 
-  fetch(BASE_URL + 'games.json?t=' + Date.now())
-    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-    .then(function(games){
-      allGames = games;
-      renderList(allGames);
-      btn.style.animation = '';
-    })
-    .catch(function(err){
-      list.innerHTML = '<div class="state-msg"><div class="big">⚠️</div>'
-        +'Could not load games.json<br><small style="color:#ff4757">'+err.message+'</small><br>'
-        +'<small style="color:#4a5568">Upload games.json to your repo!</small></div>';
-      btn.style.animation = '';
-    });
-}
+        // ─── Bootstrap ───────────────────────────────────────────────────────
 
-function renderList(games) {
-  var list = document.getElementById('game-list');
-  if(!games.length){
-    list.innerHTML='<div class="state-msg"><div class="big">📭</div>No games found.<br>Add entries to games.json</div>';
-    return;
-  }
-  list.innerHTML = games.map(function(g,i){
-    var sf = g.file.replace(/'/g,"\\'");
-    var sn = g.name.replace(/'/g,"\\'");
-    return '<div class="game-item fade-in" style="animation-delay:'+(i*0.05)+'s" onclick="launchGame(\''+sf+'\',\''+sn+'\')">'
-      +'<div class="item-icon">'+(g.icon||'🎮')+'</div>'
-      +'<div><div class="item-name">'+esc(g.name)+'</div>'
-      +'<div class="item-file">'+esc(g.file)+'</div></div></div>';
-  }).join('');
-}
+        async function bootstrap() {
+            showLoadingSkeletons();
 
-function filterGames(q){
-  q=q.toLowerCase().trim();
-  renderList(allGames.filter(function(g){
-    return g.name.toLowerCase().includes(q)||g.file.toLowerCase().includes(q);
-  }));
-}
+            try {
+                // Cache-bust so GitHub Pages always serves fresh JSON
+                const url = BASE_URL + 'games.json?_=' + Date.now();
+                const response = await fetch(url, { cache: 'no-store' });
 
-/* ── LAUNCH: navigate the game iframe directly to the file ──
-   The game iframe is same-origin (github.io) so it gets:
-   - Native trusted mouse events (clicks, right-click, scroll)
-   - Native trusted keyboard events (WASD, space, arrows, typing)
-   - pointer-lock works natively (same origin, user gesture inside frame)
-   - No event forwarding needed at all
-*/
-function launchGame(file, name) {
-  // Show game container, hide launcher
-  document.getElementById('launcher').style.display   = 'none';
-  document.getElementById('game-root').classList.add('visible');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
 
-  // Update back button
-  document.getElementById('back-game-name').textContent = name;
-  document.getElementById('back-btn').classList.add('visible');
+                const data = await response.json();
 
-  // Navigate the iframe to the game — same origin, real native events
-  var obj = document.getElementById('game-obj');
-  obj.src = BASE_URL + file;
+                // Validate: must be a non-empty array
+                if (!Array.isArray(data)) {
+                    throw new Error('games.json must export a JSON array.');
+                }
 
-  // Focus the frame as soon as it loads
-  obj.onload = function(){
-    obj.focus();
-    try{ obj.contentWindow.focus(); }catch(e){}
-  };
-}
+                GAMES_DB = data;
 
-function backToLauncher(){
-  // Stop the game
-  var obj = document.getElementById('game-obj');
-  obj.src = 'about:blank';
+                setStatus(true);
+                setupSpotlight();
+                populateDiscovery();
+                updateLibraryView();
 
-  // Show launcher again
-  document.getElementById('game-root').classList.remove('visible');
-  document.getElementById('launcher').style.display = 'flex';
-  document.getElementById('back-btn').classList.remove('visible');
-}
+            } catch (err) {
+                console.error('[H&H Launcher] Load error:', err);
+                setStatus(false);
+                showError(`Could not load games.json — ${err.message}`);
+                showEmptyGrids();
+            }
+        }
 
-function esc(s){
-  return String(s).replace(/[&<>"']/g,function(c){
-    return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-  });
-}
+        // ─── Status Helpers ──────────────────────────────────────────────────
 
-fetchGames();
-</script>
+        function setStatus(online) {
+            const label = document.getElementById('status-label');
+            const dot = document.getElementById('status-dot');
+            if (online) {
+                label.style.color = 'var(--accent)';
+                label.textContent = 'SERVERS ONLINE';
+                dot.style.background = '#00ff88';
+                dot.style.boxShadow = '0 0 10px #00ff88';
+                dot.style.animation = 'pulseBadge 2s infinite';
+            } else {
+                label.style.color = 'var(--danger)';
+                label.textContent = 'OFFLINE';
+                dot.style.background = 'var(--danger)';
+                dot.style.boxShadow = 'none';
+                dot.style.animation = 'none';
+            }
+        }
+
+        function showError(msg) {
+            const banner = document.getElementById('error-banner');
+            document.getElementById('error-message').textContent = msg;
+            banner.classList.add('visible');
+        }
+
+        // ─── Loading Skeletons ───────────────────────────────────────────────
+
+        function skeletonCard() {
+            return `<div class="card-skeleton">
+                <div class="skel-visual skeleton"></div>
+                <div class="skel-title skeleton"></div>
+                <div class="skel-sub skeleton"></div>
+            </div>`;
+        }
+
+        function showLoadingSkeletons() {
+            const skels = Array(4).fill(skeletonCard()).join('');
+            document.getElementById('new-grid').innerHTML = skels;
+            document.getElementById('featured-grid').innerHTML = skels;
+            document.getElementById('full-library-list').innerHTML = skels;
+        }
+
+        function showEmptyGrids() {
+            const empty = emptyState('No games found', 'Make sure games.json exists and is a valid JSON array.');
+            document.getElementById('new-grid').innerHTML = empty;
+            document.getElementById('featured-grid').innerHTML = empty;
+            document.getElementById('full-library-list').innerHTML = empty;
+            document.getElementById('featured-title').textContent = 'OFFLINE MODE';
+            document.getElementById('featured-title').classList.remove('loading');
+        }
+
+        // ─── Spotlight ───────────────────────────────────────────────────────
+
+        /**
+         * Hero always shows the last item in games.json (newest addition).
+         * Supports optional `spotlight: true` flag on any game entry to pin it.
+         */
+        function setupSpotlight() {
+            if (GAMES_DB.length === 0) return;
+
+            // Prefer a game explicitly marked as spotlight, else pick the last one
+            const spotlightGame = GAMES_DB.find(g => g.spotlight) || GAMES_DB[GAMES_DB.length - 1];
+
+            const titleEl = document.getElementById('featured-title');
+            titleEl.textContent = spotlightGame.name;
+            titleEl.classList.remove('loading');
+
+            const heroBtn = document.getElementById('hero-btn');
+            heroBtn.disabled = false;
+            heroBtn.onclick = () => launchModule(spotlightGame.file, spotlightGame.name);
+        }
+
+        // ─── Discovery View ──────────────────────────────────────────────────
+
+        /**
+         * FIX: "New Games" now shows the last N items (newest additions).
+         * "All Games" shows every game, most-classic first — so no game is
+         * ever hidden on the Discover tab.
+         * N scales with library size so there's always a useful split.
+         */
+        function populateDiscovery() {
+            const newCount = Math.min(4, Math.ceil(GAMES_DB.length / 3));
+            const newGames = GAMES_DB.slice(-newCount).reverse();   // Newest first
+            const allGames = [...GAMES_DB].reverse();               // All, newest first
+
+            document.getElementById('new-games-meta').textContent =
+                `${newCount} recently added`;
+
+            document.getElementById('new-grid').innerHTML =
+                newGames.map(g => createCard(g, true)).join('');
+
+            document.getElementById('featured-grid').innerHTML =
+                allGames.map(g => createCard(g, false)).join('');
+        }
+
+        // ─── Card Builder ────────────────────────────────────────────────────
+
+        function getIconForGame(name) {
+            // Use char-code sum for stable, varied icon assignment
+            const sum = [...name].reduce((a, c) => a + c.charCodeAt(0), 0);
+            return ICON_POOL[sum % ICON_POOL.length];
+        }
+
+        function createCard(game, isNew = false) {
+            const badgeHTML = isNew ? `<div class="new-badge">NEW</div>` : '';
+            const iconSVG = getIconForGame(game.name);
+            // Show a clean display name for the subtitle.
+            // Folder entries have no .html extension — strip only if present.
+            const subtitle = game.file
+                .replace(/\.html?$/i, '')
+                .replace(/[-_]/g, ' ');
+
+            return `
+                <div class="game-card" onclick="launchModule('${esc(game.file)}', '${esc(game.name)}')">
+                    ${badgeHTML}
+                    <div class="card-visual">
+                        ${iconSVG}
+                        <div class="play-overlay">
+                            <div class="play-btn-mini">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="m7 4 12 8-12 8V4z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h3>${esc(game.name)}</h3>
+                        <p>${esc(subtitle)}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ─── Library Logic ───────────────────────────────────────────────────
+
+        function handleSearch(query) {
+            currentSearchQuery = query;
+            // Show/hide clear button
+            const clearBtn = document.getElementById('search-clear-btn');
+            clearBtn.classList.toggle('visible', query.length > 0);
+            updateLibraryView();
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('lib-search');
+            input.value = '';
+            handleSearch('');
+            input.focus();
+        }
+
+        function handleSort(method) {
+            currentSortMethod = method;
+            updateLibraryView();
+        }
+
+        /**
+         * FIX: Library now correctly reflects ALL games from GAMES_DB,
+         * including any newly added ones. The previous bug was that
+         * GAMES_DB was never being properly fetched from the right URL,
+         * so new games added to games.json would never appear.
+         */
+        function updateLibraryView() {
+            // 1. Filter
+            const q = currentSearchQuery.toLowerCase();
+            let list = GAMES_DB.filter(g =>
+                g.name.toLowerCase().includes(q) ||
+                g.file.toLowerCase().includes(q)
+            );
+
+            // 2. Sort
+            switch (currentSortMethod) {
+                case 'az':
+                    list.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'za':
+                    list.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                case 'newest':
+                    list = [...list].reverse();  // Assumes JSON order = oldest first
+                    break;
+                // 'default' = original JSON order
+            }
+
+            // 3. Update count badge
+            const total = GAMES_DB.length;
+            const shown = list.length;
+            const countEl = document.getElementById('lib-count');
+            if (currentSearchQuery) {
+                countEl.textContent = `${shown} of ${total} games`;
+            } else {
+                countEl.textContent = `${total} game${total !== 1 ? 's' : ''}`;
+            }
+
+            // 4. Render
+            const container = document.getElementById('full-library-list');
+            if (list.length === 0) {
+                container.innerHTML = emptyState(
+                    currentSearchQuery ? 'No results' : 'No games yet',
+                    currentSearchQuery
+                        ? `Nothing matched "${esc(currentSearchQuery)}". Try a different search.`
+                        : 'Add entries to games.json to see them here.'
+                );
+            } else {
+                container.innerHTML = list.map(g => createCard(g, false)).join('');
+            }
+        }
+
+        function emptyState(title, subtitle) {
+            return `<div class="empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <strong>${esc(title)}</strong>
+                <span>${esc(subtitle)}</span>
+            </div>`;
+        }
+
+        // ─── View Switching ──────────────────────────────────────────────────
+
+        function switchView(viewId, element) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            element.classList.add('active');
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.getElementById('app-viewport').scrollTop = 0;
+        }
+
+        function goToLibrary() {
+            switchView('library', document.getElementById('nav-library'));
+        }
+
+        // ─── Game Launcher ───────────────────────────────────────────────────
+
+        /**
+         * Returns true if this entry is a folder (no .html / .htm extension).
+         * Convention: single-file games use "game.html"; folder-based games
+         * use just the folder name, e.g. "mygame" → loads "mygame/index.html".
+         */
+        function isFolder(file) {
+            return !/\.html?$/i.test(file);
+        }
+
+        /**
+         * Resolves the actual URL to load in the iframe.
+         * - Single HTML file:  BASE_URL + "game.html"
+         * - Folder entry:      BASE_URL + "myfolder/index.html"
+         */
+        function resolveGameUrl(file) {
+            if (isFolder(file)) {
+                // Strip any accidental trailing slash, then add /index.html
+                return BASE_URL + file.replace(/\/$/, '') + '/index.html';
+            }
+            return BASE_URL + file;
+        }
+
+        function launchModule(file, name) {
+            const overlay = document.getElementById('launcher-overlay');
+            const frame = document.getElementById('game-frame');
+
+            document.getElementById('hud-name').textContent = name.toUpperCase();
+            frame.src = resolveGameUrl(file);
+            overlay.style.display = 'block';
+            setTimeout(() => frame.focus(), 100);
+        }
+
+        // ─── Exit Modal ──────────────────────────────────────────────────────
+
+        function requestExit() {
+            document.getElementById('exit-modal').style.display = 'flex';
+        }
+
+        function cancelExit() {
+            document.getElementById('exit-modal').style.display = 'none';
+        }
+
+        function confirmExit() {
+            document.getElementById('game-frame').src = 'about:blank';
+            document.getElementById('launcher-overlay').style.display = 'none';
+            document.getElementById('exit-modal').style.display = 'none';
+        }
+
+        // Also allow Escape key to trigger exit prompt from game
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.getElementById('launcher-overlay').style.display === 'block') {
+                requestExit();
+            }
+        });
+
+        // ─── Utility ─────────────────────────────────────────────────────────
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        // ─── Start ───────────────────────────────────────────────────────────
+        bootstrap();
+
+    </script>
 </body>
 </html>

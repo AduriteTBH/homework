@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>H&H Browse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep:     #020408;
+      --bg-surface:  rgba(12, 16, 23, 0.85);
+      --bg-card:     rgba(255,255,255,0.03);
+      --accent:      #00d4ff;
+      --accent-glow: rgba(0,212,255,0.35);
+      --accent-grad: linear-gradient(135deg,#00d4ff 0%,#7b68ee 100%);
+      --danger:      #ff4757;
+      --success:     #00ff88;
+      --text-main:   #ffffff;
+      --text-dim:    #94a3b8;
+      --border:      rgba(255,255,255,0.08);
+      --border-hover:rgba(0,212,255,0.3);
+      --radius-lg:   20px;
+      --radius-md:   14px;
+      --radius-sm:   8px;
+      --shadow-xl:   0 20px 40px rgba(0,0,0,0.6);
+      --transition:  all 0.35s cubic-bezier(0.2,0.8,0.2,1);
+      --sidebar-w:   220px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html, body {
+      width:100%; height:100%;
+      background: var(--bg-deep);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ── Ambient background ── */
+    .ambient {
+      position:fixed; inset:0; z-index:-1;
+      background: radial-gradient(circle at 50% -20%, #1a2332 0%, var(--bg-deep) 70%);
+    }
+    .blob {
+      position:absolute;
+      width:55vw; height:55vw;
+      background: var(--accent-glow);
+      filter: blur(140px);
+      border-radius:50%;
+      opacity:.12;
+      animation: blobMove 28s infinite alternate ease-in-out;
+    }
+    @keyframes blobMove {
+      from { transform: translate(-5%,-5%) scale(1); }
+      to   { transform: translate(35%,25%) scale(1.15); }
+    }
+
+    /* ── Layout shell ── */
+    #shell {
+      display: flex;
+      width: 100%; height: 100%;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      height: 100%;
+      background: rgba(2,4,8,0.6);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      gap: 6px;
+      z-index: 10;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 8px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+    .logo-box {
+      width: 34px; height: 34px;
+      background: var(--accent-grad);
+      border-radius: 9px;
+      display: flex; align-items:center; justify-content:center;
+      box-shadow: 0 0 18px var(--accent-glow);
+      flex-shrink: 0;
+    }
+    .brand {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -.4px;
+      background: linear-gradient(to bottom,#fff,#94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+    .brand span { display:block; font-size:10px; font-weight:400; color: var(--text-dim); -webkit-text-fill-color: var(--text-dim); }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-dim);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+      border: 1px solid transparent;
+    }
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+    .nav-item.active {
+      color: var(--accent);
+      background: rgba(0,212,255,0.08);
+      border-color: rgba(0,212,255,0.18);
+    }
+    .nav-item svg { flex-shrink:0; }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-dim);
+      padding: 16px 14px 6px;
+      opacity: .6;
+    }
+
+    /* ── Main content ── */
+    #main {
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
+      padding: 32px 36px;
+      scroll-behavior: smooth;
+    }
+    #main::-webkit-scrollbar { width:5px; }
+    #main::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
+    #main::-webkit-scrollbar-track { background:transparent; }
+
+    /* ── Views ── */
+    .view { display:none; animation: fadeUp .4s cubic-bezier(.2,.8,.2,1); }
+    .view.active { display:block; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(12px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      margin-bottom: 28px;
+    }
+    .page-header h1 {
+      font-size: 28px; font-weight: 800;
+      background: linear-gradient(to right,#fff 60%,#94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-header p {
+      color: var(--text-dim);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover {
+      border-color: var(--border-hover);
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+    .card-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex; align-items:center; justify-content:center;
+      flex-shrink:0;
+      font-size: 20px;
+      transition: var(--transition);
+    }
+    .card:hover .card-icon {
+      border-color: var(--accent);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+    .card-info h3 {
+      font-size: 15px; font-weight: 700;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .card-info p {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    /* ── Proxy cards (slightly different — show URL) ── */
+    .proxy-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      color: inherit;
+    }
+    .proxy-card:hover {
+      border-color: var(--border-hover);
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-xl);
+    }
+    .proxy-card-left { display:flex; align-items:center; gap:14px; }
+    .proxy-icon {
+      width: 38px; height: 38px;
+      border-radius: 9px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-size:18px; flex-shrink:0;
+      transition: var(--transition);
+    }
+    .proxy-card:hover .proxy-icon {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+    .proxy-name { font-size:14px; font-weight:700; }
+    .proxy-url  { font-size:11px; color:var(--text-dim); font-family:'JetBrains Mono',monospace; }
+    .go-arrow {
+      color: var(--text-dim);
+      transition: var(--transition);
+    }
+    .proxy-card:hover .go-arrow { color:var(--accent); transform:translateX(3px); }
+
+    /* ── Proxies list ── */
+    .proxy-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── Settings ── */
+    .settings-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    .settings-section h2 {
+      font-size: 16px; font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--accent);
+      display:flex; align-items:center; gap:8px;
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .setting-row:last-child { margin-bottom:0; }
+    .inp {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-family: 'Plus Jakarta Sans',sans-serif;
+      font-size: 13px;
+      outline:none;
+      transition: var(--transition);
+    }
+    .inp:focus { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-glow); }
+    .inp::placeholder { color:var(--text-dim); }
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-family: 'Plus Jakarta Sans',sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.07);
+      color: #fff;
+      transition: var(--transition);
+    }
+    .btn:hover { background:rgba(255,255,255,0.14); border-color:rgba(255,255,255,0.2); }
+    .btn-accent { background:var(--accent); color:#000; border-color:var(--accent); }
+    .btn-accent:hover { box-shadow:0 0 20px var(--accent-glow); transform:scale(1.03); }
+    .btn-danger { background:rgba(255,71,87,0.15); color:var(--danger); border-color:rgba(255,71,87,0.3); }
+    .btn-danger:hover { background:var(--danger); color:#fff; }
+
+    .preset-grid {
+      display: flex; flex-wrap:wrap; gap:8px;
+    }
+    .preset-btn {
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px; font-weight:600;
+      cursor:pointer;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-dim);
+      transition:var(--transition);
+      font-family: 'Plus Jakarta Sans',sans-serif;
+    }
+    .preset-btn:hover { border-color:var(--accent); color:#fff; background:rgba(0,212,255,0.08); }
+    .preset-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(0,212,255,0.12); }
+
+    .theme-btns { display:flex; gap:10px; flex-wrap:wrap; }
+    .theme-btn {
+      padding:9px 20px;
+      border-radius:10px;
+      font-size:13px; font-weight:700;
+      cursor:pointer;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.05);
+      color:#fff;
+      transition:var(--transition);
+      font-family:'Plus Jakarta Sans',sans-serif;
+    }
+    .theme-btn:hover { border-color:var(--accent); background:rgba(0,212,255,0.08); }
+
+    /* ── Tools ── */
+    .tool-card {
+      background: var(--bg-surface);
+      border:1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      display:flex; flex-direction:column; gap:12px;
+      transition:var(--transition);
+      cursor:pointer;
+      text-decoration:none; color:inherit;
+    }
+    .tool-card:hover {
+      border-color:var(--border-hover);
+      background:rgba(255,255,255,0.04);
+      transform:translateY(-4px);
+      box-shadow:var(--shadow-xl);
+    }
+    .tool-card-icon { font-size:28px; }
+    .tool-card h3 { font-size:16px; font-weight:700; }
+    .tool-card p  { font-size:13px; color:var(--text-dim); line-height:1.5; }
+
+    /* ── Home hero ── */
+    .home-hero {
+      background: var(--bg-surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:36px 40px;
+      margin-bottom:28px;
+      position:relative;
+      overflow:hidden;
+    }
+    .home-hero::before {
+      content:'';
+      position:absolute; inset:0;
+      background: linear-gradient(-45deg,#020408,#111827,#0f172a,rgba(0,212,255,.12));
+      background-size:400% 400%;
+      animation:hGrad 14s ease infinite;
+    }
+    @keyframes hGrad {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+    .home-hero-content { position:relative; z-index:1; }
+    .home-hero h1 { font-size:38px; font-weight:800; margin-bottom:10px; }
+    .home-hero h1 span { background:var(--accent-grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .home-hero p  { color:var(--text-dim); font-size:15px; line-height:1.6; max-width:500px; }
+
+    .home-quick { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+    .quick-card {
+      background:var(--bg-surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius-md);
+      padding:18px 20px;
+      display:flex; align-items:center; gap:14px;
+      cursor:pointer; transition:var(--transition);
+    }
+    .quick-card:hover { border-color:var(--border-hover); transform:translateY(-3px); box-shadow:var(--shadow-xl); }
+    .quick-card-icon { font-size:22px; }
+    .quick-card h3 { font-size:14px; font-weight:700; }
+    .quick-card p  { font-size:11px; color:var(--text-dim); margin-top:2px; }
+
+    /* ── Scrollbar ── */
+    #sidebar::-webkit-scrollbar { width:4px; }
+    #sidebar::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
+  </style>
+</head>
+<body>
+
+<div class="ambient"><div class="blob"></div></div>
+
+<div id="shell">
+
+  <!-- ════ SIDEBAR ════ -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="brand">H&amp;H Browse<span>Unblocked Hub</span></div>
+    </div>
+
+    <div class="nav-section-label">Navigation</div>
+
+    <div class="nav-item active" data-view="home" onclick="switchView('home',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </div>
+    <div class="nav-item" data-view="gamesites" onclick="switchView('gamesites',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg>
+      Game Sites
+    </div>
+    <div class="nav-item" data-view="proxies" onclick="switchView('proxies',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Proxies
+    </div>
+    <div class="nav-item" data-view="other" onclick="switchView('other',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      Other
+    </div>
+    <div class="nav-item" data-view="tools" onclick="switchView('tools',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Tools
+    </div>
+    <div class="nav-item" data-view="settings" onclick="switchView('settings',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </div>
+
+  </nav>
+
+  <!-- ════ MAIN ════ -->
+  <main id="main">
+
+    <!-- HOME -->
+    <div id="view-home" class="view active">
+      <div class="home-hero">
+        <div class="home-hero-content">
+          <h1>Welcome to <span>H&amp;H Browse</span></h1>
+          <p>Your all-in-one unblocked hub — game sites, proxies, tools and more, all inside the H&amp;H Launcher.</p>
+        </div>
+      </div>
+      <div class="home-quick">
+        <div class="quick-card" onclick="switchViewById('gamesites')">
+          <div class="quick-card-icon">🎮</div>
+          <div><h3>Game Sites</h3><p>Unblocked game portals</p></div>
+        </div>
+        <div class="quick-card" onclick="switchViewById('proxies')">
+          <div class="quick-card-icon">🛡️</div>
+          <div><h3>Proxies</h3><p>Browse freely</p></div>
+        </div>
+        <div class="quick-card" onclick="switchViewById('other')">
+          <div class="quick-card-icon">🔗</div>
+          <div><h3>Other Links</h3><p>Lists & bookmarklets</p></div>
+        </div>
+        <div class="quick-card" onclick="switchViewById('tools')">
+          <div class="quick-card-icon">🛠️</div>
+          <div><h3>Tools</h3><p>Tab cloak & more</p></div>
+        </div>
+        <div class="quick-card" onclick="switchViewById('settings')">
+          <div class="quick-card-icon">⚙️</div>
+          <div><h3>Settings</h3><p>Themes & tab cloaking</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME SITES -->
+    <div id="view-gamesites" class="view">
+      <div class="page-header">
+        <h1>Game Sites</h1>
+        <p>Unblocked gaming portals — click to open inside this tab.</p>
+      </div>
+      <div class="cards-grid">
+        <a class="card" href="https://3kh0.github.io">
+          <div class="card-icon">🎮</div>
+          <div class="card-info"><h3>3kh0</h3><p>3kh0.github.io</p></div>
+        </a>
+        <a class="card" href="https://ellieeet123.github.io">
+          <div class="card-icon">🥔</div>
+          <div class="card-info"><h3>Pringles</h3><p>ellieeet123.github.io</p></div>
+        </a>
+        <a class="card" href="https://games.unblockify.gq">
+          <div class="card-icon">🔓</div>
+          <div class="card-info"><h3>Unblockify Games</h3><p>games.unblockify.gq</p></div>
+        </a>
+        <a class="card" href="https://lioxryt.github.io/">
+          <div class="card-icon">⚡</div>
+          <div class="card-info"><h3>Lioxryt Games</h3><p>lioxryt.github.io</p></div>
+        </a>
+        <a class="card" href="https://outred.github.io">
+          <div class="card-icon">🔴</div>
+          <div class="card-info"><h3>OutRed Games</h3><p>outred.github.io</p></div>
+        </a>
+        <a class="card" href="https://gba.js.org">
+          <div class="card-icon">🕹️</div>
+          <div class="card-info"><h3>GBA Online</h3><p>gba.js.org</p></div>
+        </a>
+        <a class="card" href="https://zatoga.vercel.app">
+          <div class="card-icon">🎯</div>
+          <div class="card-info"><h3>Zatoga</h3><p>zatoga.vercel.app</p></div>
+        </a>
+        <a class="card" href="https://binbashbanana.github.io/webretro">
+          <div class="card-icon">👾</div>
+          <div class="card-info"><h3>Web Retro</h3><p>binbashbanana.github.io</p></div>
+        </a>
+        <a class="card" href="https://archive.org/details/internetarcade">
+          <div class="card-icon">🏛️</div>
+          <div class="card-info"><h3>Internet Arcade</h3><p>archive.org</p></div>
+        </a>
+        <a class="card" href="https://mathgames66.github.io">
+          <div class="card-icon">🔢</div>
+          <div class="card-info"><h3>MathGames66</h3><p>mathgames66.github.io</p></div>
+        </a>
+        <a class="card" href="https://abc6782.github.io/core-html/games.html">
+          <div class="card-icon">🎲</div>
+          <div class="card-info"><h3>ABC Games</h3><p>abc6782.github.io</p></div>
+        </a>
+        <a class="card" href="https://skool.world">
+          <div class="card-icon">🌍</div>
+          <div class="card-info"><h3>Skool</h3><p>skool.world</p></div>
+        </a>
+        <a class="card" href="https://oddisbest.dev">
+          <div class="card-icon">🃏</div>
+          <div class="card-info"><h3>Odd Games</h3><p>oddisbest.dev</p></div>
+        </a>
+        <a class="card" href="https://bidoofery.github.io">
+          <div class="card-icon">🌀</div>
+          <div class="card-info"><h3>Bidoofery</h3><p>bidoofery.github.io</p></div>
+        </a>
+        <a class="card" href="https://theooofficial.github.io/myRETROGAMES">
+          <div class="card-icon">📺</div>
+          <div class="card-info"><h3>Retro Games</h3><p>theooofficial.github.io</p></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- PROXIES -->
+    <div id="view-proxies" class="view">
+      <div class="page-header">
+        <h1>Proxies</h1>
+        <p>Browse the web freely through these proxy services.</p>
+      </div>
+      <div class="proxy-list">
+        <a class="proxy-card" href="https://167.114.102.230">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">🔑</div>
+            <div><div class="proxy-name">KProxy</div><div class="proxy-url">167.114.102.230</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="proxy-card" href="https://67.207.72.190">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">✖️</div>
+            <div><div class="proxy-name">CroxyProxy</div><div class="proxy-url">67.207.72.190</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="proxy-card" href="https://terriblestories.org/">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">🔓</div>
+            <div><div class="proxy-name">Holy Unblocker</div><div class="proxy-url">terriblestories.org</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="proxy-card" href="https://dabfloss.ga/">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">⚗️</div>
+            <div><div class="proxy-name">Terbium</div><div class="proxy-url">dabfloss.ga</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="proxy-card" href="https://moist.vercel.app/">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">🕶️</div>
+            <div><div class="proxy-name">Incognito</div><div class="proxy-url">moist.vercel.app</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="proxy-card" href="https://neb.searchtheweb.xyz/">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">🌌</div>
+            <div><div class="proxy-name">Nebula</div><div class="proxy-url">neb.searchtheweb.xyz</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="proxy-card" href="https://eclipse-is.pretty-cool.ml/">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">🌑</div>
+            <div><div class="proxy-name">Eclipse</div><div class="proxy-url">eclipse-is.pretty-cool.ml</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="proxy-card" href="https://jesus.is-a.win/">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">🧪</div>
+            <div><div class="proxy-name">Elixir</div><div class="proxy-url">jesus.is-a.win</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="proxy-card" href="https://schoolookup.ga">
+          <div class="proxy-card-left">
+            <div class="proxy-icon">🐏</div>
+            <div><div class="proxy-name">Rammerhead</div><div class="proxy-url">schoolookup.ga</div></div>
+          </div>
+          <svg class="go-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- OTHER -->
+    <div id="view-other" class="view">
+      <div class="page-header">
+        <h1>Other</h1>
+        <p>Useful link collections and resources.</p>
+      </div>
+      <div class="cards-grid">
+        <a class="card" href="https://schoolizboring.github.io/Websites-Links/">
+          <div class="card-icon">📋</div>
+          <div class="card-info"><h3>List of Proxies</h3><p>schoolizboring.github.io</p></div>
+        </a>
+        <a class="card" href="https://schoolizboring.github.io/List-of-Bookmarklets/">
+          <div class="card-icon">🔖</div>
+          <div class="card-info"><h3>List of Bookmarklets</h3><p>schoolizboring.github.io</p></div>
+        </a>
+        <a class="card" href="https://schoolizboring.github.io/My-Bookmarklet-Folder-OP-/">
+          <div class="card-icon">⭐</div>
+          <div class="card-info"><h3>Bookmark Folder (OP)</h3><p>schoolizboring.github.io</p></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div id="view-tools" class="view">
+      <div class="page-header">
+        <h1>Tools</h1>
+        <p>Handy utilities for your browsing session.</p>
+      </div>
+      <div class="cards-grid">
+        <a class="tool-card" href="https://schoolizboring.github.io/Make-This-Site-An-App/">
+          <div class="tool-card-icon">📱</div>
+          <h3>Make This Site An App</h3>
+          <p>Turn any website into a standalone app on your device.</p>
+        </a>
+        <div class="tool-card" onclick="switchViewById('settings')">
+          <div class="tool-card-icon">🎭</div>
+          <h3>Tab Cloak</h3>
+          <p>Change your tab's title and favicon to disguise what you're browsing.</p>
+        </div>
+        <div class="tool-card" onclick="setBlankTab()">
+          <div class="tool-card-icon">📄</div>
+          <h3>About:Blank Tab</h3>
+          <p>Open a blank tab with this site embedded inside — hard to detect.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="view-settings" class="view">
+      <div class="page-header">
+        <h1>Settings</h1>
+        <p>Customise your H&amp;H Browse experience.</p>
+      </div>
+
+      <div class="settings-section">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Tab Cloak
+        </h2>
+        <div class="setting-row">
+          <input class="inp" id="favicon-input" type="text" placeholder="Favicon URL (.ico / .png)" style="flex:1;" />
+          <button class="btn btn-accent" onclick="changeFavicon()">Apply</button>
+        </div>
+        <div class="setting-row">
+          <input class="inp" id="title-input" type="text" placeholder="Tab title" style="flex:1;" onkeydown="if(event.key==='Enter') setTitle(this.value)" />
+          <button class="btn btn-accent" onclick="setTitle(document.getElementById('title-input').value)">Apply</button>
+          <button class="btn btn-danger" onclick="resetTabSettings()">Reset</button>
+        </div>
+        <div style="margin-top:4px;">
+          <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;font-family:'JetBrains Mono',monospace;">Presets</div>
+          <div class="preset-grid">
+            <button class="preset-btn" onclick="applyUrl('https://storage.googleapis.com/operating-anagram-8280/favicon-32x32.png','Math practice - Google Search')">Google</button>
+            <button class="preset-btn" onclick="applyUrl('https://ssl.gstatic.com/classroom/favicon.png','Classes')">Classroom</button>
+            <button class="preset-btn" onclick="applyUrl('https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico','Class notes - Google Docs')">Docs</button>
+            <button class="preset-btn" onclick="applyUrl('https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png','My Drive - Google Drive')">Drive</button>
+            <button class="preset-btn" onclick="applyUrl('https://clever.com/favicon.png','Clever | Portal')">Clever</button>
+            <button class="preset-btn" onclick="applyUrl('https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico','Home | Schoology')">Schoology</button>
+            <button class="preset-btn" onclick="applyUrl('https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico','Dashboard')">Canvas</button>
+            <button class="preset-btn" onclick="applyUrl('https://example.com/favicon.ico','New Tab')">New Tab</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          Theme
+        </h2>
+        <div class="theme-btns">
+          <button class="theme-btn" onclick="setTheme('dark')">🌑 Dark</button>
+          <button class="theme-btn" onclick="setTheme('light')">☀️ Light</button>
+          <button class="theme-btn" onclick="setTheme('colorful')">🌈 Colorful</button>
+          <button class="theme-btn btn-danger" onclick="resetThemes()">Reset</button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script>
+"use strict";
+
+// ── View switching ──────────────────────────────────────────────────────────
+function switchView(id, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.getElementById('main').scrollTop = 0;
+}
+
+function switchViewById(id) {
+  const el = document.querySelector('[data-view="' + id + '"]');
+  switchView(id, el);
+}
+
+// ── Tab cloak ───────────────────────────────────────────────────────────────
+(function initCloak() {
+  const preset = JSON.parse(localStorage.getItem('hh-browse-preset') || 'null');
+  if (preset) {
+    document.title = preset.title;
+    setFaviconEl(preset.icon);
+    document.getElementById('favicon-input').value = preset.icon;
+    document.getElementById('title-input').value   = preset.title;
+  }
+})();
+
+function setFaviconEl(url) {
+  let link = document.querySelector("link[rel~='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'icon';
+    document.head.appendChild(link);
+  }
+  link.href = url;
+}
+
+function applyUrl(iconUrl, title) {
+  document.title = title;
+  setFaviconEl(iconUrl);
+  localStorage.setItem('hh-browse-preset', JSON.stringify({ icon: iconUrl, title }));
+  document.getElementById('favicon-input').value = iconUrl;
+  document.getElementById('title-input').value   = title;
+  // Highlight matching preset button
+  document.querySelectorAll('.preset-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick').includes(iconUrl));
+  });
+}
+
+function changeFavicon() {
+  const url = document.getElementById('favicon-input').value.trim();
+  const valid = ['.ico','.png','.jpeg','.jpg','.gif','.svg','.webp'];
+  if (!url || !valid.some(e => url.toLowerCase().includes(e))) {
+    alert('Please enter a valid image URL (.ico, .png, .jpg, .gif, .svg, .webp)');
+    return;
+  }
+  applyUrl(url, document.getElementById('title-input').value || document.title);
+}
+
+function setTitle(title) {
+  if (!title) return;
+  document.title = title;
+  const preset = JSON.parse(localStorage.getItem('hh-browse-preset') || '{}');
+  preset.title = title;
+  localStorage.setItem('hh-browse-preset', JSON.stringify(preset));
+}
+
+function resetTabSettings() {
+  localStorage.removeItem('hh-browse-preset');
+  document.title = 'H&H Browse';
+  setFaviconEl('./images/uw.png');
+  document.getElementById('favicon-input').value = '';
+  document.getElementById('title-input').value   = '';
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+}
+
+// ── Theme ───────────────────────────────────────────────────────────────────
+let colorInterval = null;
+
+function setTheme(theme) {
+  if (colorInterval) { clearInterval(colorInterval); colorInterval = null; }
+  const root = document.documentElement;
+  if (theme === 'dark') {
+    root.style.setProperty('--bg-deep','#020408');
+    root.style.setProperty('--text-main','#ffffff');
+  } else if (theme === 'light') {
+    root.style.setProperty('--bg-deep','#f0f4f8');
+    root.style.setProperty('--text-main','#0f172a');
+  } else if (theme === 'colorful') {
+    colorInterval = setInterval(() => {
+      document.body.style.transition = 'background-color 1s linear';
+      document.body.style.backgroundColor = 'hsl(' + Math.floor(Math.random()*361) + ',70%,15%)';
+    }, 1200);
+  }
+}
+
+function resetThemes() {
+  if (colorInterval) { clearInterval(colorInterval); colorInterval = null; }
+  document.body.style.backgroundColor = '';
+  document.documentElement.style.removeProperty('--bg-deep');
+  document.documentElement.style.removeProperty('--text-main');
+}
+
+// ── About blank tab ─────────────────────────────────────────────────────────
+function setBlankTab() {
+  const win = window.open();
+  win.document.body.style.cssText = 'margin:0;height:100vh;';
+  const iframe = win.document.createElement('iframe');
+  iframe.style.cssText = 'border:none;width:100%;height:100%;margin:0;';
+  iframe.referrerpolicy = 'no-referrer';
+  iframe.allow = 'fullscreen';
+  iframe.src = window.location.href;
+  win.document.body.appendChild(iframe);
+}
+</script>
+
+</body>
+</html>

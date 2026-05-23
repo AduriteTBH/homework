@@ -36,10 +36,7 @@
   { "name": "Subway Surfers", "file": "subway-surfers", "icon": "🏄‍♂️" },
   { "name": "Subway Surfers NY", "file": "subway-surfers-ny", "icon": "🏄" },
   { "name": "Bloxorz", "file": "bloxorz", "icon": "🧊" },
-  { "name": "Crazy Taxi", "file": "crazy-taxi", "icon": "🚖" },
-  { "name": "Drift Boss", "file": "drift-boss", "icon": "🚘" },
   { "name": "Drift Hunters", "file": "drift-hunters", "icon": "🚘" },
   { "name": "Game Of Life", "file": "gameoflife", "icon": "🌿" },
   { "name": "Soccer Random", "file": "soccer-random", "icon": "⚽" },
-  { "name": "Sonic Original", "file": "sonic-original", "icon": "🦔" }
 ]

@@ -37,5 +37,6 @@
   { "name": "Subway Surfers NY", "file": "subway-surfers-ny", "icon": "🏄" },
   { "name": "Bloxorz", "file": "bloxorz", "icon": "🧊" },
   { "name": "Game Of Life", "file": "gameoflife", "icon": "🌿" },
-  { "name": "Soccer Random", "file": "soccer-random", "icon": "⚽" }
+  { "name": "Soccer Random", "file": "soccer-random", "icon": "⚽" },
+  { "name": "Hopter Royale (H&H Exclusive)", "file": "Hopter Royale", "icon": "🔫" }
 ]

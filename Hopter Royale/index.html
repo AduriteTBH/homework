@@ -11,43 +11,48 @@
     <div id="menu-screen" class="screen">
         <h1>Hopter Royale</h1>
         <div class="panel">
-            <p>Player Name:</p>
-            <h2 id="player-name-display">Loading...</h2>
-            <button id="btn-cycle-name">Cycle Name</button>
+            <p style="color: #7f8fa6; font-weight: bold; margin-bottom: 5px;">Callsign:</p>
+            <h2 id="player-name-display" style="font-size: 2rem;">Loading...</h2>
+            <button id="btn-cycle-name">Roll New Name</button>
             <hr>
-            <button id="btn-create-game" class="primary">Create Game (Host)</button>
+            <button id="btn-create-game" class="primary">Deploy as Host</button>
             <hr>
             <div class="join-section">
-                <input type="text" id="join-code-input" placeholder="5-Letter Code" maxlength="5">
-                <button id="btn-join-game">Join Game</button>
+                <input type="text" id="join-code-input" placeholder="5-LETTER CODE" maxlength="5">
+                <button id="btn-join-game">Join Squad</button>
             </div>
             <p id="menu-status" class="error-text"></p>
         </div>
     </div>
 
     <div id="lobby-screen" class="screen hidden">
-        <h1>Lobby</h1>
+        <h1>Briefing Room</h1>
         <div class="panel">
-            <h2 id="room-code-display">Code: -----</h2>
-            <p>Players Connected:</p>
+            <h2 id="room-code-display" style="font-size: 2.5rem; letter-spacing: 4px;">Code: -----</h2>
+            <p style="color: #7f8fa6; margin-top: 15px;">Pilots Connected:</p>
             <ul id="player-list"></ul>
-            <button id="btn-start-game" class="primary hidden">Start Game</button>
+            <button id="btn-start-game" class="primary hidden">Launch Mission</button>
             <p id="lobby-status"></p>
         </div>
     </div>
 
     <div id="game-ui" class="hidden">
         <div id="hud-top-left">
-            <div id="hud-alive">Players Alive: 0</div>
+            <div id="hud-alive">Pilots Alive: 0</div>
         </div>
+        
+        <div id="minimap-container">
+            <canvas id="minimapCanvas" width="150" height="150"></canvas>
+        </div>
+
         <div id="hud-bottom">
             <div id="hud-hp-bar-bg"><div id="hud-hp-bar"></div></div>
             <div id="hud-xp-bar-bg"><div id="hud-xp-bar"></div></div>
             <div id="hud-level">Level: 1</div>
         </div>
         <div id="game-over-screen" class="hidden">
-            <h2 id="game-over-text">You Died</h2>
-            <button onclick="location.reload()">Return to Menu</button>
+            <h2 id="game-over-text">KIA</h2>
+            <button onclick="location.reload()" class="primary">Return to Base</button>
         </div>
     </div>
 

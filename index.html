@@ -374,7 +374,7 @@
         }
 
         /* ========================================
-        V. DISCOVERY GRIDS & CARDS
+        V. DISCOVERY GRIDS & CARDS (FIXED OVERLAY)
         ======================================== */
         .section-header {
             display: flex;
@@ -470,7 +470,8 @@
             border-color: rgba(255, 255, 255, 0.1);
         }
 
-        .card-visual svg {
+        /* FIX: Direct child combinator selector protects inner play button icon */
+        .card-visual > svg {
             width: 48px;
             height: 48px;
             color: var(--text-dim);
@@ -478,17 +479,17 @@
             transition: var(--transition);
         }
 
-        .game-card:hover .card-visual svg {
+        .game-card:hover .card-visual > svg {
             transform: scale(1.1) rotate(-4deg);
-            opacity: 0.9;
-            color: #fff;
-            filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
+            opacity: 0.15;
+            color: var(--accent);
+            filter: drop-shadow(0 0 20px var(--accent-glow));
         }
 
         .play-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(3, 7, 18, 0.4);
+            background: rgba(3, 7, 18, 0.55);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             display: flex;
@@ -501,22 +502,52 @@
 
         .game-card:hover .play-overlay { opacity: 1; }
         
+        /* Premium Action Glassmorphic Play Rehaul */
         .play-btn-mini {
-            width: 52px;
-            height: 52px;
-            background: #fff;
+            width: 54px;
+            height: 54px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #030712;
-            transform: translateY(15px) scale(0.9);
+            transform: translateY(15px) scale(0.85);
             transition: var(--transition);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-sizing: border-box;
+            padding-left: 2px;
         }
 
         .game-card:hover .play-btn-mini { 
             transform: translateY(0) scale(1); 
+        }
+
+        /* Forces play triangle visibility and crisp color scaling execution */
+        .play-btn-mini svg {
+            width: 20px !important;
+            height: 20px !important;
+            color: #fff !important;
+            fill: #fff !important;
+            opacity: 1 !important;
+            filter: none !important;
+            transform: none !important;
+            transition: transform 0.3s var(--transition);
+        }
+
+        /* Inner micro-hover response states */
+        .play-btn-mini:hover {
+            background: #fff !important;
+            transform: scale(1.1) !important;
+            border-color: #fff !important;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+        }
+
+        .play-btn-mini:hover svg {
+            color: #030712 !important;
+            fill: #030712 !important;
         }
 
         .card-info h3 {
@@ -540,7 +571,6 @@
             opacity: 0.7;
         }
 
-        /* "View All" button with horizontal layout shift */
         .view-all-btn {
             display: inline-flex;
             align-items: center;

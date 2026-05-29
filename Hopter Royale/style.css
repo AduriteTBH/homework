@@ -10,7 +10,7 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #2c3e50;
+    background-color: #1e272e;
     color: #fff;
 }
 
@@ -34,75 +34,99 @@ canvas {
     justify-content: center;
     align-items: center;
     z-index: 10;
-    background: rgba(44, 62, 80, 0.9);
+    background: rgba(30, 39, 46, 0.9);
 }
 
 .panel {
-    background: #34495e;
+    background: #2f3640;
     padding: 30px;
-    border-radius: 10px;
+    border-radius: 12px;
     text-align: center;
-    width: 350px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    width: 380px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    border: 2px solid #353b48;
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px #000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #fbc531, 2px 2px 0px #000;
+    color: #fbc531;
 }
 
-h2 { margin: 10px 0; color: #f1c40f; }
-hr { border: 1px solid #7f8c8d; margin: 20px 0; }
+h2 { margin: 10px 0; color: #f5f6fa; }
+hr { border: 1px solid #718093; margin: 20px 0; }
 
 button {
-    background: #7f8c8d;
+    background: #718093;
     color: white;
     border: none;
-    padding: 10px 15px;
-    font-size: 1rem;
-    border-radius: 5px;
+    padding: 12px 15px;
+    font-size: 1.1rem;
+    border-radius: 8px;
     cursor: pointer;
     transition: 0.2s;
     width: 100%;
-    margin: 5px 0;
+    margin: 8px 0;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
-button:hover { background: #95a5a6; }
-button.primary { background: #27ae60; font-weight: bold; }
-button.primary:hover { background: #2ecc71; }
+button:hover { background: #dcdde1; color: #2f3640; transform: translateY(-2px); }
+button:active { transform: translateY(0); }
+button.primary { background: #4cd137; }
+button.primary:hover { background: #44bd32; color: #fff; }
 
 input {
     width: 100%;
-    padding: 10px;
-    font-size: 1.2rem;
+    padding: 12px;
+    font-size: 1.5rem;
     text-align: center;
     text-transform: uppercase;
-    border: 2px solid #7f8c8d;
-    border-radius: 5px;
+    border: 3px solid #718093;
+    border-radius: 8px;
     margin-bottom: 10px;
-    background: #2c3e50;
-    color: white;
+    background: #1e272e;
+    color: #fbc531;
+    font-weight: bold;
+    letter-spacing: 5px;
 }
 
-ul { list-style: none; padding: 0; margin-bottom: 20px; max-height: 150px; overflow-y: auto;}
-li { padding: 5px; background: #2c3e50; margin-bottom: 5px; border-radius: 3px; }
+ul { list-style: none; padding: 0; margin-bottom: 20px; max-height: 180px; overflow-y: auto;}
+li { padding: 8px; background: #353b48; margin-bottom: 5px; border-radius: 5px; font-weight: bold; color: #dcdde1; }
 
 .hidden { display: none !important; }
-.error-text { color: #e74c3c; margin-top: 10px; font-size: 0.9rem; }
+.error-text { color: #e84118; margin-top: 10px; font-size: 1rem; font-weight: bold; }
 
 /* In-Game HUD */
 #game-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
-#hud-top-left { position: absolute; top: 20px; left: 20px; font-size: 1.5rem; font-weight: bold; text-shadow: 1px 1px 2px #000; }
-#hud-bottom { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 400px; text-align: center; }
+#hud-top-left { position: absolute; top: 20px; left: 20px; font-size: 1.8rem; font-weight: bold; text-shadow: 2px 2px 4px #000; color: #fbc531; }
 
-#hud-hp-bar-bg, #hud-xp-bar-bg { width: 100%; height: 20px; background: #333; border-radius: 10px; border: 2px solid #222; margin-bottom: 5px; overflow: hidden; }
-#hud-hp-bar { width: 100%; height: 100%; background: #e74c3c; transition: width 0.1s; }
-#hud-xp-bar { width: 0%; height: 100%; background: #3498db; transition: width 0.1s; }
-#hud-level { font-size: 1.2rem; font-weight: bold; text-shadow: 1px 1px 2px #000; color: #f1c40f; }
+#hud-bottom { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 450px; text-align: center; }
+#hud-hp-bar-bg, #hud-xp-bar-bg { width: 100%; height: 25px; background: rgba(0,0,0,0.6); border-radius: 12px; border: 3px solid #2f3640; margin-bottom: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
+#hud-hp-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #e84118, #c23616); transition: width 0.15s ease-out; }
+#hud-xp-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #00a8ff, #0097e6); transition: width 0.15s ease-out; }
+#hud-level { font-size: 1.5rem; font-weight: bold; text-shadow: 2px 2px 4px #000; color: #fbc531; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; display: inline-block; margin-top: 5px;}
+
+/* Minimap */
+#minimap-container {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 3px solid #718093;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
 
 #game-over-screen {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.8); padding: 40px; border-radius: 10px; text-align: center; pointer-events: auto;
+    background: rgba(47, 54, 64, 0.95); padding: 50px; border-radius: 15px; text-align: center; pointer-events: auto;
+    border: 4px solid #e84118; box-shadow: 0 0 50px rgba(232, 65, 24, 0.5);
 }
-#game-over-text { font-size: 3rem; color: #e74c3c; margin-bottom: 20px; }
+#game-over-text { font-size: 4rem; color: #e84118; margin-bottom: 20px; text-transform: uppercase; text-shadow: 0 0 10px #c23616; }

@@ -1,16 +1,16 @@
 // --- Game Configuration & Globals ---
-const MAP_SIZE = 2000;
+const MAP_SIZE = 2500;
 const MAX_PLAYERS = 15;
-const TICK_RATE = 30; // Host updates per second
+const TICK_RATE = 45; // Increased for smoother multiplayer
 
-const NAMES = ["SkyHawk", "RotorBoss", "ChopperChomp", "AeroViper", "PropNinja", "Pranesh The Dog", "HeliHound", "HoverGhost", "RotorRogue", "FlightFury", "SkyStriker", "WindWeaver", "AirAssassin", "WhirlyBird", "GatorCopter", "MetalLocust", "SteelWasp", "IronDragon", "StormRider", "CloudCutter"];
+const NAMES = ["SkyHawk", "RotorBoss", "ChopperChomp", "AeroViper", "PropNinja", "Pranesh", "slurpdudex", "HeliHound", "HoverGhost", "RotorRogue", "FlightFury", "SkyStriker", "WindWeaver", "AirAssassin", "WhirlyBird", "GatorCopter", "MetalLocust", "SteelWasp", "IronDragon", "StormRider"];
 
 let myName = NAMES[Math.floor(Math.random() * NAMES.length)];
 let myId = null;
 let isHost = false;
 let peer = null;
-let connections = {}; // Host stores client connections
-let hostConnection = null; // Client stores host connection
+let connections = {}; 
+let hostConnection = null; 
 
 // Inputs
 const keys = { w: false, a: false, s: false, d: false };
@@ -24,12 +24,13 @@ let gameState = {
     bullets: [],
     crates: [],
     gems: [],
-    storm: { x: MAP_SIZE / 2, y: MAP_SIZE / 2, radius: MAP_SIZE },
+    storm: { x: MAP_SIZE / 2, y: MAP_SIZE / 2, radius: MAP_SIZE * 0.8 },
     aliveCount: 0
 };
 
-// Lerp targets for client rendering
+// Client-side only visuals
 let renderState = { players: {} };
+let particles = [];
 
 // DOM Elements
 const menuScreen = document.getElementById('menu-screen');
@@ -40,6 +41,8 @@ const joinInput = document.getElementById('join-code-input');
 const playerListUI = document.getElementById('player-list');
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const minimapCanvas = document.getElementById('minimapCanvas');
+const mmCtx = minimapCanvas.getContext('2d');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -61,7 +64,6 @@ document.getElementById('btn-join-game').addEventListener('click', () => {
 });
 
 // --- PeerJS Networking ---
-
 function generateId() {
     let result = '';
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -72,16 +74,15 @@ function generateId() {
 function initHost() {
     isHost = true;
     myId = generateId();
-    document.getElementById('menu-status').innerText = "Starting Host...";
+    document.getElementById('menu-status').innerText = "Establishing secure link...";
     
     peer = new Peer(myId);
     peer.on('open', (id) => {
         menuScreen.classList.add('hidden');
         lobbyScreen.classList.remove('hidden');
-        document.getElementById('room-code-display').innerText = `Code: ${id}`;
+        document.getElementById('room-code-display').innerText = `${id}`;
         document.getElementById('btn-start-game').classList.remove('hidden');
         
-        // Add host to player list
         gameState.players[myId] = createPlayer(myId, myName, false);
         updateLobbyUI();
     });
@@ -102,13 +103,13 @@ function initHost() {
         conn.on('close', () => handleDisconnect(conn.peer));
     });
 
-    peer.on('error', (err) => { document.getElementById('menu-status').innerText = err.message; });
+    peer.on('error', (err) => { document.getElementById('menu-status').innerText = "Connection error. Try again."; });
 }
 
 function initClient(hostCode) {
     isHost = false;
-    document.getElementById('menu-status').innerText = "Connecting...";
-    peer = new Peer(); // Client gets random ID
+    document.getElementById('menu-status').innerText = "Connecting to Host...";
+    peer = new Peer(); 
 
     peer.on('open', (id) => {
         myId = id;
@@ -117,7 +118,7 @@ function initClient(hostCode) {
         hostConnection.on('open', () => {
             menuScreen.classList.add('hidden');
             lobbyScreen.classList.remove('hidden');
-            document.getElementById('room-code-display').innerText = `Code: ${hostCode}`;
+            document.getElementById('room-code-display').innerText = `${hostCode}`;
             hostConnection.send({ type: 'JOIN', name: myName });
         });
 
@@ -128,17 +129,19 @@ function initClient(hostCode) {
             } else if (data.type === 'START_GAME') {
                 lobbyScreen.classList.add('hidden');
                 gameUI.classList.remove('hidden');
-                gameState = data.state; // Initial sync
+                gameState = data.state;
                 requestAnimationFrame(clientRenderLoop);
             } else if (data.type === 'STATE_UPDATE') {
                 updateRenderState(data.state);
+            } else if (data.type === 'EVENT_EXPLOSION') {
+                spawnParticles(data.x, data.y, data.color);
             }
         });
 
         hostConnection.on('close', () => { alert("Host disconnected."); location.reload(); });
     });
 
-    peer.on('error', (err) => { document.getElementById('menu-status').innerText = "Failed to connect to Host."; });
+    peer.on('error', (err) => { document.getElementById('menu-status').innerText = "Failed to connect to Host. Check code."; });
 }
 
 function handleDisconnect(id) {
@@ -165,32 +168,34 @@ function broadcastLobby() {
     Object.values(connections).forEach(conn => conn.send({ type: 'LOBBY_UPDATE', players: gameState.players }));
 }
 
+function broadcastEvent(eventData) {
+    Object.values(connections).forEach(conn => conn.send(eventData));
+    // Host also needs to see local events
+    if (eventData.type === 'EVENT_EXPLOSION') spawnParticles(eventData.x, eventData.y, eventData.color);
+}
+
 document.getElementById('btn-start-game').addEventListener('click', () => {
     if (!isHost) return;
     document.getElementById('btn-start-game').classList.add('hidden');
     
-    // Bot Backfilling
     let currentPlayers = Object.keys(gameState.players).length;
     for (let i = currentPlayers; i < MAX_PLAYERS; i++) {
         let botId = 'BOT_' + i;
-        gameState.players[botId] = createPlayer(botId, `Bot_${NAMES[Math.floor(Math.random() * NAMES.length)]}`, true);
+        gameState.players[botId] = createPlayer(botId, `Bot ${NAMES[Math.floor(Math.random() * NAMES.length)]}`, true);
     }
     
-    // Spawn initial crates
-    for (let i = 0; i < 40; i++) spawnCrate();
+    for (let i = 0; i < 60; i++) spawnCrate();
 
     gameState.started = true;
     gameState.aliveCount = Object.keys(gameState.players).length;
     
-    // Broadcast start
     Object.values(connections).forEach(conn => conn.send({ type: 'START_GAME', state: gameState }));
     
     lobbyScreen.classList.add('hidden');
     gameUI.classList.remove('hidden');
     
-    // Start Host Loops
     setInterval(hostTick, 1000 / TICK_RATE);
-    requestAnimationFrame(clientRenderLoop); // Host also renders locally
+    requestAnimationFrame(clientRenderLoop); 
 });
 
 // --- Factory Functions ---
@@ -200,7 +205,7 @@ function createPlayer(id, name, isBot) {
         x: Math.random() * (MAP_SIZE - 200) + 100,
         y: Math.random() * (MAP_SIZE - 200) + 100,
         vx: 0, vy: 0, angle: 0,
-        color: isBot ? '#e67e22' : '#2ecc71',
+        color: isBot ? '#e1b12c' : '#4cd137',
         hp: 100, maxHp: 100, level: 1, xp: 0,
         fireCooldown: 0,
         input: { w: false, a: false, s: false, d: false, angle: 0, click: false }
@@ -212,22 +217,37 @@ function spawnCrate() {
         id: Math.random(),
         x: Math.random() * (MAP_SIZE - 100) + 50,
         y: Math.random() * (MAP_SIZE - 100) + 50,
-        hp: 30
+        hp: 40
     });
+}
+
+// --- Visual Effects (Client-side) ---
+function spawnParticles(x, y, color) {
+    for (let i = 0; i < 15; i++) {
+        particles.push({
+            x: x, y: y,
+            vx: (Math.random() - 0.5) * 10,
+            vy: (Math.random() - 0.5) * 10,
+            life: 1.0, color: color,
+            size: Math.random() * 5 + 3
+        });
+    }
 }
 
 // --- Input Handling ---
 window.addEventListener('keydown', (e) => {
-    if (e.key === 'w' || e.key === 'ArrowUp') keys.w = true;
-    if (e.key === 'a' || e.key === 'ArrowLeft') keys.a = true;
-    if (e.key === 's' || e.key === 'ArrowDown') keys.s = true;
-    if (e.key === 'd' || e.key === 'ArrowRight') keys.d = true;
+    let key = e.key.toLowerCase();
+    if (key === 'w' || e.key === 'ArrowUp') keys.w = true;
+    if (key === 'a' || e.key === 'ArrowLeft') keys.a = true;
+    if (key === 's' || e.key === 'ArrowDown') keys.s = true;
+    if (key === 'd' || e.key === 'ArrowRight') keys.d = true;
 });
 window.addEventListener('keyup', (e) => {
-    if (e.key === 'w' || e.key === 'ArrowUp') keys.w = false;
-    if (e.key === 'a' || e.key === 'ArrowLeft') keys.a = false;
-    if (e.key === 's' || e.key === 'ArrowDown') keys.s = false;
-    if (e.key === 'd' || e.key === 'ArrowRight') keys.d = false;
+    let key = e.key.toLowerCase();
+    if (key === 'w' || e.key === 'ArrowUp') keys.w = false;
+    if (key === 'a' || e.key === 'ArrowLeft') keys.a = false;
+    if (key === 's' || e.key === 'ArrowDown') keys.s = false;
+    if (key === 'd' || e.key === 'ArrowRight') keys.d = false;
 });
 window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
 window.addEventListener('mousedown', () => mouse.down = true);
@@ -237,9 +257,7 @@ window.addEventListener('mouseup', () => mouse.down = false);
 function hostTick() {
     if (!gameState.started) return;
 
-    // Apply Host's own local inputs to state
     if (gameState.players[myId] && gameState.players[myId].alive) {
-        // Calculate host angle based on screen center (camera focuses on player)
         let cx = canvas.width / 2;
         let cy = canvas.height / 2;
         let angle = Math.atan2(mouse.y - cy, mouse.x - cx);
@@ -252,22 +270,20 @@ function hostTick() {
         if (!p.alive) return;
         gameState.aliveCount++;
 
-        // Bot AI
         if (p.isBot) runBotAI(p);
 
-        // Movement Physics
-        let speed = 2;
+        // Movement Physics & Friction
+        let speed = 2.5 + (p.level * 0.1); 
         if (p.input.w) p.vy -= speed;
         if (p.input.s) p.vy += speed;
         if (p.input.a) p.vx -= speed;
         if (p.input.d) p.vx += speed;
 
-        p.vx *= 0.85; // Friction
-        p.vy *= 0.85;
+        p.vx *= 0.82; 
+        p.vy *= 0.82;
         p.x += p.vx;
         p.y += p.vy;
 
-        // Map Bounds
         if (p.x < 20) { p.x = 20; p.vx = 0; }
         if (p.y < 20) { p.y = 20; p.vy = 0; }
         if (p.x > MAP_SIZE - 20) { p.x = MAP_SIZE - 20; p.vx = 0; }
@@ -275,20 +291,26 @@ function hostTick() {
 
         p.angle = p.input.angle;
 
-        // Shooting
+        // Shooting Mechanics
         if (p.fireCooldown > 0) p.fireCooldown--;
         if (p.input.click && p.fireCooldown <= 0) {
-            let fireRate = Math.max(5, 15 - p.level); // Shoots faster as level increases
+            let fireRate = Math.max(4, 18 - (p.level * 1.2)); 
             p.fireCooldown = fireRate;
-            let bSize = 4 + (p.level * 0.5); // Bullets get slightly larger
+            let bSize = 4 + (p.level * 0.7); 
+            let bSpeed = 16 + (p.level * 0.5);
+            
+            // Recoil
+            p.vx -= Math.cos(p.angle) * 3;
+            p.vy -= Math.sin(p.angle) * 3;
+
             gameState.bullets.push({
-                x: p.x + Math.cos(p.angle) * 20,
-                y: p.y + Math.sin(p.angle) * 20,
-                vx: Math.cos(p.angle) * 15,
-                vy: Math.sin(p.angle) * 15,
+                x: p.x + Math.cos(p.angle) * 30,
+                y: p.y + Math.sin(p.angle) * 30,
+                vx: Math.cos(p.angle) * bSpeed,
+                vy: Math.sin(p.angle) * bSpeed,
                 ownerId: p.id,
                 size: bSize,
-                life: 60 // frames
+                life: 70
             });
         }
 
@@ -296,14 +318,14 @@ function hostTick() {
         for (let i = gameState.gems.length - 1; i >= 0; i--) {
             let g = gameState.gems[i];
             let dx = p.x - g.x; let dy = p.y - g.y;
-            if (Math.sqrt(dx*dx + dy*dy) < 25) { // 20 player radius + 5 gem radius
+            if (Math.sqrt(dx*dx + dy*dy) < 30) { // Pickup radius
                 gameState.gems.splice(i, 1);
-                p.xp += 10;
-                let xpNeeded = p.level * 20;
+                p.xp += 15;
+                let xpNeeded = p.level * 25;
                 if (p.xp >= xpNeeded) {
                     p.level++;
                     p.xp = 0;
-                    p.maxHp += 10;
+                    p.maxHp += 15;
                     p.hp = p.maxHp;
                 }
             }
@@ -312,10 +334,13 @@ function hostTick() {
         // Storm Damage
         let distToStormCenter = Math.sqrt(Math.pow(p.x - gameState.storm.x, 2) + Math.pow(p.y - gameState.storm.y, 2));
         if (distToStormCenter > gameState.storm.radius) {
-            p.hp -= 0.5; // Tick damage
+            p.hp -= 0.6; 
         }
 
-        if (p.hp <= 0) p.alive = false;
+        if (p.hp <= 0) {
+            p.alive = false;
+            broadcastEvent({ type: 'EVENT_EXPLOSION', x: p.x, y: p.y, color: '#e84118' });
+        }
     });
 
     // Bullets update & collision
@@ -328,25 +353,25 @@ function hostTick() {
 
         if (b.life <= 0) { gameState.bullets.splice(i, 1); continue; }
 
-        // Bullet vs Players
+        // Players collision
         Object.values(gameState.players).forEach(p => {
             if (destroyed || !p.alive || p.id === b.ownerId) return;
             let dx = p.x - b.x; let dy = p.y - b.y;
-            if (Math.sqrt(dx*dx + dy*dy) < 20 + b.size) { // Hit
-                p.hp -= 15;
+            if (Math.sqrt(dx*dx + dy*dy) < 22 + b.size) { 
+                p.hp -= 15 + (gameState.players[b.ownerId] ? gameState.players[b.ownerId].level * 1.5 : 0);
                 destroyed = true;
             }
         });
 
-        // Bullet vs Crates
+        // Crates collision
         if (!destroyed) {
             for (let c = gameState.crates.length - 1; c >= 0; c--) {
                 let crate = gameState.crates[c];
-                // Crate AABB collision (size 30x30 centered)
-                if (b.x > crate.x - 15 && b.x < crate.x + 15 && b.y > crate.y - 15 && b.y < crate.y + 15) {
-                    crate.hp -= 15;
+                if (b.x > crate.x - 18 && b.x < crate.x + 18 && b.y > crate.y - 18 && b.y < crate.y + 18) {
+                    crate.hp -= 15 + (gameState.players[b.ownerId] ? gameState.players[b.ownerId].level * 1.5 : 0);
                     destroyed = true;
                     if (crate.hp <= 0) {
+                        broadcastEvent({ type: 'EVENT_EXPLOSION', x: crate.x, y: crate.y, color: '#9c88ff' });
                         gameState.crates.splice(c, 1);
                         gameState.gems.push({ x: crate.x, y: crate.y });
                     }
@@ -358,27 +383,21 @@ function hostTick() {
     }
 
     // Shrink Storm
-    if (gameState.storm.radius > 50) gameState.storm.radius -= 0.2;
+    if (gameState.storm.radius > 50) gameState.storm.radius -= 0.15;
 
-    // Send state to clients
     Object.values(connections).forEach(conn => conn.send({ type: 'STATE_UPDATE', state: gameState }));
-    
-    // Update local render state for Host
     updateRenderState(gameState);
 }
 
 function runBotAI(bot) {
-    // Very simple AI: Find nearest crate or player, move towards it, shoot if close.
     let target = null;
     let minDist = 9999;
 
-    // Find nearest crate
     gameState.crates.forEach(c => {
         let dist = Math.sqrt(Math.pow(bot.x - c.x, 2) + Math.pow(bot.y - c.y, 2));
         if (dist < minDist) { minDist = dist; target = c; }
     });
 
-    // Find nearest player
     Object.values(gameState.players).forEach(p => {
         if (p.id === bot.id || !p.alive) return;
         let dist = Math.sqrt(Math.pow(bot.x - p.x, 2) + Math.pow(bot.y - p.y, 2));
@@ -387,9 +406,8 @@ function runBotAI(bot) {
 
     bot.input.w = false; bot.input.a = false; bot.input.s = false; bot.input.d = false; bot.input.click = false;
 
-    // Stay in storm logic overrides targets
     let distToStorm = Math.sqrt(Math.pow(bot.x - gameState.storm.x, 2) + Math.pow(bot.y - gameState.storm.y, 2));
-    if (distToStorm > gameState.storm.radius - 100) {
+    if (distToStorm > gameState.storm.radius - 200) {
         target = { x: gameState.storm.x, y: gameState.storm.y };
     }
 
@@ -397,14 +415,17 @@ function runBotAI(bot) {
         let angleToTarget = Math.atan2(target.y - bot.y, target.x - bot.x);
         bot.input.angle = angleToTarget;
         
-        // Move towards if far
-        if (minDist > 100 || target.x === gameState.storm.x) {
-            if (Math.abs(Math.cos(angleToTarget)) > 0.3) bot.input[Math.cos(angleToTarget) > 0 ? 'd' : 'a'] = true;
-            if (Math.abs(Math.sin(angleToTarget)) > 0.3) bot.input[Math.sin(angleToTarget) > 0 ? 's' : 'w'] = true;
+        // Strafe behavior if close to a player target, otherwise fly straight
+        if (minDist > 250 || target.x === gameState.storm.x) {
+            if (Math.abs(Math.cos(angleToTarget)) > 0.2) bot.input[Math.cos(angleToTarget) > 0 ? 'd' : 'a'] = true;
+            if (Math.abs(Math.sin(angleToTarget)) > 0.2) bot.input[Math.sin(angleToTarget) > 0 ? 's' : 'w'] = true;
+        } else {
+            // Strafe
+            bot.input[Math.cos(angleToTarget + Math.PI/2) > 0 ? 'd' : 'a'] = true;
+            bot.input[Math.sin(angleToTarget + Math.PI/2) > 0 ? 's' : 'w'] = true;
         }
 
-        // Shoot if close to a player or crate
-        if (minDist < 300 && target.x !== gameState.storm.x) {
+        if (minDist < 400 && target.x !== gameState.storm.x) {
             bot.input.click = true;
         }
     }
@@ -418,9 +439,8 @@ function updateRenderState(newState) {
     gameState.storm = newState.storm;
     gameState.aliveCount = newState.aliveCount;
     
-    // Set lerp targets for players
     Object.values(newState.players).forEach(p => {
-        if (!renderState.players[p.id]) renderState.players[p.id] = { ...p }; // Initial sync
+        if (!renderState.players[p.id]) renderState.players[p.id] = { ...p };
         renderState.players[p.id].targetX = p.x;
         renderState.players[p.id].targetY = p.y;
         renderState.players[p.id].angle = p.angle;
@@ -438,7 +458,6 @@ function lerp(start, end, amt) { return (1 - amt) * start + amt * end; }
 function clientRenderLoop() {
     if (!gameState.started) return;
 
-    // Send Inputs to Host if Client
     if (!isHost && hostConnection && hostConnection.open) {
         let cx = canvas.width / 2;
         let cy = canvas.height / 2;
@@ -446,113 +465,174 @@ function clientRenderLoop() {
         hostConnection.send({ type: 'INPUT', input: { w: keys.w, a: keys.a, s: keys.s, d: keys.d, angle: myAngle, click: mouse.down } });
     }
 
-    // Clear Canvas
-    ctx.fillStyle = '#222f3e';
+    // Clear main canvas
+    ctx.fillStyle = '#2f3640';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     let myPlayer = renderState.players[myId];
-    if (!myPlayer) { requestAnimationFrame(clientRenderLoop); return; } // Wait for state
+    if (!myPlayer) { requestAnimationFrame(clientRenderLoop); return; }
 
-    // Camera Offset
     let camX = myPlayer.x - canvas.width / 2;
     let camY = myPlayer.y - canvas.height / 2;
 
     ctx.save();
     ctx.translate(-camX, -camY);
 
-    // Draw Grid (Map Background)
-    ctx.strokeStyle = '#34495e';
-    ctx.lineWidth = 1;
+    // Map Grid
+    ctx.strokeStyle = '#353b48';
+    ctx.lineWidth = 2;
     for(let i = 0; i <= MAP_SIZE; i += 100) {
         ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, MAP_SIZE); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(MAP_SIZE, i); ctx.stroke();
     }
-    // Map Border
-    ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 5;
+    ctx.strokeStyle = '#e84118'; ctx.lineWidth = 10;
     ctx.strokeRect(0, 0, MAP_SIZE, MAP_SIZE);
 
-    // Draw Crates
-    ctx.fillStyle = '#8e44ad';
+    // Crates
+    ctx.fillStyle = '#9c88ff';
+    ctx.strokeStyle = '#8c7ae6';
+    ctx.lineWidth = 3;
     gameState.crates.forEach(c => {
-        ctx.fillRect(c.x - 15, c.y - 15, 30, 30);
+        ctx.fillRect(c.x - 18, c.y - 18, 36, 36);
+        ctx.strokeRect(c.x - 18, c.y - 18, 36, 36);
     });
 
-    // Draw Gems
-    ctx.fillStyle = '#3498db';
+    // Gems
     gameState.gems.forEach(g => {
+        ctx.fillStyle = '#00a8ff';
         ctx.beginPath();
-        ctx.arc(g.x, g.y, 6, 0, Math.PI * 2);
+        ctx.arc(g.x, g.y, 8, 0, Math.PI * 2);
         ctx.fill();
+        ctx.strokeStyle = '#0097e6';
+        ctx.lineWidth = 2;
+        ctx.stroke();
     });
 
-    // Draw Bullets
-    ctx.fillStyle = '#f1c40f';
+    // Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        p.life -= 0.03;
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+        ctx.globalAlpha = 1.0;
+    }
+
+    // Bullets
     gameState.bullets.forEach(b => {
+        ctx.fillStyle = '#fbc531';
         ctx.beginPath();
         ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
         ctx.fill();
+        ctx.shadowBlur = 10; ctx.shadowColor = '#fbc531'; ctx.fill(); ctx.shadowBlur = 0; // Glow
     });
 
-    // Draw Players (Lerped)
+    // Players
     Object.values(renderState.players).forEach(p => {
         if (!p.alive) return;
 
-        // Lerp position for smooth movement
-        if(p.targetX !== undefined) p.x = lerp(p.x, p.targetX, 0.3);
-        if(p.targetY !== undefined) p.y = lerp(p.y, p.targetY, 0.3);
+        if(p.targetX !== undefined) p.x = lerp(p.x, p.targetX, 0.4);
+        if(p.targetY !== undefined) p.y = lerp(p.y, p.targetY, 0.4);
 
-        // Helicopter Body
+        let bodyRadius = 22 + (p.level * 0.5); // Grow slightly with level
+
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+
+        // Tail boom
+        ctx.fillStyle = '#2f3640';
+        ctx.fillRect(-bodyRadius - 15, -4, 20, 8);
+        // Tail rotor
+        ctx.fillStyle = '#718093';
+        ctx.fillRect(-bodyRadius - 15, -10, 4, 20);
+
+        // Body
         ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 20, 0, Math.PI * 2);
+        ctx.arc(0, 0, bodyRadius, 0, Math.PI * 2);
         ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = '#2f3640'; ctx.stroke();
 
-        // Direction Indicator / Gun
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x + Math.cos(p.angle) * 30, p.y + Math.sin(p.angle) * 30);
-        ctx.stroke();
+        // Gun barrel
+        ctx.fillStyle = '#718093';
+        ctx.fillRect(bodyRadius - 5, -5, 18 + (p.level * 0.5), 10);
+        ctx.strokeRect(bodyRadius - 5, -5, 18 + (p.level * 0.5), 10);
 
-        // Rotor (Animated slightly based on time)
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(Date.now() / 50); // Spinning rotor effect
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.fillRect(-25, -2, 50, 4);
-        ctx.fillRect(-2, -25, 4, 50);
-        ctx.restore();
+        // Main Rotor
+        ctx.rotate(-p.angle); // reset rotation for rotor
+        ctx.rotate(Date.now() / (30 - Math.min(p.level, 20))); // Spin faster with level
+        ctx.fillStyle = 'rgba(220, 221, 225, 0.5)';
+        let rotorLen = bodyRadius * 2.5;
+        ctx.fillRect(-rotorLen/2, -3, rotorLen, 6);
+        ctx.fillRect(-3, -rotorLen/2, 6, rotorLen);
+        
+        ctx.rotate(-Date.now() / (30 - Math.min(p.level, 20))); // reset
+        ctx.translate(-p.x, -p.y);
 
-        // Nameplate
+        // Name and HP
         ctx.fillStyle = '#fff';
-        ctx.font = '12px Arial';
+        ctx.font = '14px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(p.name, p.x, p.y - 30);
+        ctx.fillText(`${p.name} (Lv.${p.level})`, p.x, p.y - bodyRadius - 15);
+        
+        // Small HP bar
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(p.x - 20, p.y + bodyRadius + 10, 40, 6);
+        ctx.fillStyle = '#e84118';
+        ctx.fillRect(p.x - 20, p.y + bodyRadius + 10, 40 * (p.hp / p.maxHp), 6);
     });
 
-    // Draw Storm
-    ctx.fillStyle = 'rgba(231, 76, 60, 0.2)'; // Inner safe zone tint
-    ctx.strokeStyle = '#e74c3c';
-    ctx.lineWidth = 4;
+    // Storm
+    ctx.fillStyle = 'rgba(232, 65, 24, 0.15)'; 
+    ctx.strokeStyle = '#c23616';
+    ctx.lineWidth = 6;
     ctx.beginPath();
     ctx.arc(gameState.storm.x, gameState.storm.y, gameState.storm.radius, 0, Math.PI * 2);
     ctx.stroke();
-    // Render the "danger zone" invertedly by drawing a massive rect with a cutout
+    
+    // Inverted storm rendering (damage zone)
     ctx.beginPath();
-    ctx.rect(-1000, -1000, MAP_SIZE + 2000, MAP_SIZE + 2000); // Massive outer box
-    ctx.arc(gameState.storm.x, gameState.storm.y, gameState.storm.radius, 0, Math.PI * 2, true); // Cutout
+    ctx.rect(-2000, -2000, MAP_SIZE + 4000, MAP_SIZE + 4000);
+    ctx.arc(gameState.storm.x, gameState.storm.y, gameState.storm.radius, 0, Math.PI * 2, true);
     ctx.fill();
 
     ctx.restore();
 
+    // --- Render Minimap ---
+    mmCtx.clearRect(0, 0, minimapCanvas.width, minimapCanvas.height);
+    let scale = minimapCanvas.width / MAP_SIZE;
+    
+    // Storm on minimap
+    mmCtx.fillStyle = 'rgba(232, 65, 24, 0.3)';
+    mmCtx.beginPath();
+    mmCtx.arc(gameState.storm.x * scale, gameState.storm.y * scale, gameState.storm.radius * scale, 0, Math.PI * 2);
+    mmCtx.fill();
+    mmCtx.strokeStyle = '#c23616'; mmCtx.lineWidth = 1; mmCtx.stroke();
+
+    // Inverted storm tint on minimap
+    mmCtx.fillStyle = 'rgba(232, 65, 24, 0.4)';
+    mmCtx.beginPath();
+    mmCtx.rect(0, 0, minimapCanvas.width, minimapCanvas.height);
+    mmCtx.arc(gameState.storm.x * scale, gameState.storm.y * scale, gameState.storm.radius * scale, 0, Math.PI * 2, true);
+    mmCtx.fill();
+
+    // Me on minimap
+    if (myPlayer.alive) {
+        mmCtx.fillStyle = '#4cd137';
+        mmCtx.beginPath();
+        mmCtx.arc(myPlayer.x * scale, myPlayer.y * scale, 3, 0, Math.PI * 2);
+        mmCtx.fill();
+    }
+
     // --- Update UI ---
-    document.getElementById('hud-alive').innerText = `Players Alive: ${gameState.aliveCount}`;
+    document.getElementById('hud-alive').innerText = `Pilots Alive: ${gameState.aliveCount}`;
     
     if (myPlayer.alive) {
         document.getElementById('hud-hp-bar').style.width = `${(myPlayer.hp / myPlayer.maxHp) * 100}%`;
-        document.getElementById('hud-xp-bar').style.width = `${(myPlayer.xp / (myPlayer.level * 20)) * 100}%`;
-        document.getElementById('hud-level').innerText = `Level: ${myPlayer.level}`;
+        document.getElementById('hud-xp-bar').style.width = `${(myPlayer.xp / (myPlayer.level * 25)) * 100}%`;
+        document.getElementById('hud-level').innerText = `Lv: ${myPlayer.level}`;
     } else {
         document.getElementById('hud-hp-bar').style.width = `0%`;
         document.getElementById('game-over-screen').classList.remove('hidden');

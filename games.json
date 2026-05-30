@@ -14,7 +14,7 @@
   { "name": "Among US", "file": "amongus.html", "icon": "🚨" },
   { "name": "Grand Theft Auto 1", "file": "gta1.html", "icon": "🔴" },
   { "name": "Boxing Random", "file": "boxingrandom.html", "icon": "🥊" },
-  { "name": "1v1LOL Reloaded", "file": "1v1lolreloaded.html", "icon": "💥" },
+  { "name": "1v1LOL Reloaded", "file": "source-1v1lolreloaded_com", "icon": "💥" },
   { "name": "Super Mario 64", "file": "sm64", "icon": "🍄" },
   { "name": "Donkey Kong Country", "file": "dkcountry.html", "icon": "🦍" },
   { "name": "Donkey Kong Country 2", "file": "dkcountry2.html", "icon": "🦍" },

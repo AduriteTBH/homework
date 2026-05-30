@@ -1031,35 +1031,59 @@
 
         // ─── Game Launcher ───────────────────────────────────────────────────
 
-        /**
-         * Returns true if this entry is a folder (no .html / .htm extension).
-         * Convention: single-file games use "game.html"; folder-based games
-         * use just the folder name, e.g. "mygame" → loads "mygame/index.html".
-         */
         function isFolder(file) {
             return !/\.html?$/i.test(file);
         }
 
-        /**
-         * Resolves the actual URL to load in the iframe.
-         * - Single HTML file:  BASE_URL + "game.html"
-         * - Folder entry:      BASE_URL + "myfolder/index.html"
-         */
-        function resolveGameUrl(file) {
-            if (isFolder(file)) {
-                // Strip any accidental trailing slash, then add /index.html
-                return BASE_URL + file.replace(/\/$/, '') + '/index.html';
+        // Auto-detects the exact HTML file inside your uploaded repo folders
+        async function resolveGameUrl(file) {
+            if (!isFolder(file)) {
+                return BASE_URL + file;
             }
-            return BASE_URL + file;
+
+            const cleanFile = file.replace(/\/$/, '');
+            const folderName = cleanFile.split('/').pop();
+
+            // The locations the launcher will rapidly check in your repo
+            const pathsToScan = [
+                `${BASE_URL}${cleanFile}/index.html`,                 // 1. Normal expected spot
+                `${BASE_URL}${cleanFile}/${folderName}/index.html`,   // 2. The double-folder setup (like your 1v1.lol screenshot)
+                `${BASE_URL}${cleanFile}/index.htm`,                  // 3. Alternate extension
+                `${BASE_URL}${cleanFile}/${folderName}/index.htm`     // 4. Alternate extension in double-folder
+            ];
+
+            for (const path of pathsToScan) {
+                try {
+                    // Ping the repo to check if the file is sitting right there
+                    const response = await fetch(path, { method: 'HEAD', cache: 'no-store' });
+                    if (response.ok) {
+                        return path; // Found the hidden file!
+                    }
+                } catch (err) {
+                    // Ignore and keep scanning
+                }
+            }
+
+            // Fallback just in case
+            return `${BASE_URL}${cleanFile}/index.html`;
         }
 
-        function launchModule(file, name) {
+        async function launchModule(file, name) {
             const overlay = document.getElementById('launcher-overlay');
             const frame = document.getElementById('game-frame');
+            const hudName = document.getElementById('hud-name');
 
-            document.getElementById('hud-name').textContent = name.toUpperCase();
-            frame.src = resolveGameUrl(file);
+            // Show "Scanning" UI while it finds the file
+            hudName.textContent = "SCANNING FOLDERS...";
             overlay.style.display = 'block';
+            
+            // Wait for it to detect the exact path
+            const finalUrl = await resolveGameUrl(file);
+            
+            // Load it up
+            hudName.textContent = name.toUpperCase();
+            frame.src = finalUrl;
+            
             setTimeout(() => frame.focus(), 100);
         }
 

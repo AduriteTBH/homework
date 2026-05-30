@@ -1,0 +1,1 @@
+!function(){try{if(localStorage.getItem("1v1_debug_console"))return;}catch(e){}var n=function(){};console.log=n;console.info=n;console.debug=n;console.warn=n;console.trace=n;console.table=n;console.group=n;console.groupEnd=n;console.time=n;console.timeEnd=n;}();

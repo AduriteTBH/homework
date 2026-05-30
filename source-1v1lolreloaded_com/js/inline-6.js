@@ -1,1 +1,0 @@
-cpmstarAPI({kind:'go',module:'POOL 83023', config: { conditions: { target: { find: '#cpmstar-83023', kind: 'replace' } }}});

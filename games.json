@@ -164,5 +164,6 @@
   { "name": "War The Knights", "file": "wartheknights.html", "icon": "🗡️" },
   { "name": "Wheelie Bike", "file": "wheeliebike.html", "icon": "🚲" },
   { "name": "Wordle Unlimited", "file": "wordleunlimited.html", "icon": "🔤" },
-  { "name": "Zombie Rush", "file": "zombierush.html", "icon": "🧟" }
+  { "name": "Zombie Rush", "file": "zombierush.html", "icon": "🧟" },
+  { "name": "Steal A Brainrot", "file": "steal-a-brainrot", "icon": "🏃" }
 ]

@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <title>1v1.LOL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="gameContainer"></div>
+    <div id="loader">
+      <div class="spinner"></div>
+      <div class="progress">
+        <div class="full"></div>
+      </div>
+    </div>
+
+    <script src="UnityLoader.js"></script>
+    <script>
+      var gameInstance = UnityLoader.instantiate("gameContainer", "WebGL.json", { onProgress: UnityProgress });
+      window.unityInstance = gameInstance;
+
+      function UnityProgress(gameInstance, progress) {
+        if (!gameInstance.Module) return;
+        const loader = document.querySelector("#loader");
+        if (!gameInstance.progress) {
+          const progressEl = document.querySelector("#loader .progress");
+          progressEl.style.display = "block";
+          gameInstance.progress = progressEl.querySelector(".full");
+          loader.querySelector(".spinner").style.display = "none";
+        }
+        gameInstance.progress.style.transform = "scaleX(" + progress + ")";
+        if (progress === 1 && !gameInstance.removeTimeout) {
+          loader.style.display = "none";
+          sendConfigWhenReady();
+        }
+      }
+
+      function sendConfigWhenReady() {
+        if (typeof conf === "undefined") {
+          initLocalConfig();
+        }
+        if (window.unityInstance && window.unityInstance.SendMessage) {
+          window.unityInstance.SendMessage(
+            "MainMenuManagers",
+            "ActivateRemoteConfig",
+            JSON.stringify(conf)
+          );
+        }
+      }
+
+      function initLocalConfig() {
+        conf = {};
+        var defaults = {
+          SettingsV5: '{"id":"default","practice_modes":["Practice","AimTrainer","Zombies","PipeRun"],"casual_modes":[["1v1","BoxFight_Teams_2v2"]],"custom_modes":[["1v1_Custom","BoxFight_Custom"]]}',
+        };
+        for (var key in defaults) {
+          conf[key] = defaults[key];
+        }
+      }
+
+      initLocalConfig();
+
+      document.addEventListener("pointerlockchange", lockChangeAlert, false);
+      document.addEventListener("mozpointerlockchange", lockChangeAlert, false);
+      var lockedOccured = false;
+
+      function lockChangeAlert() {
+        if (!lockedOccured && document.pointerLockElement) lockedOccured = true;
+        if (!document.pointerLockElement && lockedOccured) {
+          lockedOccured = false;
+          if (gameInstance && gameInstance.SendMessage) {
+            gameInstance.SendMessage("Pause Menu", "OnCursorUnlocked");
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

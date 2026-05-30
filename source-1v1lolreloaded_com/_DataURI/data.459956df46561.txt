@@ -1,0 +1,1 @@
+chrome-extension://hmaahgcbijnfogbgmnnjmlbfjoncneff/js/app.js

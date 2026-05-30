@@ -1,0 +1,1 @@
+chrome-extension://jifbgnmbgbdiedhdecealmlgmekpagde/webpage_content_reporter.js

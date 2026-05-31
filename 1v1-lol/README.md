@@ -19,10 +19,16 @@ Optional: add an empty `.nojekyll` file at the repo root if Jekyll processing ca
 
 ## Offline features
 
-- **No Google login required** — the game receives a local session that looks like a completed Google sign-in (JWT-shaped token + saved profile).
-- **Locker and shop** unlock automatically after load; tapping sign-in also completes instantly.
-- **99,999 LOLCoins** on first visit (saved in `localStorage` under `1v1_game_save_v2`, spends persist).
-- **Lightweight** — no real Firebase SDK (~2MB); only small JS shims, no polling loops.
+- **No Google login required** — local session + mocked `justbuild.xyz` player API.
+- **99,999 coins** as `HardCurrency` / `SoftCurrency` (what this v3.800 build uses).
+- **Locker / shop / equip** — saved in `localStorage` (`1v1_game_save_v3`).
+- **Lightweight** — no real Firebase SDK, no listener spam loops.
+
+## Play button / online modes
+
+The console error `GetRegions failed … ApplicationArchived` means the **original Photon multiplayer AppId is shut down**. That is not caused by our login shim. **Online PLAY may not work** on this build without your own Photon app.
+
+**Practice** and other offline modes may still work from the mode menu if the game offers them.
 
 ## Files
 

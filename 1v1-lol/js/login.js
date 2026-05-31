@@ -3,7 +3,6 @@ var tempProviderName;
 
 function deliverLoginResult(successCallback, errorCallback) {
   var resultObj = window.buildLoginResult();
-  window.bootstrapLocalSession();
 
   if (typeof successCallback === "function") {
     successCallback(resultObj);
@@ -11,7 +10,7 @@ function deliverLoginResult(successCallback, errorCallback) {
   }
 
   if (typeof errorCallback === "function") {
-    return;
+    errorCallback("User is null");
   }
 }
 
@@ -41,27 +40,23 @@ function firebaseLogin(providerName, successCallback, errorCallback) {
     return;
   }
 
-  firebase.auth().signInWithPopup({}).then(function () {
-    deliverLoginResult(successCallback, errorCallback);
-  }).catch(function (error) {
-    deliverLoginResult(successCallback, errorCallback);
-    if (typeof errorCallback === "function" && typeof successCallback !== "function") {
-      errorCallback(error && error.message ? error.message : "login failed");
-    }
-  });
+  firebase
+    .auth()
+    .signInWithPopup({})
+    .then(function () {
+      deliverLoginResult(successCallback, errorCallback);
+    })
+    .catch(function () {
+      deliverLoginResult(successCallback, errorCallback);
+    });
 }
 
 function firebaseLogout() {
-  window.bootstrapLocalSession();
   return Promise.resolve();
 }
 
 function getCurrentUserDisplayName() {
-  var user = firebase.auth().currentUser;
-  if (user && user.displayName) {
-    return user.displayName;
-  }
-  return "Player";
+  return window.getLocalPlayerProfile().Nickname || "Player";
 }
 
 function getProvider(providerName) {

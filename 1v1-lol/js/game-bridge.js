@@ -20,8 +20,6 @@ function xsollaPurchase(token, isSandbox, onPurchaseComplete) {
   }
 }
 
-var sessionBootstrapped = false;
-
 function onUnityReady() {
   if (typeof checkAdBlock === "function") {
     checkAdBlock();
@@ -29,8 +27,9 @@ function onUnityReady() {
   if (typeof sendConfig === "function") {
     sendConfig();
   }
-  if (!sessionBootstrapped && typeof bootstrapLocalSession === "function") {
-    sessionBootstrapped = true;
-    bootstrapLocalSession();
-  }
+  setTimeout(function () {
+    if (typeof notifyUnityLoginOnce === "function") {
+      notifyUnityLoginOnce();
+    }
+  }, 1500);
 }

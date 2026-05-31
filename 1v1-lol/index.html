@@ -15,8 +15,10 @@
       </div>
     </div>
 
+    <script src="js/quiet-net.js"></script>
     <script src="UnityLoader.js"></script>
     <script src="js/firebase-mock.js"></script>
+    <script src="js/api-intercept.js"></script>
     <script src="js/login.js"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/firestore.js"></script>
@@ -29,7 +31,6 @@
       initializeFireBase();
       initRemoteConfig();
       fixMacUserAgent();
-      bootstrapLocalSession();
 
       var gameInstance = UnityLoader.instantiate("gameContainer", "WebGL.json", { onProgress: UnityProgress });
       window.unityInstance = gameInstance;

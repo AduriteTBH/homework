@@ -1,9 +1,7 @@
 (function () {
-  var STORAGE_KEY = "1v1_game_save_v2";
+  var STORAGE_KEY = "1v1_game_save_v3";
   var UID_KEY = "1v1_local_uid_v1";
   var STARTING_COINS = 99999;
-  var listeners = [];
-  var notifyScheduled = false;
 
   function getPersistentUid() {
     var uid = localStorage.getItem(UID_KEY);
@@ -34,7 +32,6 @@
       email: uid + "@players.local",
       email_verified: true,
       name: displayName,
-      picture: "",
       firebase: {
         identities: { "google.com": [uid + "@players.local"] },
         sign_in_provider: "google.com",
@@ -44,72 +41,28 @@
   }
 
   function buildDefaultGameDocument(uid, displayName) {
-    var now = Date.now();
     return {
-      GeneralData: {
-        ID: uid,
-        Nickname: displayName,
-        Country: "",
-        Region: "",
-        IsMigrated: true,
-        SoftCurrency: STARTING_COINS,
-        HardCurrency: STARTING_COINS,
-        LOLCoins: STARTING_COINS,
-        LoLTokens: STARTING_COINS,
-        LOLTokens: STARTING_COINS,
-        CreatedAt: new Date(now).toISOString(),
-        Logins: {
-          LastLoginTime: now,
-          CurrentLoginTime: now,
-          TotalLogins: 1,
-          DailyConsecutiveLogins: 1,
-        },
-        Stats: {
-          TotalGamesPlayed: 0,
-          TotalKills: 0,
-          TotalDeaths: 0,
-          Victories: {},
-          Defeats: {},
-          Ties: {},
-          ConsecutiveWins: 0,
-        },
-        Premium: { AdsDisabled: true, LTV: 0, DidMigrateAdsDisabled: true },
-        NonconsumablePacks: [],
-        XP: 0,
-      },
-      Settings: { Controls: {}, SettingsVersion: 2 },
-      Skins: {
-        EquippedChampionSkins: {},
-        CharacterSkins: ["lol.1v1.playerskins.pack.quick.default"],
-        EquippedCharacterSkin: "lol.1v1.playerskins.pack.quick.default",
-        EquippedWeaponSkins: ["lol.1v1.weaponskins.melee.pickaxe.default"],
-        WeaponSkins: [
-          "lol.1v1.weaponskins.melee.pickaxe.default",
-          "lol.1v1.weaponskins.melee.pickaxe.chicken_leg",
-        ],
-        OwnedEmotes: ["lol.1v1.playeremotes.pack.1"],
-        EquippedEmotes: ["lol.1v1.playeremotes.pack.1"],
-        CompensationVersion: 1,
-      },
-      BattlePass: { Seasons: {}, XPBankData: { XPLeft: 0 } },
-      TrophyRoad: { Seasons: {} },
-      RankRoad: { Seasons: {}, AccountRoad: { XP: 0, HighestXP: 0, AvailableRewards: [], ClaimedRewards: [] } },
-      DailyRewards: { Rewards: [] },
-      Equipment: { Equipment: {}, Loadouts: [], EquippedLoadout: 0 },
-      Inventory: { LootBoxes: [], Spins: [], LootBoxesQueue: [], CachedRewards: {} },
-      Champions: {
-        OwnedChampions: { "lol.1v1.champions.quick": { Level: 1 } },
-        SelectedChampion: "lol.1v1.champions.quick",
-        ChampionShards: { "lol.1v1.champions.quick": 999 },
-      },
-      coins: STARTING_COINS,
-      LC: STARTING_COINS,
-      lol_coins: STARTING_COINS,
-      loggedIn: true,
-      isLoggedIn: true,
-      hasAccount: true,
-      displayName: displayName,
-      uid: uid,
+      UserId: uid,
+      Nickname: displayName,
+      HardCurrency: STARTING_COINS,
+      SoftCurrency: STARTING_COINS,
+      LoggedIn: true,
+      IsSocialLoggedIn: true,
+      CharacterSkins: [
+        "lol.1v1.playerskins.pack.quick.default",
+        "lol.1v1.playerskins.pack.1",
+        "lol.1v1.playerskins.pack.2",
+      ],
+      EquippedCharacterSkin: "lol.1v1.playerskins.pack.quick.default",
+      WeaponSkins: [
+        "lol.1v1.weaponskins.melee.pickaxe.default",
+        "lol.1v1.weaponskins.melee.pickaxe.chicken_leg",
+      ],
+      EquippedWeaponSkins: ["lol.1v1.weaponskins.melee.pickaxe.default"],
+      OwnedEmotes: ["lol.1v1.playeremotes.pack.1"],
+      EquippedEmotes: ["lol.1v1.playeremotes.pack.1"],
+      Stats: { TotalGamesPlayed: 0, TotalKills: 0, TotalDeaths: 0 },
+      Settings: { SettingsVersion: 2 },
     };
   }
 
@@ -134,84 +87,67 @@
     return null;
   }
 
-  function saveDocument(doc) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(doc));
-    scheduleNotify();
-  }
-
   window.getLocalPlayerProfile = function () {
     var uid = getPersistentUid();
     var displayName = "Player";
     var base = buildDefaultGameDocument(uid, displayName);
     var saved = loadSavedDocument();
     var doc = saved ? deepMerge(base, saved) : base;
-    if (!doc.GeneralData) doc.GeneralData = base.GeneralData;
-    doc.GeneralData.ID = uid;
-    doc.GeneralData.Nickname = doc.GeneralData.Nickname || displayName;
-    if (typeof doc.GeneralData.LOLCoins !== "number") doc.GeneralData.LOLCoins = STARTING_COINS;
-    if (typeof doc.GeneralData.HardCurrency !== "number") doc.GeneralData.HardCurrency = doc.GeneralData.LOLCoins;
-    doc.GeneralData.LoLTokens = doc.GeneralData.LoLTokens || doc.GeneralData.LOLCoins;
-    doc.GeneralData.LOLTokens = doc.GeneralData.LOLTokens || doc.GeneralData.LOLCoins;
-    doc.coins = doc.GeneralData.LOLCoins;
-    doc.LC = doc.GeneralData.LOLCoins;
-    doc.lol_coins = doc.GeneralData.LOLCoins;
-    doc.loggedIn = true;
-    doc.isLoggedIn = true;
-    doc.hasAccount = true;
-    doc.displayName = doc.GeneralData.Nickname;
-    doc.uid = uid;
+
+    doc.UserId = uid;
+    doc.Nickname = doc.Nickname || displayName;
+    if (typeof doc.HardCurrency !== "number") doc.HardCurrency = STARTING_COINS;
+    if (typeof doc.SoftCurrency !== "number") doc.SoftCurrency = STARTING_COINS;
+    doc.LoggedIn = true;
+    doc.IsSocialLoggedIn = true;
+
+    if (!Array.isArray(doc.CharacterSkins)) {
+      doc.CharacterSkins = base.CharacterSkins;
+    }
+    if (!doc.EquippedCharacterSkin) {
+      doc.EquippedCharacterSkin = base.EquippedCharacterSkin;
+    }
+    if (!Array.isArray(doc.WeaponSkins)) {
+      doc.WeaponSkins = base.WeaponSkins;
+    }
+    if (!Array.isArray(doc.EquippedWeaponSkins)) {
+      doc.EquippedWeaponSkins = base.EquippedWeaponSkins;
+    }
+
     return doc;
   };
 
   window.mergeLocalPlayerProfile = function (patch) {
     var doc = window.getLocalPlayerProfile();
     deepMerge(doc, patch || {});
-    if (patch && patch.GeneralData) deepMerge(doc.GeneralData, patch.GeneralData);
-    if (typeof doc.GeneralData.LOLCoins === "number") {
-      doc.coins = doc.GeneralData.LOLCoins;
-      doc.LC = doc.GeneralData.LOLCoins;
-      doc.lol_coins = doc.GeneralData.LOLCoins;
+
+    if (Array.isArray(patch && patch.CharacterSkins)) {
+      var set = {};
+      doc.CharacterSkins.forEach(function (id) {
+        set[id] = true;
+      });
+      patch.CharacterSkins.forEach(function (id) {
+        set[id] = true;
+      });
+      doc.CharacterSkins = Object.keys(set);
     }
-    saveDocument(doc);
+
+    var next = JSON.stringify(doc);
+    var prev = localStorage.getItem(STORAGE_KEY);
+    if (prev !== next) {
+      localStorage.setItem(STORAGE_KEY, next);
+      if (typeof window.pushFirestoreUpdate === "function") {
+        window.pushFirestoreUpdate();
+      }
+    }
     return doc;
-  };
-
-  function scheduleNotify() {
-    if (notifyScheduled) return;
-    notifyScheduled = true;
-    requestAnimationFrame(function () {
-      notifyScheduled = false;
-      notifyListeners();
-    });
-  }
-
-  function notifyListeners() {
-    var payload = JSON.stringify(window.getLocalPlayerProfile());
-    listeners.slice().forEach(function (entry) {
-      try {
-        entry.success(entry.id, payload);
-      } catch (e) {}
-    });
-  }
-
-  window.registerFirestoreListener = function (id, successCallback) {
-    listeners.push({ id: id, success: successCallback });
-    notifyListeners();
-  };
-
-  window.unregisterFirestoreListener = function (id) {
-    listeners = listeners.filter(function (entry) {
-      return entry.id !== id;
-    });
   };
 
   window.buildLoginResult = function () {
     var doc = window.getLocalPlayerProfile();
-    var uid = doc.uid || getPersistentUid();
-    var displayName = doc.GeneralData.Nickname || "Player";
     return {
-      token: createFakeFirebaseToken(uid, displayName),
-      displayName: displayName,
+      token: createFakeFirebaseToken(doc.UserId, doc.Nickname),
+      displayName: doc.Nickname,
     };
   };
 
@@ -225,9 +161,8 @@
     },
   };
 
-  function makeDocRef(path) {
+  function makeDocRef() {
     return {
-      path: path,
       set: function (data) {
         window.mergeLocalPlayerProfile(data || {});
         return Promise.resolve();
@@ -246,51 +181,27 @@
         });
       },
       onSnapshot: function (successCallback) {
-        var id = listeners.length + 1;
-        registerFirestoreListener(id, function (listenerId, payload) {
+        if (typeof successCallback === "function") {
           successCallback({
             exists: true,
             data: function () {
-              return JSON.parse(payload);
+              return window.getLocalPlayerProfile();
             },
           });
-        });
-        return function () {
-          unregisterFirestoreListener(id);
-        };
+        }
+        return function () {};
       },
     };
   }
-
-  function makeCollectionRef(name) {
-    return {
-      doc: function (documentId) {
-        return makeDocRef(name + "/" + documentId);
-      },
-    };
-  }
-
-  var authListeners = [];
 
   var authApi = {
     currentUser: mockUser,
     useDeviceLanguage: function () {},
     onAuthStateChanged: function (callback) {
-      if (typeof callback === "function") {
-        callback(mockUser);
-      }
-      authListeners.push(callback);
-      return function () {
-        authListeners = authListeners.filter(function (fn) {
-          return fn !== callback;
-        });
-      };
+      if (typeof callback === "function") callback(mockUser);
+      return function () {};
     },
     signInWithPopup: function () {
-      authApi.currentUser = mockUser;
-      authListeners.forEach(function (fn) {
-        if (typeof fn === "function") fn(mockUser);
-      });
       return Promise.resolve({ user: mockUser });
     },
     signInAnonymously: function () {
@@ -340,8 +251,12 @@
     },
     firestore: function () {
       return {
-        collection: function (name) {
-          return makeCollectionRef(name);
+        collection: function () {
+          return {
+            doc: function () {
+              return makeDocRef();
+            },
+          };
         },
       };
     },
@@ -354,33 +269,19 @@
   window.initializeFireBaseDev = window.initializeFireBase;
   window.firebaseLoaded = true;
 
-  var unityNotified = false;
+  var unityLoginSent = false;
 
-  window.bootstrapLocalSession = function () {
-    var result = window.buildLoginResult();
-    mockUser.uid = getPersistentUid();
-    authApi.currentUser = mockUser;
-    authListeners.forEach(function (fn) {
-      if (typeof fn === "function") fn(mockUser);
-    });
-    notifyListeners();
-
-    if (!unityNotified && window.unityInstance && window.unityInstance.SendMessage) {
-      unityNotified = true;
-      var payload = JSON.stringify(result);
-      var routes = [
-        ["FirebaseManager", "OnSignInPerformed"],
-        ["FirebaseManager", "OnIdTokenReceived"],
-        ["FirebaseManager", "OnLoginStateChanged"],
-        ["FirebaseUiHandler", "OnSignInPerformed"],
-        ["FirebaseUiHandler", "OnIdTokenReceived"],
-      ];
-      for (var i = 0; i < routes.length; i++) {
-        try {
-          window.unityInstance.SendMessage(routes[i][0], routes[i][1], payload);
-        } catch (e) {}
-      }
+  window.notifyUnityLoginOnce = function () {
+    if (unityLoginSent || !window.unityInstance || !window.unityInstance.SendMessage) {
+      return;
     }
-    return result;
+    unityLoginSent = true;
+    var payload = JSON.stringify(window.buildLoginResult());
+    try {
+      window.unityInstance.SendMessage("FirebaseManager", "OnSignInPerformed", payload);
+    } catch (e) {}
+    try {
+      window.unityInstance.SendMessage("FirebaseManager", "OnIdTokenReceived", payload);
+    } catch (e) {}
   };
 })();

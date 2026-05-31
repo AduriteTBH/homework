@@ -1,35 +1,25 @@
 const cache = {};
 let callbackId = 0;
-let lastPayload = "";
 
+// This is being called directly from unity.
 function getFirestoreListener(collection, documentId, successCallback, errorCallback) {
-  callbackId++;
-  const id = callbackId;
-  const payload = JSON.stringify(getLocalPlayerProfile());
-  lastPayload = payload;
-
-  cache[id] = successCallback;
-
-  if (typeof successCallback === "function") {
-    successCallback([id, payload]);
-  }
-
-  return id;
+    callbackId++;
+    const id = callbackId; // capture value
+    const unsubscribe = firebase.firestore().collection(collection).doc(documentId).onSnapshot(doc => {
+        if (doc.exists)
+            successCallback([id, JSON.stringify(doc.data())]);
+    }, error => {
+        errorCallback(error.message);
+    });
+    
+    cache[id] = unsubscribe;
+    return id;
 }
 
+// This is being called directly from unity.
 function detachFirestoreListener(id) {
-  delete cache[id];
-}
-
-window.pushFirestoreUpdate = function () {
-  const payload = JSON.stringify(getLocalPlayerProfile());
-  if (payload === lastPayload) return;
-  lastPayload = payload;
-
-  Object.keys(cache).forEach(function (key) {
-    const cb = cache[key];
-    if (typeof cb === "function") {
-      cb([parseInt(key, 10), payload]);
+    if (cache[id] !== undefined) {
+        cache[id]();
+        delete cache[id];
     }
-  });
-};
+}

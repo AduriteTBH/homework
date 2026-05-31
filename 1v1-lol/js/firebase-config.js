@@ -2,24 +2,29 @@ let conf;
 
 function initRemoteConfig() {
   const remoteConfig = firebase.remoteConfig();
-  remoteConfig.settings.minimumFetchIntervalMillis = 0;
+  remoteConfig.settings.minimumFetchIntervalMillis = 2000;
   setDefaultValues(remoteConfig);
-  conf = {};
-  for (const [key, value] of Object.entries(remoteConfig.getAll())) {
-    conf[key] = value.asString();
-  }
-  window.configInit = true;
+
+  remoteConfig.fetchAndActivate().then(() => {
+        conf = {};
+        // Convert all of the remote config parameters to a dict:
+        for (const [key, value] of Object.entries(remoteConfig.getAll())) {
+          conf[key] = value.asString();
+        }
+      })
+      .catch((err) => {
+        console.warn("config error: " + err);
+      });
 }
 
 async function sendConfig() {
-  if (conf === undefined) {
-    initRemoteConfig();
+  while(conf === undefined)
+  {
+    await sleep(2000)
   }
-  if (!window.unityInstance || !window.unityInstance.SendMessage) {
-    return;
-  }
-  window.unityInstance.SendMessage("MainMenuManagers", "ActivateRemoteConfig", JSON.stringify(conf));
-}
+
+  window.unityInstance.SendMessage('MainMenuManagers', 'ActivateRemoteConfig', JSON.stringify(conf));
+};
 
 function setDefaultValues(remoteConfig){
   remoteConfig.defaultConfig = {

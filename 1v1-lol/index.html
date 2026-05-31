@@ -4,37 +4,32 @@
     <meta charset="utf-8" />
     <title>1v1.LOL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="css/style.css" />
+    <script>
+      var gameLoaded = false;
+      window.alert = function (e) {
+        console.log(e);
+      };
+    </script>
   </head>
   <body>
     <div id="gameContainer"></div>
     <div id="loader">
+      <img class="logo" src="logo.png" alt="" />
       <div class="spinner"></div>
       <div class="progress">
         <div class="full"></div>
       </div>
     </div>
 
-    <script src="js/quiet-net.js"></script>
     <script src="UnityLoader.js"></script>
-    <script src="js/firebase-mock.js"></script>
-    <script src="js/api-intercept.js"></script>
-    <script src="js/login.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/firestore.js"></script>
-    <script src="js/adblockManager.js"></script>
-    <script src="js/macUserAgent.js"></script>
-    <script src="js/visibilityChangeListener.js"></script>
-    <script src="js/game-bridge.js"></script>
-
     <script>
-      initializeFireBase();
-      initRemoteConfig();
-      fixMacUserAgent();
-
-      var gameInstance = UnityLoader.instantiate("gameContainer", "WebGL.json", { onProgress: UnityProgress });
+      var gameJsonUrl = "WebGL.json";
+      var gameInstance = UnityLoader.instantiate("gameContainer", gameJsonUrl, { onProgress: UnityProgress });
       window.unityInstance = gameInstance;
       window.gameInstance = gameInstance;
+      var lockedOccured = false;
 
       function UnityProgress(gameInstance, progress) {
         if (!gameInstance.Module) return;
@@ -48,26 +43,59 @@
         gameInstance.progress.style.transform = "scaleX(" + progress + ")";
         if (progress === 1 && !gameInstance.removeTimeout) {
           loader.style.display = "none";
-          sendConfig();
-          if (typeof onUnityReady === "function") {
-            onUnityReady();
-          }
+          gameLoaded = true;
         }
       }
 
       document.addEventListener("pointerlockchange", lockChangeAlert, false);
       document.addEventListener("mozpointerlockchange", lockChangeAlert, false);
-      var lockedOccured = false;
 
       function lockChangeAlert() {
         if (!lockedOccured && document.pointerLockElement) lockedOccured = true;
         if (!document.pointerLockElement && lockedOccured) {
           lockedOccured = false;
-          if (gameInstance && gameInstance.SendMessage) {
-            gameInstance.SendMessage("Pause Menu", "OnCursorUnlocked");
-          }
+          gameInstance.SendMessage("Pause Menu", "OnCursorUnlocked");
         }
       }
+    </script>
+
+    <script src="firebase/firebase-app.js"></script>
+    <script src="firebase/firebase-analytics.js"></script>
+    <script src="firebase/firebase-auth.js"></script>
+    <script src="firebase/firebase-firestore.js"></script>
+    <script src="firebase/firebase-remote-config.js"></script>
+
+    <script src="js/firebase.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/firestore.js"></script>
+
+    <script>
+      var hostname = window.location.hostname;
+      if (
+        hostname.indexOf("dev1v1") >= 0 ||
+        hostname.indexOf("dev.1v1") >= 0 ||
+        hostname.indexOf("test1v1") >= 0 ||
+        hostname.indexOf("test.1v1") >= 0 ||
+        hostname.indexOf("localhost") >= 0
+      ) {
+        initializeFireBaseDev();
+      } else {
+        initializeFireBase();
+      }
+      initRemoteConfig();
+    </script>
+
+    <script src="js/windowResize.js"></script>
+    <script src="js/adblockManager.js"></script>
+    <script src="js/macUserAgent.js"></script>
+    <script src="js/visibilityChangeListener.js"></script>
+    <script>
+      function onUnityReady() {
+        checkAdBlock();
+        sendConfig();
+      }
+      fixMacUserAgent();
     </script>
   </body>
 </html>

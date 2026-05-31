@@ -1,8 +1,8 @@
-# 1v1.LOL (GitHub Pages)
+# 1v1.LOL (fullscreen)
 
-Fullscreen 1v1.LOL WebGL build with portal/ads removed and offline-friendly account + shop support.
+Original Unity WebGL game files, hosted for your site — **no portal**, **no ads**, **fullscreen**.
 
-## Play locally
+## Run locally
 
 ```powershell
 cd "c:\Users\aduri\Documents\GitHub\homework\1v1-lol"
@@ -13,30 +13,25 @@ Open `http://localhost:8080/`
 
 ## GitHub Pages
 
-Push this folder as the site root (or publish from `/docs` if you use that layout). The game uses **relative paths** and works over `https://` on GitHub Pages.
+Push this folder as the site root. Uses relative paths and works over HTTPS.
 
-Optional: add an empty `.nojekyll` file at the repo root if Jekyll processing causes issues.
+## What’s included
 
-## Offline features
+- Original `UnityLoader.js`, `WebGL.json`, game binaries (`rc.*.unityweb`)
+- Original Firebase + login + Firestore scripts (real Google sign-in when it works)
+- Fullscreen layout (`css/style.css`)
 
-- **No Google login required** — local session + mocked `justbuild.xyz` player API.
-- **99,999 coins** as `HardCurrency` / `SoftCurrency` (what this v3.800 build uses).
-- **Locker / shop / equip** — saved in `localStorage` (`1v1_game_save_v3`).
-- **Lightweight** — no real Firebase SDK, no listener spam loops.
+## Embed on another page
 
-## Play button / online modes
+```html
+<iframe
+  src="https://YOUR_USERNAME.github.io/1v1-lol/"
+  style="width: 100vw; height: 100vh; border: 0;"
+  allowfullscreen
+></iframe>
+```
 
-The console error `GetRegions failed … ApplicationArchived` means the **original Photon multiplayer AppId is shut down**. That is not caused by our login shim. **Online PLAY may not work** on this build without your own Photon app.
+## Notes
 
-**Practice** and other offline modes may still work from the mode menu if the game offers them.
-
-## Files
-
-| Path | Purpose |
-|------|---------|
-| `index.html` | Fullscreen launcher |
-| `UnityLoader.js`, `WebGL.json`, `rc.*.unityweb` | Unity game |
-| `js/firebase-mock.js` | Local auth + Firestore + coins |
-| `js/login.js` | Login API expected by Unity |
-| `js/firebase-config.js` | Shop skins / modes config |
-| `js/firestore.js` | Player data listener bridge |
+- Login, shop, and online play depend on the **original** 1v1 backends (Firebase / Photon). Some features may not work if those services are down or blocked.
+- This is the stock game behavior — not the custom offline/coins mod from earlier.

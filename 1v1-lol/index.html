@@ -16,9 +16,23 @@
     </div>
 
     <script src="UnityLoader.js"></script>
+    <script src="js/firebase-mock.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/firestore.js"></script>
+    <script src="js/adblockManager.js"></script>
+    <script src="js/macUserAgent.js"></script>
+    <script src="js/visibilityChangeListener.js"></script>
+    <script src="js/game-bridge.js"></script>
+
     <script>
+      initializeFireBase();
+      initRemoteConfig();
+      fixMacUserAgent();
+
       var gameInstance = UnityLoader.instantiate("gameContainer", "WebGL.json", { onProgress: UnityProgress });
       window.unityInstance = gameInstance;
+      window.gameInstance = gameInstance;
 
       function UnityProgress(gameInstance, progress) {
         if (!gameInstance.Module) return;
@@ -32,34 +46,9 @@
         gameInstance.progress.style.transform = "scaleX(" + progress + ")";
         if (progress === 1 && !gameInstance.removeTimeout) {
           loader.style.display = "none";
-          sendConfigWhenReady();
+          sendConfig();
         }
       }
-
-      function sendConfigWhenReady() {
-        if (typeof conf === "undefined") {
-          initLocalConfig();
-        }
-        if (window.unityInstance && window.unityInstance.SendMessage) {
-          window.unityInstance.SendMessage(
-            "MainMenuManagers",
-            "ActivateRemoteConfig",
-            JSON.stringify(conf)
-          );
-        }
-      }
-
-      function initLocalConfig() {
-        conf = {};
-        var defaults = {
-          SettingsV5: '{"id":"default","practice_modes":["Practice","AimTrainer","Zombies","PipeRun"],"casual_modes":[["1v1","BoxFight_Teams_2v2"]],"custom_modes":[["1v1_Custom","BoxFight_Custom"]]}',
-        };
-        for (var key in defaults) {
-          conf[key] = defaults[key];
-        }
-      }
-
-      initLocalConfig();
 
       document.addEventListener("pointerlockchange", lockChangeAlert, false);
       document.addEventListener("mozpointerlockchange", lockChangeAlert, false);

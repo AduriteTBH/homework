@@ -1,63 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hopter Royale</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Hopter Royale — H&amp;H Inc</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
-<body>
-    <div id="menu-screen" class="screen">
-        <h1>Hopter Royale</h1>
-        <div class="panel">
-            <p style="color: #7f8fa6; font-weight: bold; margin-bottom: 5px;">Callsign:</p>
-            <h2 id="player-name-display" style="font-size: 2rem;">Loading...</h2>
-            <button id="btn-cycle-name">Roll New Name</button>
-            <hr>
-            <button id="btn-create-game" class="primary">Deploy as Host</button>
-            <hr>
-            <div class="join-section">
-                <input type="text" id="join-code-input" placeholder="5-LETTER CODE" maxlength="5">
-                <button id="btn-join-game">Join Squad</button>
-            </div>
-            <p id="menu-status" class="error-text"></p>
-        </div>
+<body class="dark-ui">
+  <!-- MAIN MENU (Portal-style) -->
+  <div id="menu-screen" class="screen portal-screen">
+    <canvas id="menu-bg-canvas" class="menu-bg-canvas"></canvas>
+    <div class="portal-vignette"></div>
+
+    <div class="portal-layout">
+      <header class="portal-header">
+        <img src="assets/logo.svg" alt="Hopter Royale" class="portal-logo-img" id="game-logo"
+             onerror="this.classList.add('logo-missing'); this.nextElementSibling.classList.remove('hidden');">
+        <div class="portal-logo portal-logo-fallback hidden">HOPTER<span>ROYALE</span></div>
+        <div class="portal-tag">H&amp;H Inc · Aerial Combat Program</div>
+      </header>
+
+      <nav class="portal-nav" id="portal-nav">
+        <button type="button" class="portal-item" data-action="solo">Singleplayer</button>
+        <button type="button" class="portal-item" data-action="host">Host Multiplayer</button>
+        <button type="button" class="portal-item" data-action="join">Join Multiplayer</button>
+        <button type="button" class="portal-item" data-action="mute">Toggle Music</button>
+      </nav>
+
+      <footer class="portal-footer">
+        <span class="portal-footer-label">Callsign</span>
+        <span id="player-name-display" class="portal-callsign">Loading…</span>
+      </footer>
     </div>
 
-    <div id="lobby-screen" class="screen hidden">
-        <h1>Briefing Room</h1>
-        <div class="panel">
-            <h2 id="room-code-display" style="font-size: 2.5rem; letter-spacing: 4px;">Code: -----</h2>
-            <p style="color: #7f8fa6; margin-top: 15px;">Pilots Connected:</p>
-            <ul id="player-list"></ul>
-            <button id="btn-start-game" class="primary hidden">Launch Mission</button>
-            <p id="lobby-status"></p>
-        </div>
+    <div id="join-panel" class="portal-subpanel panel-closed">
+      <p class="subpanel-title">Join Mission</p>
+      <input type="text" id="join-code-input" placeholder="ABCDE" maxlength="5" autocomplete="off" spellcheck="false">
+      <button type="button" id="btn-join-game" class="portal-subbtn">Connect</button>
+      <button type="button" class="portal-subbtn ghost" data-close-panel>Back</button>
     </div>
 
-    <div id="game-ui" class="hidden">
-        <div id="hud-top-left">
-            <div id="hud-alive">Pilots Alive: 0</div>
-        </div>
-        
-        <div id="minimap-container">
-            <canvas id="minimapCanvas" width="150" height="150"></canvas>
-        </div>
+    <div id="visual-customizer" class="visual-customizer">
+      <p class="subpanel-title">PILOT CALLSIGN</p>
+      
+      <div class="variant-switcher callsign-switcher">
+        <button type="button" id="btn-prev-callsign">&lt;</button>
+        <span id="callsign-label" class="callsign-display">SkyHawk</span>
+        <button type="button" id="btn-next-callsign">&gt;</button>
+      </div>
+      
+      <div class="preview-wrap">
+        <canvas id="preview-canvas" width="240" height="240"></canvas>
+      </div>
 
-        <div id="hud-bottom">
-            <div id="hud-hp-bar-bg"><div id="hud-hp-bar"></div></div>
-            <div id="hud-xp-bar-bg"><div id="hud-xp-bar"></div></div>
-            <div id="hud-level">Level: 1</div>
-        </div>
-        <div id="game-over-screen" class="hidden">
-            <h2 id="game-over-text">KIA</h2>
-            <button onclick="location.reload()" class="primary">Return to Base</button>
-        </div>
+      <div class="variant-switcher">
+        <button type="button" id="btn-prev-variant">&lt;</button>
+        <span id="variant-label">Base</span>
+        <button type="button" id="btn-next-variant">&gt;</button>
+      </div>
+
+      <div class="color-wrap">
+        <span>Paint Job:</span>
+        <input type="color" id="preview-color" value="#3498db">
+      </div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
+    <p id="file-mode-hint" class="portal-toast hidden">File mode — singleplayer only</p>
+    <p id="menu-status" class="portal-toast error hidden"></p>
+  </div>
 
-    <script src="game.js"></script>
+  <!-- LOBBY -->
+  <div id="lobby-screen" class="screen portal-screen hidden">
+    <canvas id="lobby-bg-canvas" class="menu-bg-canvas"></canvas>
+    <div class="portal-vignette"></div>
+    <div class="portal-layout">
+      <header class="portal-header">
+        <div class="portal-logo small">BRIEFING</div>
+        <div class="portal-tag">Room <strong id="room-code-display">-----</strong></div>
+      </header>
+      <nav class="portal-nav">
+        <button type="button" id="btn-copy-code" class="portal-item">Copy Room Code</button>
+        <button type="button" id="btn-start-game" class="portal-item accent hidden">Launch Mission</button>
+        <button type="button" id="btn-lobby-back" class="portal-item">Return to Menu</button>
+      </nav>
+      <div class="portal-lobby-list">
+        <p class="subpanel-title">Pilots</p>
+        <ul id="player-list"></ul>
+        <p id="lobby-bot-fill" class="bot-fill-hint"></p>
+        <p id="lobby-status"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- IN-GAME HUD -->
+  <div id="game-ui" class="hidden">
+    <div id="hud-top-left">
+      <div id="hud-alive" class="hud-chip gold">Alive: 0</div>
+      <div id="hud-kills" class="hud-chip cyan">KOs: 0</div>
+    </div>
+
+    <div id="leaderboard-panel" class="hud-panel">
+      <div class="panel-head">Leaderboard</div>
+      <ol id="leaderboard-list"></ol>
+    </div>
+
+    <div id="kill-feed-panel" class="hud-panel kill-panel">
+      <div class="panel-head">Combat Log</div>
+      <div id="kill-feed"></div>
+    </div>
+
+    <div id="minimap-container" class="hud-panel map-panel" title="Press M to expand">
+      <div class="panel-head">Tactical Map <span class="map-hint">[M]</span></div>
+      <canvas id="minimapCanvas" width="140" height="140"></canvas>
+    </div>
+
+    <div id="hud-bottom">
+      <div class="bar-wrap bar-hp"><div id="hud-hp-bar" class="bar-fill"></div></div>
+      <div class="bar-wrap bar-xp"><div id="hud-xp-bar" class="bar-fill"></div></div>
+      <div class="bar-wrap bar-dash dash-wrap">
+        <span class="bar-label">DASH [Q]</span>
+        <div id="hud-dash-bar" class="bar-fill dash-fill"></div>
+      </div>
+      <div id="hud-level">Level 1</div>
+    </div>
+
+    <div id="game-over-screen" class="hidden">
+      <h2 id="game-over-text">KIA</h2>
+      <p id="game-over-sub">Your hopter went down.</p>
+      <button id="btn-return-base" class="primary">Return to Base</button>
+    </div>
+  </div>
+
+  <div id="touch-controls">
+    <div id="touch-stick"><div id="touch-stick-knob"></div></div>
+    <button id="touch-dash" type="button" class="touch-action">DASH</button>
+    <button id="touch-fire" type="button" class="touch-action">FIRE</button>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/env.js"></script>
+  <script src="js/assets.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/bots.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/network.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

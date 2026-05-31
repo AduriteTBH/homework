@@ -31,7 +31,32 @@ Push this folder as the site root. Uses relative paths and works over HTTPS.
 ></iframe>
 ```
 
-## Notes
+## Why PLAY does nothing
 
-- Login, shop, and online play depend on the **original** 1v1 backends (Firebase / Photon). Some features may not work if those services are down or blocked.
-- This is the stock game behavior — not the custom offline/coins mod from earlier.
+The yellow **PLAY!** button starts **online matchmaking** (Photon). This build’s Photon App Id (`82620531-…`) is **archived** on Photon’s servers, so the game logs:
+
+`GetRegions failed … ApplicationArchived`
+
+That is a **dead official server**, not a bug in your site layout.
+
+### What works without fixing Photon
+
+- **Free Build** (left tile) — building practice, usually offline  
+- **Practice / Aim Trainer / Zombies** — if shown in the mode menu (from game config)
+
+### Fix PLAY (online) — your own Photon app (free)
+
+1. Create a free app at [Photon Dashboard](https://dashboard.photonengine.com/) (PUN / Realtime).
+2. Copy the **Realtime App ID** (36-character UUID).
+3. Run from this folder:
+
+```powershell
+python scripts/patch-photon-appid.py PASTE-YOUR-PHOTON-APP-ID-HERE
+```
+
+4. Push and redeploy. PLAY will connect to **your** Photon app (you won’t match official 1v1.lol players, but you can test with friends on the same App Id).
+
+## Other notes
+
+- Login / shop use **original** Firebase and `justbuild.xyz` APIs when those still respond.
+- Stock game — no custom offline account mod.

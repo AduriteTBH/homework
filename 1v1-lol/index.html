@@ -44,6 +44,9 @@
         if (progress === 1 && !gameInstance.removeTimeout) {
           loader.style.display = "none";
           gameLoaded = true;
+          if (typeof onUnityReady === "function") {
+            onUnityReady();
+          }
         }
       }
 

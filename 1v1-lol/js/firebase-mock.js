@@ -1,17 +1,132 @@
 (function () {
-  var STORAGE_KEY = "1v1_local_profile_v1";
+  var STORAGE_KEY = "1v1_game_save_v2";
+  var UID_KEY = "1v1_local_uid_v1";
   var STARTING_COINS = 99999;
   var listeners = [];
-  var mockUser = {
-    uid: "local-player",
-    displayName: "Player",
-    isAnonymous: false,
-    getIdToken: function () {
-      return Promise.resolve("local-offline-token");
-    },
-  };
+  var notifyScheduled = false;
 
-  function loadProfile() {
+  function getPersistentUid() {
+    var uid = localStorage.getItem(UID_KEY);
+    if (!uid) {
+      uid = "local_" + Math.random().toString(36).slice(2, 12);
+      localStorage.setItem(UID_KEY, uid);
+    }
+    return uid;
+  }
+
+  function base64UrlEncode(value) {
+    var json = typeof value === "string" ? value : JSON.stringify(value);
+    var b64 = btoa(unescape(encodeURIComponent(json)));
+    return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+  }
+
+  function createFakeFirebaseToken(uid, displayName) {
+    var now = Math.floor(Date.now() / 1000);
+    var header = base64UrlEncode({ alg: "RS256", typ: "JWT", kid: "local" });
+    var payload = base64UrlEncode({
+      iss: "https://securetoken.google.com/justbuild-cdb86",
+      aud: "justbuild-cdb86",
+      auth_time: now,
+      user_id: uid,
+      sub: uid,
+      iat: now,
+      exp: now + 3600 * 24 * 30,
+      email: uid + "@players.local",
+      email_verified: true,
+      name: displayName,
+      picture: "",
+      firebase: {
+        identities: { "google.com": [uid + "@players.local"] },
+        sign_in_provider: "google.com",
+      },
+    });
+    return header + "." + payload + ".local_signature";
+  }
+
+  function buildDefaultGameDocument(uid, displayName) {
+    var now = Date.now();
+    return {
+      GeneralData: {
+        ID: uid,
+        Nickname: displayName,
+        Country: "",
+        Region: "",
+        IsMigrated: true,
+        SoftCurrency: STARTING_COINS,
+        HardCurrency: STARTING_COINS,
+        LOLCoins: STARTING_COINS,
+        LoLTokens: STARTING_COINS,
+        LOLTokens: STARTING_COINS,
+        CreatedAt: new Date(now).toISOString(),
+        Logins: {
+          LastLoginTime: now,
+          CurrentLoginTime: now,
+          TotalLogins: 1,
+          DailyConsecutiveLogins: 1,
+        },
+        Stats: {
+          TotalGamesPlayed: 0,
+          TotalKills: 0,
+          TotalDeaths: 0,
+          Victories: {},
+          Defeats: {},
+          Ties: {},
+          ConsecutiveWins: 0,
+        },
+        Premium: { AdsDisabled: true, LTV: 0, DidMigrateAdsDisabled: true },
+        NonconsumablePacks: [],
+        XP: 0,
+      },
+      Settings: { Controls: {}, SettingsVersion: 2 },
+      Skins: {
+        EquippedChampionSkins: {},
+        CharacterSkins: ["lol.1v1.playerskins.pack.quick.default"],
+        EquippedCharacterSkin: "lol.1v1.playerskins.pack.quick.default",
+        EquippedWeaponSkins: ["lol.1v1.weaponskins.melee.pickaxe.default"],
+        WeaponSkins: [
+          "lol.1v1.weaponskins.melee.pickaxe.default",
+          "lol.1v1.weaponskins.melee.pickaxe.chicken_leg",
+        ],
+        OwnedEmotes: ["lol.1v1.playeremotes.pack.1"],
+        EquippedEmotes: ["lol.1v1.playeremotes.pack.1"],
+        CompensationVersion: 1,
+      },
+      BattlePass: { Seasons: {}, XPBankData: { XPLeft: 0 } },
+      TrophyRoad: { Seasons: {} },
+      RankRoad: { Seasons: {}, AccountRoad: { XP: 0, HighestXP: 0, AvailableRewards: [], ClaimedRewards: [] } },
+      DailyRewards: { Rewards: [] },
+      Equipment: { Equipment: {}, Loadouts: [], EquippedLoadout: 0 },
+      Inventory: { LootBoxes: [], Spins: [], LootBoxesQueue: [], CachedRewards: {} },
+      Champions: {
+        OwnedChampions: { "lol.1v1.champions.quick": { Level: 1 } },
+        SelectedChampion: "lol.1v1.champions.quick",
+        ChampionShards: { "lol.1v1.champions.quick": 999 },
+      },
+      coins: STARTING_COINS,
+      LC: STARTING_COINS,
+      lol_coins: STARTING_COINS,
+      loggedIn: true,
+      isLoggedIn: true,
+      hasAccount: true,
+      displayName: displayName,
+      uid: uid,
+    };
+  }
+
+  function deepMerge(target, source) {
+    if (!source || typeof source !== "object") return target;
+    Object.keys(source).forEach(function (key) {
+      if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
+        if (!target[key] || typeof target[key] !== "object") target[key] = {};
+        deepMerge(target[key], source[key]);
+      } else {
+        target[key] = source[key];
+      }
+    });
+    return target;
+  }
+
+  function loadSavedDocument() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) return JSON.parse(raw);
@@ -19,83 +134,63 @@
     return null;
   }
 
-  function saveProfile(profile) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-    notifyListeners();
-  }
-
-  function defaultProfile() {
-    return {
-      coins: STARTING_COINS,
-      LC: STARTING_COINS,
-      lol_coins: STARTING_COINS,
-      coinBalance: STARTING_COINS,
-      balance: STARTING_COINS,
-      displayName: "Player",
-      name: "Player",
-      loggedIn: true,
-      isLoggedIn: true,
-      hasAccount: true,
-      ownedSkins: [],
-      owned_skins: [],
-      skins: [],
-      playerSkins: [],
-      purchasedSkins: [],
-      items: [],
-      email: "player@local",
-      uid: mockUser.uid,
-    };
+  function saveDocument(doc) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(doc));
+    scheduleNotify();
   }
 
   window.getLocalPlayerProfile = function () {
-    var profile = loadProfile();
-    if (!profile) {
-      profile = defaultProfile();
-      saveProfile(profile);
-    }
-    if (typeof profile.coins !== "number") {
-      profile.coins = STARTING_COINS;
-    }
-    profile.LC = profile.coins;
-    profile.lol_coins = profile.coins;
-    profile.coinBalance = profile.coins;
-    profile.balance = profile.coins;
-    profile.loggedIn = true;
-    profile.isLoggedIn = true;
-    profile.hasAccount = true;
-    profile.displayName = profile.displayName || "Player";
-    profile.uid = mockUser.uid;
-    return profile;
+    var uid = getPersistentUid();
+    var displayName = "Player";
+    var base = buildDefaultGameDocument(uid, displayName);
+    var saved = loadSavedDocument();
+    var doc = saved ? deepMerge(base, saved) : base;
+    if (!doc.GeneralData) doc.GeneralData = base.GeneralData;
+    doc.GeneralData.ID = uid;
+    doc.GeneralData.Nickname = doc.GeneralData.Nickname || displayName;
+    if (typeof doc.GeneralData.LOLCoins !== "number") doc.GeneralData.LOLCoins = STARTING_COINS;
+    if (typeof doc.GeneralData.HardCurrency !== "number") doc.GeneralData.HardCurrency = doc.GeneralData.LOLCoins;
+    doc.GeneralData.LoLTokens = doc.GeneralData.LoLTokens || doc.GeneralData.LOLCoins;
+    doc.GeneralData.LOLTokens = doc.GeneralData.LOLTokens || doc.GeneralData.LOLCoins;
+    doc.coins = doc.GeneralData.LOLCoins;
+    doc.LC = doc.GeneralData.LOLCoins;
+    doc.lol_coins = doc.GeneralData.LOLCoins;
+    doc.loggedIn = true;
+    doc.isLoggedIn = true;
+    doc.hasAccount = true;
+    doc.displayName = doc.GeneralData.Nickname;
+    doc.uid = uid;
+    return doc;
   };
 
   window.mergeLocalPlayerProfile = function (patch) {
-    var profile = window.getLocalPlayerProfile();
-    if (patch && typeof patch === "object") {
-      for (var key in patch) {
-        if (Object.prototype.hasOwnProperty.call(patch, key)) {
-          profile[key] = patch[key];
-        }
-      }
+    var doc = window.getLocalPlayerProfile();
+    deepMerge(doc, patch || {});
+    if (patch && patch.GeneralData) deepMerge(doc.GeneralData, patch.GeneralData);
+    if (typeof doc.GeneralData.LOLCoins === "number") {
+      doc.coins = doc.GeneralData.LOLCoins;
+      doc.LC = doc.GeneralData.LOLCoins;
+      doc.lol_coins = doc.GeneralData.LOLCoins;
     }
-    if (typeof profile.coins === "number") {
-      profile.LC = profile.coins;
-      profile.lol_coins = profile.coins;
-      profile.coinBalance = profile.coins;
-      profile.balance = profile.coins;
-    }
-    saveProfile(profile);
-    return profile;
+    saveDocument(doc);
+    return doc;
   };
 
+  function scheduleNotify() {
+    if (notifyScheduled) return;
+    notifyScheduled = true;
+    requestAnimationFrame(function () {
+      notifyScheduled = false;
+      notifyListeners();
+    });
+  }
+
   function notifyListeners() {
-    var profile = window.getLocalPlayerProfile();
-    var payload = JSON.stringify(profile);
+    var payload = JSON.stringify(window.getLocalPlayerProfile());
     listeners.slice().forEach(function (entry) {
       try {
         entry.success(entry.id, payload);
-      } catch (e) {
-        console.warn("firestore listener error", e);
-      }
+      } catch (e) {}
     });
   }
 
@@ -110,10 +205,30 @@
     });
   };
 
+  window.buildLoginResult = function () {
+    var doc = window.getLocalPlayerProfile();
+    var uid = doc.uid || getPersistentUid();
+    var displayName = doc.GeneralData.Nickname || "Player";
+    return {
+      token: createFakeFirebaseToken(uid, displayName),
+      displayName: displayName,
+    };
+  };
+
+  var mockUser = {
+    uid: getPersistentUid(),
+    displayName: "Player",
+    isAnonymous: false,
+    email: getPersistentUid() + "@players.local",
+    getIdToken: function () {
+      return Promise.resolve(window.buildLoginResult().token);
+    },
+  };
+
   function makeDocRef(path) {
     return {
       path: path,
-      set: function (data, options) {
+      set: function (data) {
         window.mergeLocalPlayerProfile(data || {});
         return Promise.resolve();
       },
@@ -130,7 +245,7 @@
           },
         });
       },
-      onSnapshot: function (successCallback, errorCallback) {
+      onSnapshot: function (successCallback) {
         var id = listeners.length + 1;
         registerFirestoreListener(id, function (listenerId, payload) {
           successCallback({
@@ -179,42 +294,32 @@
       return Promise.resolve({ user: mockUser });
     },
     signInAnonymously: function () {
-      authApi.currentUser = mockUser;
-      return Promise.resolve({ user: mockUser });
+      return authApi.signInWithPopup();
     },
     signOut: function () {
-      authApi.currentUser = mockUser;
       return Promise.resolve();
     },
     fetchSignInMethodsForEmail: function () {
       return Promise.resolve(["google.com"]);
     },
-    GoogleAuthProvider: function () {
-      return {};
-    },
-    FacebookAuthProvider: function () {
-      return {};
-    },
   };
 
   authApi.GoogleAuthProvider = function () {
-    return {};
+    return { providerId: "google.com" };
   };
   authApi.FacebookAuthProvider = function () {
-    return {};
+    return { providerId: "facebook.com" };
   };
-
-  var remoteConfigDefaults = {};
 
   var remoteConfigApi = {
     settings: { minimumFetchIntervalMillis: 0 },
-    defaultConfig: remoteConfigDefaults,
+    defaultConfig: {},
     fetchAndActivate: function () {
       return Promise.resolve(true);
     },
     getAll: function () {
       var out = {};
-      var defaults = this.defaultConfig || remoteConfigDefaults;
+      var defaults = this.defaultConfig || {};
       Object.keys(defaults).forEach(function (key) {
         out[key] = {
           asString: function () {
@@ -248,4 +353,34 @@
   window.initializeFireBase = function () {};
   window.initializeFireBaseDev = window.initializeFireBase;
   window.firebaseLoaded = true;
+
+  var unityNotified = false;
+
+  window.bootstrapLocalSession = function () {
+    var result = window.buildLoginResult();
+    mockUser.uid = getPersistentUid();
+    authApi.currentUser = mockUser;
+    authListeners.forEach(function (fn) {
+      if (typeof fn === "function") fn(mockUser);
+    });
+    notifyListeners();
+
+    if (!unityNotified && window.unityInstance && window.unityInstance.SendMessage) {
+      unityNotified = true;
+      var payload = JSON.stringify(result);
+      var routes = [
+        ["FirebaseManager", "OnSignInPerformed"],
+        ["FirebaseManager", "OnIdTokenReceived"],
+        ["FirebaseManager", "OnLoginStateChanged"],
+        ["FirebaseUiHandler", "OnSignInPerformed"],
+        ["FirebaseUiHandler", "OnIdTokenReceived"],
+      ];
+      for (var i = 0; i < routes.length; i++) {
+        try {
+          window.unityInstance.SendMessage(routes[i][0], routes[i][1], payload);
+        } catch (e) {}
+      }
+    }
+    return result;
+  };
 })();

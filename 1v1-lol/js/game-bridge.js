@@ -20,11 +20,17 @@ function xsollaPurchase(token, isSandbox, onPurchaseComplete) {
   }
 }
 
+var sessionBootstrapped = false;
+
 function onUnityReady() {
   if (typeof checkAdBlock === "function") {
     checkAdBlock();
   }
   if (typeof sendConfig === "function") {
     sendConfig();
+  }
+  if (!sessionBootstrapped && typeof bootstrapLocalSession === "function") {
+    sessionBootstrapped = true;
+    bootstrapLocalSession();
   }
 }

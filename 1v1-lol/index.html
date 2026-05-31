@@ -29,6 +29,7 @@
       initializeFireBase();
       initRemoteConfig();
       fixMacUserAgent();
+      bootstrapLocalSession();
 
       var gameInstance = UnityLoader.instantiate("gameContainer", "WebGL.json", { onProgress: UnityProgress });
       window.unityInstance = gameInstance;
@@ -47,6 +48,9 @@
         if (progress === 1 && !gameInstance.removeTimeout) {
           loader.style.display = "none";
           sendConfig();
+          if (typeof onUnityReady === "function") {
+            onUnityReady();
+          }
         }
       }
 

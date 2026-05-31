@@ -19,9 +19,10 @@ Optional: add an empty `.nojekyll` file at the repo root if Jekyll processing ca
 
 ## Offline features
 
-- **No Google login required** — any login action succeeds as a local player.
-- **99,999 coins** on first visit (stored in `localStorage`, spends persist).
-- **Shop** uses local profile data; purchases update `localStorage` via the Firebase mock.
+- **No Google login required** — the game receives a local session that looks like a completed Google sign-in (JWT-shaped token + saved profile).
+- **Locker and shop** unlock automatically after load; tapping sign-in also completes instantly.
+- **99,999 LOLCoins** on first visit (saved in `localStorage` under `1v1_game_save_v2`, spends persist).
+- **Lightweight** — no real Firebase SDK (~2MB); only small JS shims, no polling loops.
 
 ## Files
 

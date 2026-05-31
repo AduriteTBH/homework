@@ -1,38 +1,74 @@
 var tempErrorCreds;
 var tempProviderName;
 
-function loginSuccess(successCallback) {
-  var resultObj = {
-    token: "local-offline-token",
-    displayName: "Player",
-  };
+function deliverLoginResult(successCallback, errorCallback) {
+  var resultObj = window.buildLoginResult();
+  window.bootstrapLocalSession();
+
   if (typeof successCallback === "function") {
     successCallback(resultObj);
+    return;
+  }
+
+  if (typeof errorCallback === "function") {
+    return;
   }
 }
 
 function retrieveIdToken(successCallback, errorCallback) {
-  loginSuccess(successCallback);
+  if (firebase.auth().currentUser === null) {
+    if (typeof errorCallback === "function") {
+      errorCallback("User is null");
+    }
+    return;
+  }
+  deliverLoginResult(successCallback, errorCallback);
 }
 
 function anonymousLogin(successCallback, errorCallback) {
-  loginSuccess(successCallback);
+  deliverLoginResult(successCallback, errorCallback);
 }
 
 function firebaseLogin(providerName, successCallback, errorCallback) {
-  loginSuccess(successCallback);
+  if (providerName === "anonymous") {
+    anonymousLogin(successCallback, errorCallback);
+    return;
+  }
+
+  var user = firebase.auth().currentUser;
+  if (user != null && !user.isAnonymous) {
+    retrieveIdToken(successCallback, errorCallback);
+    return;
+  }
+
+  firebase.auth().signInWithPopup({}).then(function () {
+    deliverLoginResult(successCallback, errorCallback);
+  }).catch(function (error) {
+    deliverLoginResult(successCallback, errorCallback);
+    if (typeof errorCallback === "function" && typeof successCallback !== "function") {
+      errorCallback(error && error.message ? error.message : "login failed");
+    }
+  });
 }
 
 function firebaseLogout() {
+  window.bootstrapLocalSession();
   return Promise.resolve();
 }
 
 function getCurrentUserDisplayName() {
+  var user = firebase.auth().currentUser;
+  if (user && user.displayName) {
+    return user.displayName;
+  }
   return "Player";
 }
 
 function getProvider(providerName) {
-  return {};
+  if (providerName && providerName.indexOf("facebook") !== -1) {
+    return new firebase.auth.FacebookAuthProvider();
+  }
+  return new firebase.auth.GoogleAuthProvider();
 }
 
 function setModalContent(modalContentId, contentString) {
@@ -44,6 +80,7 @@ function setModalContent(modalContentId, contentString) {
 
 function continueLogin() {
   hideModal("generalModal");
+  firebaseLogin(tempProviderName || "google.com");
 }
 
 function showModal(modalId) {

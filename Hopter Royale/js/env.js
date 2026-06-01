@@ -9,7 +9,7 @@
     isLocalhost: isLocalhost,
     isSecure: isSecure,
     isGithubPages: isGithubPages,
-    multiplayerOk: isSecure && typeof Peer !== 'undefined',
+    multiplayerOk: isSecure && typeof trystero !== 'undefined',
   };
 
   function applyMenuMode() {

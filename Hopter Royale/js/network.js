@@ -8,7 +8,6 @@
     this.myPeerId = null;
     this.hostId = null;
     this.connected = false;
-
     this.actions = {};
   };
 
@@ -22,109 +21,103 @@
     this.hostId = null;
   };
 
-  HR.NetworkManager.prototype.initRoom = function(code, asHost, onStatus) {
+  HR.NetworkManager.prototype.initRoom = function (code, asHost, onStatus) {
     var self = this;
     this.isHost = asHost;
     this.roomCode = code;
     this.destroy();
-    
+
     if (onStatus) onStatus(asHost ? 'Opening channel...' : 'Connecting to host...');
-    
-    return new Promise(function(resolve, reject) {
+
+    return new Promise(function (resolve, reject) {
       try {
         self.room = trystero.joinRoom({ appId: HR.CONFIG.FIREBASE_APP_ID }, code);
       } catch (err) {
         return reject(new Error('Failed to initialize multiplayer room.'));
       }
-      
-      var aJoin = self.room.makeAction('JOIN');
-      self.actions.sendJoin = aJoin[0];
-      var getJoin = aJoin[1];
-      
-      var aJoinAck = self.room.makeAction('JOIN_ACK');
-      self.actions.sendJoinAck = aJoinAck[0];
-      var getJoinAck = aJoinAck[1];
-      
-      var aLobbyUpdate = self.room.makeAction('LOBBY_UPDATE');
-      self.actions.sendLobbyUpdate = aLobbyUpdate[0];
-      var getLobbyUpdate = aLobbyUpdate[1];
-      
-      var aStartGame = self.room.makeAction('START_GAME');
-      self.actions.sendStartGame = aStartGame[0];
-      var getStartGame = aStartGame[1];
-      
-      var aStateUpdate = self.room.makeAction('STATE_UPDATE');
-      self.actions.sendStateUpdate = aStateUpdate[0];
-      var getStateUpdate = aStateUpdate[1];
-      
-      var aEvent = self.room.makeAction('EVENT');
-      self.actions.sendEvent = aEvent[0];
-      var getEvent = aEvent[1];
 
-      var aGameOver = self.room.makeAction('GAME_OVER');
-      self.actions.sendGameOver = aGameOver[0];
-      var getGameOver = aGameOver[1];
-      
-      var aInput = self.room.makeAction('INPUT');
-      self.actions.sendInput = aInput[0];
-      var getInput = aInput[1];
-      
-      getJoin(function(data, peerId) {
+      // Get our own peer ID (new API exposes it on the room object)
+      self.myPeerId = self.room.selfId || null;
+
+      // New API: makeAction() returns an object with .send and .onMessage
+      var aJoin       = self.room.makeAction('JOIN');
+      var aJoinAck    = self.room.makeAction('JOIN_ACK');
+      var aLobbyUpdate= self.room.makeAction('LOBBY_UPDATE');
+      var aStartGame  = self.room.makeAction('START_GAME');
+      var aStateUpdate= self.room.makeAction('STATE_UPDATE');
+      var aEvent      = self.room.makeAction('EVENT');
+      var aGameOver   = self.room.makeAction('GAME_OVER');
+      var aInput      = self.room.makeAction('INPUT');
+
+      // Store send references (wrapping so targeted sends work: send(data, peerId))
+      self.actions.sendJoin        = function (d, t) { aJoin.send(d, t); };
+      self.actions.sendJoinAck     = function (d, t) { aJoinAck.send(d, t); };
+      self.actions.sendLobbyUpdate = function (d)    { aLobbyUpdate.send(d); };
+      self.actions.sendStartGame   = function (d, t) { aStartGame.send(d, t); };
+      self.actions.sendStateUpdate = function (d)    { aStateUpdate.send(d); };
+      self.actions.sendEvent       = function (d)    { aEvent.send(d); };
+      self.actions.sendGameOver    = function (d)    { aGameOver.send(d); };
+      self.actions.sendInput       = function (d, t) { aInput.send(d, t); };
+
+      // New API: assign .onMessage handlers (receives data + {peerId} metadata)
+      aJoin.onMessage = function (data, info) {
         if (!self.isHost) return;
+        var peerId = info.peerId;
         if (self.handlers.onPlayerJoin) self.handlers.onPlayerJoin(peerId, data.name, peerId);
-        self.actions.sendJoinAck({
+        aJoinAck.send({
           peerId: peerId,
           players: self.handlers.getLobbyPlayers ? self.handlers.getLobbyPlayers() : {}
         }, peerId);
-        self.actions.sendLobbyUpdate({ players: self.handlers.getLobbyPlayers() });
-      });
-      
-      getJoinAck(function(data, peerId) {
+        aLobbyUpdate.send({ players: self.handlers.getLobbyPlayers() });
+      };
+
+      aJoinAck.onMessage = function (data, info) {
         if (self.isHost) return;
-        self.hostId = peerId;
+        self.hostId = info.peerId;
         self.connected = true;
         if (self.handlers.onJoinAck) self.handlers.onJoinAck(data);
         resolve(code);
-      });
-      
-      getLobbyUpdate(function(data, peerId) {
-        if (self.isHost || peerId !== self.hostId) return;
-        if (self.handlers.onLobbyUpdate) self.handlers.onLobbyUpdate(data.players);
-      });
-      
-      getStartGame(function(data, peerId) {
-        if (self.isHost || peerId !== self.hostId) return;
-        if (self.handlers.onStartGame) self.handlers.onStartGame(data.state, data.youAre);
-      });
-      
-      getStateUpdate(function(state, peerId) {
-        if (self.isHost || peerId !== self.hostId) return;
-        if (self.handlers.onStateUpdate) self.handlers.onStateUpdate(state);
-      });
-      
-      getEvent(function(data, peerId) {
-        if (self.isHost || peerId !== self.hostId) return;
-        if (self.handlers.onEvent) self.handlers.onEvent(data);
-      });
+      };
 
-      getGameOver(function(data, peerId) {
-        if (self.isHost || peerId !== self.hostId) return;
+      aLobbyUpdate.onMessage = function (data, info) {
+        if (self.isHost || info.peerId !== self.hostId) return;
+        if (self.handlers.onLobbyUpdate) self.handlers.onLobbyUpdate(data.players);
+      };
+
+      aStartGame.onMessage = function (data, info) {
+        if (self.isHost || info.peerId !== self.hostId) return;
+        if (self.handlers.onStartGame) self.handlers.onStartGame(data.state, data.youAre);
+      };
+
+      aStateUpdate.onMessage = function (state, info) {
+        if (self.isHost || info.peerId !== self.hostId) return;
+        if (self.handlers.onStateUpdate) self.handlers.onStateUpdate(state);
+      };
+
+      aEvent.onMessage = function (data, info) {
+        if (self.isHost || info.peerId !== self.hostId) return;
+        if (self.handlers.onEvent) self.handlers.onEvent(data);
+      };
+
+      aGameOver.onMessage = function (data, info) {
+        if (self.isHost || info.peerId !== self.hostId) return;
         if (self.handlers.onGameOver) self.handlers.onGameOver(data.winner);
-      });
-      
-      getInput(function(input, peerId) {
+      };
+
+      aInput.onMessage = function (input, info) {
         if (!self.isHost) return;
-        if (self.handlers.onPlayerInput) self.handlers.onPlayerInput(peerId, input);
-      });
-      
-      self.room.onPeerJoin(function(peerId) {
+        if (self.handlers.onPlayerInput) self.handlers.onPlayerInput(info.peerId, input);
+      };
+
+      // New API: onPeerJoin / onPeerLeave are property assignments, not function calls
+      self.room.onPeerJoin = function (peerId) {
         self.connections[peerId] = true;
         if (!self.isHost) {
-          self.actions.sendJoin({ name: self.handlers.getName() }, peerId);
+          aJoin.send({ name: self.handlers.getName() }, peerId);
         }
-      });
-      
-      self.room.onPeerLeave(function(peerId) {
+      };
+
+      self.room.onPeerLeave = function (peerId) {
         delete self.connections[peerId];
         if (self.isHost) {
           if (self.handlers.onPlayerLeave) self.handlers.onPlayerLeave(peerId);
@@ -133,13 +126,13 @@
             if (self.handlers.onHostDisconnected) self.handlers.onHostDisconnected();
           }
         }
-      });
+      };
 
       if (asHost) {
         self.connected = true;
         resolve(code);
       } else {
-        setTimeout(function() {
+        setTimeout(function () {
           if (!self.connected) {
             self.destroy();
             reject(new Error('Host not found. Check the code and try again.'));
@@ -188,6 +181,16 @@
         var payload = Object.assign({ type: 'EVENT' }, event);
         this.actions.sendEvent(payload);
       }
+    }
+  };
+
+  // General-purpose broadcast used by main.js for LOBBY_UPDATE and GAME_OVER
+  HR.NetworkManager.prototype.broadcast = function (data) {
+    if (!data || !data.type) return;
+    if (data.type === 'LOBBY_UPDATE') {
+      if (this.actions.sendLobbyUpdate) this.actions.sendLobbyUpdate({ players: data.players });
+    } else if (data.type === 'GAME_OVER') {
+      if (this.actions.sendGameOver) this.actions.sendGameOver({ winner: data.winner });
     }
   };
 })(window.HR);

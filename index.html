@@ -477,6 +477,28 @@
             padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 11px; transition: var(--transition);
         }
         .hud-btn:hover { background: var(--danger); border-color: var(--danger); }
+		
+		/* Volume Control UI */
+.hud-volume {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    padding: 0 15px; border-radius: 10px;
+}
+.hud-volume svg { width: 15px; height: 15px; color: rgba(255,255,255,0.8); }
+.hud-volume input[type="range"] {
+    -webkit-appearance: none; width: 80px; background: transparent; cursor: pointer;
+}
+.hud-volume input[type="range"]:focus { outline: none; }
+.hud-volume input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;
+}
+.hud-volume input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
+    background: #fff; margin-top: -4px; transition: var(--transition);
+}
+.hud-volume input[type="range"]:hover::-webkit-slider-thumb {
+    background: var(--accent); transform: scale(1.2); box-shadow: 0 0 10px var(--accent-glow);
+}
 
         /* ========================================
         VIII. MODALS (EXIT & SETTINGS)
@@ -668,7 +690,7 @@
         </div>
     </div>
 
-    <!-- Game Overlay -->
+        <!-- Game Overlay -->
     <div id="launcher-overlay">
         <div class="hud-container">
             <div class="hud-grip" title="Hover for menu">
@@ -676,6 +698,13 @@
             </div>
             <div class="hud-menu">
                 <div id="hud-name" class="hud-btn" style="pointer-events: none; border-color: transparent; background: transparent; color: var(--accent);">GAME_NAME</div>
+                
+                <!-- VOLUME SLIDER -->
+                <div class="hud-volume" title="Game Volume">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    <input type="range" id="game-volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateGameVolume(this.value)">
+                </div>
+
                 <button class="hud-btn ripple-target" onclick="requestExit()">Exit Game</button>
             </div>
         </div>
@@ -1183,6 +1212,35 @@
                 setTimeout(() => ripple.remove(), 600);
             });
         });
+		
+		// Default volume state (50%)
+let globalGameVolume = 0.5;
+
+function updateGameVolume(value) {
+    globalGameVolume = parseFloat(value);
+    const frame = document.getElementById('game-frame');
+    
+    try {
+        if (frame.contentWindow) {
+            // 1. Directly adjust standard <audio> and <video> elements inside the game
+            const mediaElements = frame.contentWindow.document.querySelectorAll('audio, video');
+            mediaElements.forEach(media => {
+                media.volume = globalGameVolume;
+            });
+            
+            // 2. Broadcast volume to the iframe in case it uses Web Audio API
+            frame.contentWindow.postMessage({ type: 'SET_VOLUME', volume: globalGameVolume }, '*');
+        }
+    } catch (err) {
+        // This will quietly catch any Cross-Origin (CORS) errors if the game is hosted on a different domain
+        console.warn("[H&H Launcher] Could not adjust volume directly:", err);
+    }
+}
+
+// Automatically enforce the volume slider's value whenever a new game finishes loading
+document.getElementById('game-frame').addEventListener('load', () => {
+    updateGameVolume(document.getElementById('game-volume-slider').value);
+});
 		
 		// ─── FUNCTIONAL SETTINGS LOGIC ───────────────────────────────────────
         const animToggle = document.getElementById('setting-animations');

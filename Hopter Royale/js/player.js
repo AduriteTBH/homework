@@ -118,14 +118,16 @@
   HR.tryShoot = function (state, player, isLocal) {
     if (player.fireCooldown > 0 || !player.input.click) return;
 
-    var fireRate = Math.max(3, 16 - player.level * 1.1);
+    var fireRate = Math.max(5, 22 - player.level * 1.2);
     player.fireCooldown = fireRate;
 
-    var bSize = 4 + player.level * 0.6;
-    var bSpeed = 17 + player.level * 0.45;
+    if (isLocal && HR.addScreenShake) HR.addScreenShake(3);
 
-    player.vx -= Math.cos(player.angle) * 3.2;
-    player.vy -= Math.sin(player.angle) * 3.2;
+    var bSize = 4 + player.level * 0.6;
+    var bSpeed = 24 + player.level * 0.6;
+
+    player.vx -= Math.cos(player.angle) * 2.2;
+    player.vy -= Math.sin(player.angle) * 2.2;
 
     var dmgTable = { base:1.0, scout:0.8, heavy:1.3, phantom:1.1, spectre:1.15, apache:1.25, viper:0.85, goliath:1.0, wraith:0.9, titan:1.2 };
     var dmg = (30 + player.level * 3.5) * (dmgTable[player.variant] || 1);

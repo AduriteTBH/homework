@@ -24,13 +24,14 @@
   HR.RUNTIME_LOW_GRAPHICS = false;
 
   HR.CONFIG = {
-    GRAPHICS_MODE: 'AUTO',
+    GRAPHICS_MODE: 'LOW',
     MAP_SIZE: 5000,
     MAX_PLAYERS: 30,
     TICK_RATE: 30,
     BOT_FILL: true,
     ROOM_CODE_LEN: 5,
     PEER_PREFIX: 'hr-',
+    FIREBASE_APP_ID: 'https://hopterroyalefirebase-default-rtdb.firebaseio.com/',
     STORM_START_RATIO: 0.75,
     STORM_MIN_RADIUS: 80,
     STORM_SHRINK: 0.22,
@@ -40,8 +41,8 @@
     POWERUP_TYPES: ['health', 'shield', 'speed'],
     ACCEL: 0.95,
     MAX_SPEED: 9.2,
-    FRICTION: 0.88,
-    BULLET_LIFE: 45,
+    FRICTION: 0.93,
+    BULLET_LIFE: 26,
     DASH_SPEED: 26,
     DASH_DURATION: 6,
     DASH_COOLDOWN: 50,

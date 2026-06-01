@@ -7,7 +7,7 @@
   var musicTimer = null;
   var musicStep = 0;
   var inBattle = false;
-  var audioBuffers = { menu: null, battle: null, laser: null, hit: null, powerup: null, select: null };
+  var audioBuffers = { menu: null, battle: null, laser: null, hit: null, powerup: null, select: null, explode: null };
   var musicSource = null;
 
   var MENU_PROGRESSION = [
@@ -193,6 +193,7 @@
     
     if (p.sfxLaser) loadAudioFile(p.sfxLaser).then(function(buf) { audioBuffers.laser = buf; }).catch(function() {});
     if (p.sfxHit) loadAudioFile(p.sfxHit).then(function(buf) { audioBuffers.hit = buf; }).catch(function() {});
+    loadAudioFile('assets/audio/explode.wav').then(function(buf) { audioBuffers.explode = buf; }).catch(function() {});
     if (p.sfxPowerup) loadAudioFile(p.sfxPowerup).then(function(buf) { audioBuffers.powerup = buf; }).catch(function() {});
     if (p.sfxSelect) loadAudioFile(p.sfxSelect).then(function(buf) { audioBuffers.select = buf; }).catch(function() {});
   }
@@ -317,14 +318,14 @@
       }
     },
     explode: function (x, y) { 
-      var vol = HR.audio.getVolumeForPos(x, y, 0.4);
-      if (audioBuffers.hit instanceof Audio) {
-        var a = audioBuffers.hit.cloneNode();
+      var vol = HR.audio.getVolumeForPos(x, y, 0.18); // Massively lowered volume
+      if (audioBuffers.explode instanceof Audio) {
+        var a = audioBuffers.explode.cloneNode();
         a.volume = vol;
-        a.playbackRate = 0.5; // Pitched down for explosion
+        a.playbackRate = 1.0;
         a.play().catch(function(){});
-      } else {
-        playBuffer(audioBuffers.hit, vol);
+      } else if (audioBuffers.explode) {
+        playBuffer(audioBuffers.explode, vol);
       }
     },
     dash: function (x, y) { 

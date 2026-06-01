@@ -1,52 +1,61 @@
 (function (HR) {
   var STATES = ['LOOT', 'HUNT', 'FLEE', 'STORM'];
 
+  function distSq(x1, y1, x2, y2) {
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+    return dx * dx + dy * dy;
+  }
+
   HR.runBotAI = function (bot, state) {
     bot.input = HR.emptyInput();
     bot.aiState = bot.aiState || 'LOOT';
     bot.aiTimer = (bot.aiTimer || 0) - 1;
 
-    var stormDist = HR.dist(bot.x, bot.y, state.storm.x, state.storm.y);
-    var inStorm = stormDist > state.storm.radius;
+    var stormDistSq = distSq(bot.x, bot.y, state.storm.x, state.storm.y);
+    var stormRadSq = state.storm.radius * state.storm.radius;
+    var inStorm = stormDistSq > stormRadSq;
     var stormMargin = state.storm.radius - 180;
+    var stormMarginSq = stormMargin * stormMargin;
 
     var threat = null;
-    var threatDist = Infinity;
+    var threatDistSq = Infinity;
     var loot = null;
-    var lootDist = Infinity;
+    var lootDistSq = Infinity;
 
     Object.values(state.players).forEach(function (p) {
       if (p.id === bot.id || !p.alive) return;
-      var d = HR.dist(bot.x, bot.y, p.x, p.y);
-      var aggroRange = p.isBot ? 380 : 520; // Ignore other bots from far away
-      if ((p.level > bot.level + 1 && d < aggroRange - 100) || d < aggroRange) {
-        if (d < threatDist) {
+      var dSq = distSq(bot.x, bot.y, p.x, p.y);
+      var aggroRange = p.isBot ? 380 : 520;
+      var aggroShort = aggroRange - 100;
+      if ((p.level > bot.level + 1 && dSq < aggroShort * aggroShort) || dSq < aggroRange * aggroRange) {
+        if (dSq < threatDistSq) {
           threat = p;
-          threatDist = d;
+          threatDistSq = dSq;
         }
       }
     });
 
     state.crates.forEach(function (c) {
-      var d = HR.dist(bot.x, bot.y, c.x, c.y);
-      if (d < lootDist) { loot = c; lootDist = d; }
+      var dSq = distSq(bot.x, bot.y, c.x, c.y);
+      if (dSq < lootDistSq) { loot = c; lootDistSq = dSq; }
     });
 
     state.gems.forEach(function (g) {
-      var d = HR.dist(bot.x, bot.y, g.x, g.y);
-      if (d < lootDist) { loot = g; lootDist = d; }
+      var dSq = distSq(bot.x, bot.y, g.x, g.y);
+      if (dSq < lootDistSq) { loot = g; lootDistSq = dSq; }
     });
 
     var inGracePeriod = state.matchStartTime && Date.now() < state.matchStartTime + 2000;
     if (inGracePeriod) {
-      threat = null; // Do not attack for 2 seconds after match starts
+      threat = null;
     }
 
-    if (inStorm || stormDist > stormMargin) {
+    if (inStorm || stormDistSq > stormMarginSq) {
       bot.aiState = 'STORM';
-    } else if (threat && bot.hp < bot.maxHp * 0.35 && threatDist < 380) {
+    } else if (threat && bot.hp < bot.maxHp * 0.35 && threatDistSq < 380 * 380) {
       bot.aiState = 'FLEE';
-    } else if (threat && threatDist < 480) {
+    } else if (threat && threatDistSq < 480 * 480) {
       bot.aiState = 'HUNT';
     } else if (loot) {
       bot.aiState = 'LOOT';
@@ -73,19 +82,18 @@
         break;
       case 'HUNT':
         if (threat) {
-          var t = HR.dist(bot.x, bot.y, threat.x, threat.y) / 18;
-          var aimJitter = threat.isBot ? 140 : 80; // Miss more often, especially against bots
+          var t = Math.sqrt(threatDistSq) / 18;
           target = {
-            x: threat.x + threat.vx * t * 0.6 + (Math.random() - 0.5) * aimJitter,
-            y: threat.y + threat.vy * t * 0.6 + (Math.random() - 0.5) * aimJitter,
+            x: threat.x + threat.vx * t * 0.6,
+            y: threat.y + threat.vy * t * 0.6,
           };
-          var fireChance = threat.isBot ? 0.3 : 0.15; // Shoot less often at bots
-          if (threatDist < 420) bot.input.click = Math.random() > fireChance;
+          var fireChance = threat.isBot ? 0.3 : 0.6;
+          if (threatDistSq < 420 * 420) bot.input.click = Math.random() > fireChance;
         }
         break;
       case 'LOOT':
         target = loot;
-        if (lootDist < 250) bot.input.click = Math.random() > 0.05;
+        if (lootDistSq < 250 * 250) bot.input.click = Math.random() > 0.05;
         break;
       default:
         target = {
@@ -96,19 +104,23 @@
 
     if (target) steerBot(bot, target, bot.aiState === 'HUNT');
 
+    if (bot.aiState === 'HUNT' && threat) {
+      var aimJitter = threat.isBot ? 0.2 : 0.55;
+      bot.input.angle += (Math.random() - 0.5) * aimJitter;
+    }
+
     if ((bot.aiState === 'FLEE' || bot.aiState === 'HUNT') && bot.dashCooldown <= 0 && Math.random() > 0.85) {
-      if (bot.aiState === 'FLEE' || threatDist < 300) {
+      if (bot.aiState === 'FLEE' || threatDistSq < 300 * 300) {
         bot.input.dash = true;
       }
     }
-    if (bot.aiState === 'LOOT' && lootDist > 200 && bot.dashCooldown <= 0 && Math.random() > 0.95) {
+    if (bot.aiState === 'LOOT' && lootDistSq > 200 * 200 && bot.dashCooldown <= 0 && Math.random() > 0.95) {
       bot.input.dash = true;
     }
 
-    // Anti-stuck logic for crates: if physically bumping into a crate, shoot it to clear the path!
     var blockingCrate = null;
     state.crates.forEach(function (c) {
-      if (HR.dist(bot.x, bot.y, c.x, c.y) < 70) {
+      if (distSq(bot.x, bot.y, c.x, c.y) < 70 * 70) {
         blockingCrate = c;
       }
     });
@@ -125,7 +137,6 @@
     var perp = angle + Math.PI / 2;
 
     if (strafe) {
-      // Strafe to dodge bullets (simulated by random strafe switching)
       if (Math.random() > 0.96) bot.strafeDir = (bot.strafeDir || 1) * -1;
       var sd = bot.strafeDir || 1;
       bot.input[Math.cos(perp) * sd > 0 ? 'd' : 'a'] = true;

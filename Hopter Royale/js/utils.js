@@ -32,23 +32,38 @@
     color: null,
     variant: null,
     callsign: null,
-    graphicsMode: 'AUTO',
+    graphicsMode: 'LOW',
+    customGraphics: {
+      particles: 1.0,
+      dashTrails: 40,
+      rotorBlur: true,
+      backgroundOrbs: true,
+      minimapRate: 1,
+      gridPulse: true
+    },
     load: function() {
       try {
         var p = JSON.parse(localStorage.getItem('hr_prefs') || '{}');
         this.color = p.color;
         this.variant = p.variant;
         this.callsign = p.callsign;
-        this.graphicsMode = p.graphicsMode || 'AUTO';
+        this.graphicsMode = p.graphicsMode || 'LOW';
+        if (p.customGraphics) {
+          Object.assign(this.customGraphics, p.customGraphics);
+        }
       } catch(e) {}
     },
-    save: function(c, v, n, gm) {
+    save: function(c, v, n, gm, cg) {
       if(c!==undefined) this.color = c;
       if(v!==undefined) this.variant = v;
       if(n!==undefined) this.callsign = n;
       if(gm!==undefined) this.graphicsMode = gm;
+      if(cg!==undefined) this.customGraphics = cg;
       try {
-        localStorage.setItem('hr_prefs', JSON.stringify({ color: this.color, variant: this.variant, callsign: this.callsign, graphicsMode: this.graphicsMode }));
+        localStorage.setItem('hr_prefs', JSON.stringify({ 
+          color: this.color, variant: this.variant, callsign: this.callsign, 
+          graphicsMode: this.graphicsMode, customGraphics: this.customGraphics 
+        }));
       } catch(e) {}
     }
   };
@@ -56,7 +71,10 @@
   HR.myColor = HR.prefs.color;
   HR.myVariant = HR.prefs.variant;
   HR.myCallsign = HR.prefs.callsign;
-  if (HR.CONFIG) HR.CONFIG.GRAPHICS_MODE = HR.prefs.graphicsMode;
+  if (HR.CONFIG) {
+    HR.CONFIG.GRAPHICS_MODE = HR.prefs.graphicsMode;
+    HR.CONFIG.CUSTOM_GRAPHICS = HR.prefs.customGraphics;
+  }
 
   HR.stats = {
     wins: 0,

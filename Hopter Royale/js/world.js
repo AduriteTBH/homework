@@ -84,17 +84,18 @@
         if (hit || !p.alive || p.id === b.ownerId) return;
         
         var owner = state.players[b.ownerId];
-        var hitRadius = 24 + b.size;
+        var hitRadius = 30 + b.size;
         
-        // If a human is shooting at a bot, make the bot's hitbox 1.5x larger!
+        // If a human is shooting at a bot, make the bot's hitbox 2.2x larger!
         if (owner && !owner.isBot && p.isBot) {
-          hitRadius = (24 * 1.5) + b.size;
+          hitRadius = (30 * 2.2) + b.size;
         }
 
         // Fast bounding box check to prevent massive lag!
         if (Math.abs(p.x - b.x) > hitRadius || Math.abs(p.y - b.y) > hitRadius) return;
 
         if (Math.hypot(p.x - b.x, p.y - b.y) < hitRadius) {
+          p.regenTimer = 0;
           if (p.shield && p.shield > 0) {
             var absorb = Math.min(p.shield, b.damage);
             p.shield -= absorb;

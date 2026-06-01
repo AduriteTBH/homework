@@ -274,22 +274,74 @@
   };
 
   var btnGraphics = document.getElementById('btn-toggle-graphics');
+  var customPanel = document.getElementById('custom-graphics-panel');
+  var cgParticles = document.getElementById('cg-particles');
+  var cgTrails = document.getElementById('cg-trails');
+  var cgMinimap = document.getElementById('cg-minimap');
+  var cgRotor = document.getElementById('cg-rotor');
+  var cgOrbs = document.getElementById('cg-orbs');
+  var cgPulse = document.getElementById('cg-pulse');
+  var valParticles = document.getElementById('val-particles');
+  var valTrails = document.getElementById('val-trails');
+  var valMinimap = document.getElementById('val-minimap');
+
   if (btnGraphics) {
     var updateGraphicsBtn = function() {
       if (HR.CONFIG) {
-        var mode = HR.CONFIG.GRAPHICS_MODE || 'AUTO';
+        var mode = HR.CONFIG.GRAPHICS_MODE || 'LOW';
         btnGraphics.textContent = 'Graphics: ' + mode;
         if (mode === 'AUTO') btnGraphics.style.color = '#fbc531';
         else if (mode === 'HIGH') btnGraphics.style.color = '#ff4757';
+        else if (mode === 'CUSTOM') btnGraphics.style.color = '#a29bfe';
         else btnGraphics.style.color = '#00d2d3';
+        
+        if (customPanel) customPanel.style.display = mode === 'CUSTOM' ? 'flex' : 'none';
+
+        if (HR.CONFIG.CUSTOM_GRAPHICS && cgParticles) {
+           var cg = HR.CONFIG.CUSTOM_GRAPHICS;
+           cgParticles.value = cg.particles;
+           cgTrails.value = cg.dashTrails;
+           cgMinimap.value = cg.minimapRate;
+           cgRotor.checked = cg.rotorBlur;
+           cgOrbs.checked = cg.backgroundOrbs;
+           cgPulse.checked = cg.gridPulse;
+           
+           if (valParticles) valParticles.textContent = Math.round(cg.particles * 100) + '%';
+           if (valTrails) valTrails.textContent = cg.dashTrails;
+           if (valMinimap) valMinimap.textContent = cg.minimapRate === 1 ? '60 FPS' : Math.round(60/cg.minimapRate) + ' FPS';
+        }
       }
     };
     updateGraphicsBtn();
+    
+    var saveCustom = function() {
+       if (HR.CONFIG && HR.CONFIG.CUSTOM_GRAPHICS) {
+          var cg = HR.CONFIG.CUSTOM_GRAPHICS;
+          cg.particles = parseFloat(cgParticles.value);
+          cg.dashTrails = parseInt(cgTrails.value, 10);
+          cg.minimapRate = parseInt(cgMinimap.value, 10);
+          cg.rotorBlur = cgRotor.checked;
+          cg.backgroundOrbs = cgOrbs.checked;
+          cg.gridPulse = cgPulse.checked;
+       }
+       if (HR.prefs) HR.prefs.save(undefined, undefined, undefined, HR.CONFIG.GRAPHICS_MODE, HR.CONFIG.CUSTOM_GRAPHICS);
+       updateGraphicsBtn();
+    };
+
+    if (cgParticles) {
+       cgParticles.addEventListener('input', saveCustom);
+       cgTrails.addEventListener('input', saveCustom);
+       cgMinimap.addEventListener('input', saveCustom);
+       cgRotor.addEventListener('change', saveCustom);
+       cgOrbs.addEventListener('change', saveCustom);
+       cgPulse.addEventListener('change', saveCustom);
+    }
+
     btnGraphics.addEventListener('click', function() {
       if (HR.CONFIG) {
-        var modes = ['AUTO', 'HIGH', 'LOW'];
-        var idx = modes.indexOf(HR.CONFIG.GRAPHICS_MODE || 'AUTO');
-        HR.CONFIG.GRAPHICS_MODE = modes[(idx + 1) % 3];
+        var modes = ['LOW', 'AUTO', 'HIGH', 'CUSTOM'];
+        var idx = modes.indexOf(HR.CONFIG.GRAPHICS_MODE || 'LOW');
+        HR.CONFIG.GRAPHICS_MODE = modes[(idx + 1) % 4];
       }
       if (HR.prefs) HR.prefs.save(undefined, undefined, undefined, HR.CONFIG.GRAPHICS_MODE);
       updateGraphicsBtn();
@@ -579,5 +631,25 @@
         });
       }
     }
+  };
+
+  var personalKillTimeout = null;
+  HR.showPersonalKill = function (victimName) {
+    var el = document.getElementById('personal-kill-notification');
+    var nameEl = document.getElementById('personal-kill-name');
+    if (!el || !nameEl) return;
+    
+    nameEl.textContent = victimName;
+    el.classList.remove('hidden');
+    
+    // Force reflow
+    void el.offsetWidth;
+    
+    el.classList.add('show');
+    
+    if (personalKillTimeout) clearTimeout(personalKillTimeout);
+    personalKillTimeout = setTimeout(function () {
+      el.classList.remove('show');
+    }, 2500);
   };
 })(window.HR);

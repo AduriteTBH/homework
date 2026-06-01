@@ -6,7 +6,7 @@
   <title>Hopter Royale — H&amp;H Inc</title>
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="https://unpkg.com/trystero/dist/trystero-firebase.min.js"></script>
 </head>
 <body class="dark-ui">
   <!-- MAIN MENU (Portal-style) -->
@@ -26,7 +26,13 @@
       <nav class="portal-nav" id="portal-nav">
         <button type="button" class="portal-item" data-action="solo">Singleplayer</button>
         <button type="button" class="portal-item" data-action="host">Host Multiplayer</button>
-        <button type="button" class="portal-item" data-action="join">Join Multiplayer</button>
+        <button type="button" class="portal-item" data-action="join">
+          Join Multiplayer
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); opacity: 0.5; font-size: 0.65rem; letter-spacing: 0.5px; margin-left: 12px; vertical-align: middle;">
+            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 5px #2ecc71;"></span>
+            Firebase Connected
+          </span>
+        </button>
         <button type="button" class="portal-item" id="btn-settings">Settings</button>
         <button type="button" class="portal-item" id="btn-stats">Stats</button>
       </nav>
@@ -144,7 +150,40 @@
       <div class="portal-lobby-list">
         <p class="subpanel-title">Preferences</p>
         <div style="font-size: 24px; color: white; line-height: 1.8; margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
-           <button type="button" id="btn-toggle-graphics" class="portal-item" style="width: 100%; max-width: 300px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">Graphics: AUTO</button>
+           <button type="button" id="btn-toggle-graphics" class="portal-item" style="width: 100%; max-width: 300px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">Graphics: LOW</button>
+           
+           <div id="custom-graphics-panel" style="display: none; width: 100%; max-width: 300px; margin-top: 5px; background: rgba(0,0,0,0.4); border-radius: 10px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); flex-direction: column; gap: 15px; box-sizing: border-box;">
+             <div style="display: flex; flex-direction: column; gap: 5px;">
+               <div style="display: flex; justify-content: space-between;"><label style="color: #ccc; font-size: 14px; text-transform: uppercase;">Particle Density</label><span id="val-particles" style="color: #fbc531; font-size: 14px; font-weight: bold;">100%</span></div>
+               <input type="range" id="cg-particles" min="0" max="1" step="0.1" value="1" style="--thumb-color: #fbc531;">
+             </div>
+             
+             <div style="display: flex; flex-direction: column; gap: 5px;">
+               <div style="display: flex; justify-content: space-between;"><label style="color: #ccc; font-size: 14px; text-transform: uppercase;">Dash Trails</label><span id="val-trails" style="color: #00d2d3; font-size: 14px; font-weight: bold;">40</span></div>
+               <input type="range" id="cg-trails" min="2" max="40" step="2" value="40" style="--thumb-color: #00d2d3;">
+             </div>
+
+             <div style="display: flex; flex-direction: column; gap: 5px;">
+               <div style="display: flex; justify-content: space-between;"><label style="color: #ccc; font-size: 14px; text-transform: uppercase;">Minimap Throttle</label><span id="val-minimap" style="color: #ff4757; font-size: 14px; font-weight: bold;">60 FPS</span></div>
+               <input type="range" id="cg-minimap" min="1" max="10" step="1" value="1" style="--thumb-color: #ff4757; direction: rtl;">
+             </div>
+
+             <div style="display: flex; justify-content: space-between; align-items: center;">
+               <label style="color: #ccc; font-size: 14px; text-transform: uppercase;">Rotor Blur</label>
+               <input type="checkbox" id="cg-rotor" checked>
+             </div>
+
+             <div style="display: flex; justify-content: space-between; align-items: center;">
+               <label style="color: #ccc; font-size: 14px; text-transform: uppercase;">Background Orbs</label>
+               <input type="checkbox" id="cg-orbs" checked>
+             </div>
+             
+             <div style="display: flex; justify-content: space-between; align-items: center;">
+               <label style="color: #ccc; font-size: 14px; text-transform: uppercase;">Grid Pulse</label>
+               <input type="checkbox" id="cg-pulse" checked>
+             </div>
+           </div>
+
            <button type="button" data-action="mute" id="btn-toggle-music" class="portal-item" style="width: 100%; max-width: 300px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">Music: ON</button>
         </div>
       </div>
@@ -171,6 +210,11 @@
     <div id="minimap-container" class="hud-panel map-panel" title="Press M to expand">
       <div class="panel-head">Tactical Map <span class="map-hint">[M]</span></div>
       <canvas id="minimapCanvas" width="140" height="140"></canvas>
+    </div>
+    <div id="personal-kill-notification" class="hidden">
+      <div class="kill-skull"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"></circle><path d="M14.5 4L16 2m-8 2L6.5 2M9 13v2m6-2v2m-3-2v4"></path></svg></div>
+      <span class="kill-text">ELIMINATED</span>
+      <span id="personal-kill-name" class="kill-name">TARGET</span>
     </div>
 
     <div id="hud-bottom">

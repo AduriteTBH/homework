@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Solid sci-fi base -->
+  <polygon points="4,10 10,4 54,4 60,10 60,54 54,60 10,60 4,54" fill="#2c3e50" stroke="#1a252f" stroke-width="2"/>
+  
+  <!-- Faux glow -->
+  <polygon points="6,12 12,6 52,6 58,12 58,52 52,58 12,58 6,52" fill="none" stroke="#fbc531" stroke-width="4" opacity="0.3"/>
+  <polygon points="6,12 12,6 52,6 58,12 58,52 52,58 12,58 6,52" fill="none" stroke="#fbc531" stroke-width="1.5"/>
+  
+  <!-- Inner Frame -->
+  <rect x="14" y="14" width="36" height="36" rx="4" fill="none" stroke="#fbc531" stroke-width="1.5" opacity="0.8"/>
+  
+  <!-- Vents -->
+  <rect x="22" y="18" width="20" height="3" fill="#111" />
+  <rect x="22" y="43" width="20" height="3" fill="#111" />
+  <rect x="18" y="22" width="3" height="20" fill="#111" />
+  <rect x="43" y="22" width="3" height="20" fill="#111" />
+  
+  <!-- Energy Core -->
+  <circle cx="32" cy="32" r="12" fill="#fbc531" opacity="0.3" />
+  <circle cx="32" cy="32" r="8" fill="#fbc531" opacity="0.6" />
+  <circle cx="32" cy="32" r="4" fill="#fff" />
+  
+  <!-- Corner Accents -->
+  <path d="M 4 10 L 10 4 L 16 4 L 4 16 Z" fill="#fbc531" />
+  <path d="M 60 54 L 54 60 L 48 60 L 60 48 Z" fill="#fbc531" />
+</svg>

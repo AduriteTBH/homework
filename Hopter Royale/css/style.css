@@ -909,3 +909,121 @@ button.primary:hover {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+/* Custom Graphics Panel UI Elements */
+#custom-graphics-panel input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+  margin: 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#custom-graphics-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--thumb-color, #fff);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--thumb-color, #fff);
+  border: 2px solid #0f172a;
+  transition: transform 0.1s ease;
+}
+
+#custom-graphics-panel input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Custom Checkboxes */
+#custom-graphics-panel input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+#custom-graphics-panel input[type="checkbox"]:checked {
+  background: rgba(162, 155, 254, 0.15);
+  border-color: #a29bfe;
+  box-shadow: 0 0 12px rgba(162, 155, 254, 0.4);
+}
+
+#custom-graphics-panel input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 1px;
+  width: 5px;
+  height: 12px;
+  border: solid #a29bfe;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+#custom-graphics-panel input[type="checkbox"]:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+
+#personal-kill-notification {
+  position: absolute;
+  bottom: 160px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px) scale(0.85);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, rgba(232, 65, 24, 0), rgba(232, 65, 24, 0.8) 20%, rgba(232, 65, 24, 0.8) 80%, rgba(232, 65, 24, 0));
+  padding: 8px 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 100;
+  color: white;
+  text-transform: uppercase;
+  font-family: Outfit, sans-serif;
+  letter-spacing: 2px;
+  font-weight: 900;
+}
+
+#personal-kill-notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1.1);
+}
+
+.kill-skull {
+  color: #fbc531;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 5px #fbc531);
+}
+
+.kill-text {
+  font-size: 16px;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0,0,0,0.8);
+}
+
+.kill-name {
+  color: #00d2d3;
+  font-size: 18px;
+  text-shadow: 0 0 8px #00d2d3, 0 0 2px #000;
+}

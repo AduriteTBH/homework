@@ -229,6 +229,8 @@
     });
   }
 
+  var currentAnimFrame = null;
+  
   function beginMatch(state, isLocalHost) {
     gameState = state;
     if (!myId && net && net.myPeerId) myId = net.myPeerId;
@@ -243,7 +245,8 @@
       hostInterval = setInterval(hostTick, 1000 / HR.CONFIG.TICK_RATE);
     }
     
-    requestAnimationFrame(renderLoop);
+    if (currentAnimFrame) cancelAnimationFrame(currentAnimFrame);
+    currentAnimFrame = requestAnimationFrame(renderLoop);
   }
 
   function hostTick() {
@@ -266,7 +269,7 @@
 
       var isLocal = p.id === myId;
 
-      if (p.isBot) HR.runBotAI(p, gameState);
+            if (p.isBot) HR.runBotAI(p, gameState);
 
       if (HR.tryDash(p, isLocal)) {
         if (isLocal && HR.addScreenShake) HR.addScreenShake(6);
@@ -274,6 +277,17 @@
 
       HR.applyMovement(p);
       HR.tryShoot(gameState, p, isLocal);
+
+      // Passive Healing
+      if (p.hp < p.maxHp) {
+        p.regenTimer = (p.regenTimer || 0) + 1;
+        if (p.regenTimer > 180) {
+          p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.006);
+        }
+      } else {
+        p.regenTimer = 0;
+      }
+
       HR.collectGems(gameState, p, null, isLocal);
       HR.applyStormDamage(gameState, p);
 
@@ -284,7 +298,7 @@
         broadcastEvent({ kind: 'killfeed', killFeed: gameState.killFeed });
         if (p.id === myId) HR.stats.addGame();
       }
-    });
+        });
 
     HR.updateBullets(
       gameState,
@@ -292,14 +306,20 @@
       function (victim, killer) {
         HR.pushKillFeed(gameState, victim, killer);
         broadcastEvent({ kind: 'killfeed', killFeed: gameState.killFeed });
-        if (killer && killer.id === myId) HR.stats.addKill();
+        if (killer && killer.id === myId) {
+          HR.stats.addKill();
+          if (HR.showPersonalKill) HR.showPersonalKill(victim.name);
+        }
+        if (victim.id === myId) {
+          HR.stats.addGame();
+        }
       }
     );
 
     HR.updateStorm(gameState);
     HR.countAlive(gameState);
 
-    var winner = HR.checkWinner(gameState);
+var winner = HR.checkWinner(gameState);
     if (winner) {
       gameState.started = false;
       if (winner.id === myId) {
@@ -411,7 +431,7 @@
   var rotorPhase = 0;
   function renderLoop() {
     if (!gameState.started && !gameState.winner) {
-      requestAnimationFrame(renderLoop);
+      currentAnimFrame = requestAnimationFrame(renderLoop);
       return;
     }
 
@@ -447,6 +467,7 @@
     }
 
     var me = renderer.render(gameState, myId);
+
     if (me) {
       HR.updateHud(gameState, me);
 
@@ -456,7 +477,7 @@
       }
     }
 
-    requestAnimationFrame(renderLoop);
+    currentAnimFrame = requestAnimationFrame(renderLoop);
   }
 
   init();

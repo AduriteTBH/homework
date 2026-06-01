@@ -1,242 +1,193 @@
 (function (HR) {
   HR.NetworkManager = function (handlers) {
     this.handlers = handlers;
-    this.peer = null;
+    this.room = null;
     this.connections = {};
-    this.hostConnection = null;
     this.isHost = false;
     this.roomCode = '';
     this.myPeerId = null;
+    this.hostId = null;
     this.connected = false;
+
+    this.actions = {};
   };
 
   HR.NetworkManager.prototype.destroy = function () {
-    var self = this;
-    Object.values(this.connections).forEach(function (c) {
-      try { c.close(); } catch (e) { /* noop */ }
-    });
+    if (this.room) {
+      try { this.room.leave(); } catch (e) { /* noop */ }
+      this.room = null;
+    }
     this.connections = {};
-    if (this.hostConnection) {
-      try { this.hostConnection.close(); } catch (e) { /* noop */ }
-      this.hostConnection = null;
-    }
-    if (this.peer) {
-      try { this.peer.destroy(); } catch (e) { /* noop */ }
-      this.peer = null;
-    }
     this.connected = false;
+    this.hostId = null;
+  };
+
+  HR.NetworkManager.prototype.initRoom = function(code, asHost, onStatus) {
+    var self = this;
+    this.isHost = asHost;
+    this.roomCode = code;
+    this.destroy();
+    
+    if (onStatus) onStatus(asHost ? 'Opening channel...' : 'Connecting to host...');
+    
+    return new Promise(function(resolve, reject) {
+      try {
+        self.room = trystero.joinRoom({ appId: HR.CONFIG.FIREBASE_APP_ID }, code);
+      } catch (err) {
+        return reject(new Error('Failed to initialize multiplayer room.'));
+      }
+      
+      var aJoin = self.room.makeAction('JOIN');
+      self.actions.sendJoin = aJoin[0];
+      var getJoin = aJoin[1];
+      
+      var aJoinAck = self.room.makeAction('JOIN_ACK');
+      self.actions.sendJoinAck = aJoinAck[0];
+      var getJoinAck = aJoinAck[1];
+      
+      var aLobbyUpdate = self.room.makeAction('LOBBY_UPDATE');
+      self.actions.sendLobbyUpdate = aLobbyUpdate[0];
+      var getLobbyUpdate = aLobbyUpdate[1];
+      
+      var aStartGame = self.room.makeAction('START_GAME');
+      self.actions.sendStartGame = aStartGame[0];
+      var getStartGame = aStartGame[1];
+      
+      var aStateUpdate = self.room.makeAction('STATE_UPDATE');
+      self.actions.sendStateUpdate = aStateUpdate[0];
+      var getStateUpdate = aStateUpdate[1];
+      
+      var aEvent = self.room.makeAction('EVENT');
+      self.actions.sendEvent = aEvent[0];
+      var getEvent = aEvent[1];
+
+      var aGameOver = self.room.makeAction('GAME_OVER');
+      self.actions.sendGameOver = aGameOver[0];
+      var getGameOver = aGameOver[1];
+      
+      var aInput = self.room.makeAction('INPUT');
+      self.actions.sendInput = aInput[0];
+      var getInput = aInput[1];
+      
+      getJoin(function(data, peerId) {
+        if (!self.isHost) return;
+        if (self.handlers.onPlayerJoin) self.handlers.onPlayerJoin(peerId, data.name, peerId);
+        self.actions.sendJoinAck({
+          peerId: peerId,
+          players: self.handlers.getLobbyPlayers ? self.handlers.getLobbyPlayers() : {}
+        }, peerId);
+        self.actions.sendLobbyUpdate({ players: self.handlers.getLobbyPlayers() });
+      });
+      
+      getJoinAck(function(data, peerId) {
+        if (self.isHost) return;
+        self.hostId = peerId;
+        self.connected = true;
+        if (self.handlers.onJoinAck) self.handlers.onJoinAck(data);
+        resolve(code);
+      });
+      
+      getLobbyUpdate(function(data, peerId) {
+        if (self.isHost || peerId !== self.hostId) return;
+        if (self.handlers.onLobbyUpdate) self.handlers.onLobbyUpdate(data.players);
+      });
+      
+      getStartGame(function(data, peerId) {
+        if (self.isHost || peerId !== self.hostId) return;
+        if (self.handlers.onStartGame) self.handlers.onStartGame(data.state, data.youAre);
+      });
+      
+      getStateUpdate(function(state, peerId) {
+        if (self.isHost || peerId !== self.hostId) return;
+        if (self.handlers.onStateUpdate) self.handlers.onStateUpdate(state);
+      });
+      
+      getEvent(function(data, peerId) {
+        if (self.isHost || peerId !== self.hostId) return;
+        if (self.handlers.onEvent) self.handlers.onEvent(data);
+      });
+
+      getGameOver(function(data, peerId) {
+        if (self.isHost || peerId !== self.hostId) return;
+        if (self.handlers.onGameOver) self.handlers.onGameOver(data.winner);
+      });
+      
+      getInput(function(input, peerId) {
+        if (!self.isHost) return;
+        if (self.handlers.onPlayerInput) self.handlers.onPlayerInput(peerId, input);
+      });
+      
+      self.room.onPeerJoin(function(peerId) {
+        self.connections[peerId] = true;
+        if (!self.isHost) {
+          self.actions.sendJoin({ name: self.handlers.getName() }, peerId);
+        }
+      });
+      
+      self.room.onPeerLeave(function(peerId) {
+        delete self.connections[peerId];
+        if (self.isHost) {
+          if (self.handlers.onPlayerLeave) self.handlers.onPlayerLeave(peerId);
+        } else {
+          if (peerId === self.hostId) {
+            if (self.handlers.onHostDisconnected) self.handlers.onHostDisconnected();
+          }
+        }
+      });
+
+      if (asHost) {
+        self.connected = true;
+        resolve(code);
+      } else {
+        setTimeout(function() {
+          if (!self.connected) {
+            self.destroy();
+            reject(new Error('Host not found. Check the code and try again.'));
+          }
+        }, 15000);
+      }
+    });
   };
 
   HR.NetworkManager.prototype.createRoom = function (onStatus) {
-    var self = this;
-    this.isHost = true;
-    this.destroy();
-
-    function tryAttempt(attempt) {
-      if (attempt >= 8) {
-        return Promise.reject(new Error('Could not claim a room code. Try again.'));
-      }
-
-      var code = HR.generateRoomCode(HR.CONFIG.ROOM_CODE_LEN);
-      var peerId = HR.CONFIG.PEER_PREFIX + code;
-
-      if (onStatus) onStatus('Opening channel… (' + (attempt + 1) + '/8)');
-
-      return self.initPeer(peerId).then(function () {
-        self.roomCode = code;
-        self.myPeerId = peerId;
-        self.connected = true;
-        self.peer.on('connection', function (conn) {
-          self.handleIncoming(conn);
-        });
-        return code;
-      }).catch(function (err) {
-        if (err && (err.type === 'unavailable-id' || err.message === 'unavailable-id')) {
-          self.destroy();
-          return tryAttempt(attempt + 1);
-        }
-        throw err;
-      });
-    }
-
-    return tryAttempt(0);
+    var code = HR.generateRoomCode(HR.CONFIG.ROOM_CODE_LEN);
+    return this.initRoom(code, true, onStatus);
   };
 
   HR.NetworkManager.prototype.joinRoom = function (code, onStatus) {
-    var self = this;
-    this.isHost = false;
-    this.destroy();
-    this.roomCode = code.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, HR.CONFIG.ROOM_CODE_LEN);
-
-    if (this.roomCode.length !== HR.CONFIG.ROOM_CODE_LEN) {
+    var cleanCode = code.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, HR.CONFIG.ROOM_CODE_LEN);
+    if (cleanCode.length !== HR.CONFIG.ROOM_CODE_LEN) {
       return Promise.reject(new Error('Enter a valid 5-character room code.'));
     }
-
-    var hostId = HR.CONFIG.PEER_PREFIX + this.roomCode;
-    if (onStatus) onStatus('Connecting to host…');
-
-    return this.initPeer().then(function () {
-      self.myPeerId = self.peer.id;
-
-      return new Promise(function (resolve, reject) {
-        var timeout = setTimeout(function () {
-          reject(new Error('Host not found. Check the code and try again.'));
-        }, 15000);
-
-        var conn = self.peer.connect(hostId, {
-          reliable: true,
-          serialization: 'json',
-        });
-
-        self.hostConnection = conn;
-
-        conn.on('open', function () {
-          clearTimeout(timeout);
-          self.connected = true;
-          conn.send({ type: 'JOIN', name: self.handlers.getName() });
-          resolve(self.roomCode);
-        });
-
-        conn.on('data', function (data) {
-          self.handleMessage(data);
-        });
-
-        conn.on('close', function () {
-          if (self.handlers.onHostDisconnected) self.handlers.onHostDisconnected();
-        });
-
-        conn.on('error', function () {
-          clearTimeout(timeout);
-          reject(new Error('Connection failed. Is the host still in the lobby?'));
-        });
-      });
-    });
-  };
-
-  HR.NetworkManager.prototype.initPeer = function (customId) {
-    var self = this;
-    return new Promise(function (resolve, reject) {
-      var options = Object.assign({}, HR.PEER_CONFIG);
-      if (customId) options.id = customId;
-
-      self.peer = customId ? new Peer(customId, options) : new Peer(options);
-
-      function onOpen(id) {
-        self.myPeerId = id;
-        self.peer.off('open', onOpen);
-        self.peer.off('error', onError);
-        resolve(id);
-      }
-
-      function onError(err) {
-        self.peer.off('open', onOpen);
-        self.peer.off('error', onError);
-        reject(err);
-      }
-
-      self.peer.on('open', onOpen);
-      self.peer.on('error', onError);
-
-      self.peer.on('disconnected', function () {
-        if (self.peer && !self.peer.destroyed) {
-          try { self.peer.reconnect(); } catch (e) { /* noop */ }
-        }
-      });
-    });
-  };
-
-  HR.NetworkManager.prototype.handleIncoming = function (conn) {
-    var self = this;
-
-    conn.on('open', function () {
-      self.connections[conn.peer] = conn;
-
-      conn.on('data', function (data) {
-        if (data.type === 'JOIN') {
-          if (self.handlers.onPlayerJoin) self.handlers.onPlayerJoin(conn.peer, data.name, conn);
-          conn.send({
-            type: 'JOIN_ACK',
-            peerId: conn.peer,
-            players: self.handlers.getLobbyPlayers ? self.handlers.getLobbyPlayers() : {},
-          });
-          self.broadcast({ type: 'LOBBY_UPDATE', players: self.handlers.getLobbyPlayers() });
-        } else if (data.type === 'INPUT') {
-          if (self.handlers.onPlayerInput) self.handlers.onPlayerInput(conn.peer, data.input);
-        }
-      });
-
-      conn.on('close', function () {
-        delete self.connections[conn.peer];
-        if (self.handlers.onPlayerLeave) self.handlers.onPlayerLeave(conn.peer);
-      });
-
-      conn.on('error', function () {
-        delete self.connections[conn.peer];
-        if (self.handlers.onPlayerLeave) self.handlers.onPlayerLeave(conn.peer);
-      });
-    });
-  };
-
-  HR.NetworkManager.prototype.handleMessage = function (data) {
-    switch (data.type) {
-      case 'JOIN_ACK':
-        if (this.handlers.onJoinAck) this.handlers.onJoinAck(data);
-        break;
-      case 'LOBBY_UPDATE':
-        if (this.handlers.onLobbyUpdate) this.handlers.onLobbyUpdate(data.players);
-        break;
-      case 'START_GAME':
-        if (this.handlers.onStartGame) this.handlers.onStartGame(data.state, data.youAre);
-        break;
-      case 'STATE_UPDATE':
-        if (this.handlers.onStateUpdate) this.handlers.onStateUpdate(data.state);
-        break;
-      case 'EVENT':
-        if (this.handlers.onEvent) this.handlers.onEvent(data);
-        break;
-      case 'GAME_OVER':
-        if (this.handlers.onGameOver) this.handlers.onGameOver(data.winner);
-        break;
-      default:
-        break;
-    }
-  };
-
-  HR.NetworkManager.prototype.broadcast = function (msg, exceptPeer) {
-    var self = this;
-    Object.keys(this.connections).forEach(function (id) {
-      if (id !== exceptPeer && self.connections[id].open) {
-        self.connections[id].send(msg);
-      }
-    });
-  };
-
-  HR.NetworkManager.prototype.sendToHost = function (msg) {
-    if (this.hostConnection && this.hostConnection.open) {
-      this.hostConnection.send(msg);
-    }
+    return this.initRoom(cleanCode, false, onStatus);
   };
 
   HR.NetworkManager.prototype.sendInput = function (input) {
-    if (this.isHost) return;
-    this.sendToHost({ type: 'INPUT', input: input });
+    if (this.isHost || !this.actions.sendInput) return;
+    this.actions.sendInput(input, this.hostId);
   };
 
   HR.NetworkManager.prototype.broadcastState = function (state) {
-    this.broadcast({ type: 'STATE_UPDATE', state: state });
+    if (this.actions.sendStateUpdate) this.actions.sendStateUpdate(state);
   };
 
   HR.NetworkManager.prototype.startGameForAll = function (state) {
     var self = this;
     Object.keys(this.connections).forEach(function (peerId) {
-      if (self.connections[peerId].open) {
-        self.connections[peerId].send({ type: 'START_GAME', state: state, youAre: peerId });
+      if (self.actions.sendStartGame) {
+        self.actions.sendStartGame({ state: state, youAre: peerId }, peerId);
       }
     });
   };
 
   HR.NetworkManager.prototype.broadcastEvent = function (event) {
-    var payload = Object.assign({ type: 'EVENT' }, event);
-    this.broadcast(payload);
+    if (event.type === 'GAME_OVER') {
+      if (this.actions.sendGameOver) this.actions.sendGameOver({ winner: event.winner });
+    } else {
+      if (this.actions.sendEvent) {
+        var payload = Object.assign({ type: 'EVENT' }, event);
+        this.actions.sendEvent(payload);
+      }
+    }
   };
 })(window.HR);

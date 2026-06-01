@@ -6,7 +6,10 @@
   <title>Hopter Royale — H&amp;H Inc</title>
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://unpkg.com/trystero/dist/trystero-firebase.min.js"></script>
+  <script type="module">
+    import * as _trystero from 'https://esm.sh/trystero/firebase';
+    window.trystero = _trystero;
+  </script>
 </head>
 <body class="dark-ui">
   <!-- MAIN MENU (Portal-style) -->

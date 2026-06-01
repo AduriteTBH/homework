@@ -9,7 +9,7 @@
     isLocalhost: isLocalhost,
     isSecure: isSecure,
     isGithubPages: isGithubPages,
-    multiplayerOk: isSecure && typeof trystero !== 'undefined',
+    multiplayerOk: isSecure && !isFile,
   };
 
   function applyMenuMode() {

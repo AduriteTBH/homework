@@ -1215,6 +1215,7 @@
 		
 		// Default volume state (50%)
 let globalGameVolume = 0.5;
+let volumeEnforcerInterval = null;
 
 function updateGameVolume(value) {
     globalGameVolume = parseFloat(value);
@@ -1222,24 +1223,46 @@ function updateGameVolume(value) {
     
     try {
         if (frame.contentWindow) {
-            // 1. Directly adjust standard <audio> and <video> elements inside the game
+            // 1. Immediately apply to existing tags
             const mediaElements = frame.contentWindow.document.querySelectorAll('audio, video');
-            mediaElements.forEach(media => {
-                media.volume = globalGameVolume;
-            });
+            mediaElements.forEach(media => { media.volume = globalGameVolume; });
             
-            // 2. Broadcast volume to the iframe in case it uses Web Audio API
+            // 2. Broadcast volume to the iframe for games that listen for it
             frame.contentWindow.postMessage({ type: 'SET_VOLUME', volume: globalGameVolume }, '*');
         }
     } catch (err) {
-        // This will quietly catch any Cross-Origin (CORS) errors if the game is hosted on a different domain
-        console.warn("[H&H Launcher] Could not adjust volume directly:", err);
+        // Fails quietly if the game is on a different domain
+        console.warn("[H&H Launcher] Could not adjust volume directly (CORS).");
     }
 }
 
 // Automatically enforce the volume slider's value whenever a new game finishes loading
 document.getElementById('game-frame').addEventListener('load', () => {
+    const frame = document.getElementById('game-frame');
+    
+    // Apply immediately on load
     updateGameVolume(document.getElementById('game-volume-slider').value);
+
+    // Clear previous interval to prevent duplicates
+    if (volumeEnforcerInterval) clearInterval(volumeEnforcerInterval);
+
+    // Continuously poll to catch audio elements created AFTER the load event
+    volumeEnforcerInterval = setInterval(() => {
+        try {
+            if (frame.contentWindow) {
+                const mediaElements = frame.contentWindow.document.querySelectorAll('audio, video');
+                mediaElements.forEach(media => {
+                    // Only update if it doesn't match to prevent stuttering
+                    if (Math.abs(media.volume - globalGameVolume) > 0.01) {
+                        media.volume = globalGameVolume;
+                    }
+                });
+            }
+        } catch (err) {
+            // If CORS blocks us, stop the interval to save memory
+            clearInterval(volumeEnforcerInterval);
+        }
+    }, 1000); // Enforce every 1 second
 });
 		
 		// ─── FUNCTIONAL SETTINGS LOGIC ───────────────────────────────────────

@@ -116,6 +116,7 @@
       
       if (state.powerups) drawPowerups(ctx, state.powerups);
       drawGems(ctx, state.gems);
+      drawDamageTexts(ctx, state);
       drawStorm(ctx, state.storm);
       drawDashTrails(ctx);
       drawBullets(ctx, state.bullets);
@@ -132,55 +133,7 @@
   };
 
   function drawIndicators(ctx, state, me) {
-    if (!me || !me.alive) return;
-    
-    var nearest = null;
-    var minDist = Infinity;
-    state.crates.forEach(function(c) {
-      var d = Math.hypot(c.x - me.x, c.y - me.y);
-      if (d < minDist && d > Math.max(ctx.canvas.width, ctx.canvas.height) * 0.4) { 
-        minDist = d; nearest = c; 
-      }
-    });
-    
-    if (nearest) {
-      var angle = Math.atan2(nearest.y - me.y, nearest.x - me.x);
-      var pad = 40;
-      var w = ctx.canvas.width;
-      var h = ctx.canvas.height;
-      
-      var distToEdgeX = w/2 - pad;
-      var distToEdgeY = h/2 - pad;
-      var cos = Math.cos(angle), sin = Math.sin(angle);
-      
-      var tX = cos !== 0 ? Math.abs(distToEdgeX / cos) : Infinity;
-      var tY = sin !== 0 ? Math.abs(distToEdgeY / sin) : Infinity;
-      var t = Math.min(tX, tY);
-      
-      var ix = w/2 + cos * t;
-      var iy = h/2 + sin * t;
-      
-      ctx.save();
-      ctx.translate(ix, iy);
-      ctx.rotate(angle);
-      
-      ctx.fillStyle = 'rgba(156, 136, 255, 0.8)';
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = '#9c88ff';
-      ctx.beginPath();
-      ctx.moveTo(12, 0);
-      ctx.lineTo(-8, 8);
-      ctx.lineTo(-8, -8);
-      ctx.closePath();
-      ctx.fill();
-      
-      ctx.fillStyle = '#fff';
-      ctx.font = '700 10px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('CRATE', -20, 3);
-      
-      ctx.restore();
-    }
+    // Crate indicator removed per user request
   }
 
   function drawBackground(ctx, camX, camY) {
@@ -392,11 +345,14 @@
     var bulletImg = HR.assets && HR.assets.get('bullet');
     bullets.forEach(function (b) {
       ctx.save();
-      if (bulletImg) {
+      if (bulletImg && bulletImg.complete && bulletImg.naturalWidth > 0) {
         ctx.translate(b.x, b.y);
-        ctx.shadowBlur = 10;
+        ctx.rotate(Math.atan2(b.vy, b.vx) + Math.PI/2);
+        ctx.shadowBlur = 8;
         ctx.shadowColor = '#fbc531';
-        ctx.drawImage(bulletImg, -b.size, -b.size, b.size * 2, b.size * 2);
+        var bw = b.size * 1.5;
+        var bh = b.size * 4;
+        ctx.drawImage(bulletImg, -bw, -bh, bw * 2, bh * 2);
       } else {
         ctx.fillStyle = '#ffe066';
         ctx.shadowBlur = 16;
@@ -410,6 +366,28 @@
       }
       ctx.restore();
     });
+  }
+
+  function drawDamageTexts(ctx, state) {
+    if (!state.damageTexts) return;
+    for (var i = state.damageTexts.length - 1; i >= 0; i--) {
+      var d = state.damageTexts[i];
+      d.y -= 1.5;
+      d.life -= 0.03;
+      if (d.life <= 0) {
+        state.damageTexts.splice(i, 1);
+        continue;
+      }
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, d.life);
+      ctx.fillStyle = d.color || '#fff';
+      ctx.font = '800 16px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = '#000';
+      ctx.fillText(d.text, d.x, d.y);
+      ctx.restore();
+    }
   }
 
   function drawParticles(ctx) {
@@ -479,7 +457,7 @@
 
       p.x = HR.lerp(p.x, p.targetX != null ? p.targetX : p.x, lerpFactor);
       p.y = HR.lerp(p.y, p.targetY != null ? p.targetY : p.y, lerpFactor);
-      p.rotor = (p.rotor || 0) + (0.55 + p.level * 0.02) * dt;
+      p.rotor = (p.rotor || 0) + (0.42 + p.level * 0.01) * dt;
 
       var r = 22 + p.level * 0.45;
       var dashing = (p.dashTimer || 0) > 0;
@@ -503,6 +481,9 @@
 
       if (!HR.assets || !HR.assets.drawHopter(ctx, r, p.color, p.rotor, false, p.variant)) {
         drawHopterBody(ctx, r, p.color, p.rotor, false);
+      } else {
+        // Draw the dynamic spinning rotor on top of the loaded sprite!
+        drawRotorBlur(ctx, r, p.rotor, false);
       }
 
       ctx.shadowBlur = 0;
@@ -601,15 +582,16 @@
     ctx.save();
     ctx.rotate(rotor);
 
-    ctx.strokeStyle = ghost ? 'rgba(200,220,255,0.15)' : 'rgba(255,255,255,0.22)';
-    ctx.lineWidth = r * 0.09;
+    // Faint full circular blur to simulate the sweeping area
+    ctx.fillStyle = ghost ? 'rgba(150,150,150,0.02)' : 'rgba(150,150,150,0.06)';
     ctx.beginPath();
-    ctx.ellipse(0, 0, r * 1.05, r * 0.09, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    ctx.ellipse(0, 0, bladeLen * 0.46, bladeLen * 0.46, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    ctx.strokeStyle = ghost ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.92)';
-    ctx.lineWidth = ghost ? 2 : 3.5;
+    // Actual rotating blades (grey, smooth, simple)
     ctx.lineCap = 'round';
+    ctx.strokeStyle = ghost ? 'rgba(180,180,180,0.15)' : 'rgba(180,180,180,0.35)';
+    ctx.lineWidth = ghost ? 2 : 4;
     for (var b = 0; b < 2; b++) {
       ctx.save();
       ctx.rotate(Math.PI * b);

@@ -77,6 +77,7 @@
         break;
       case 'LOOT':
         target = loot;
+        if (lootDist < 250) bot.input.click = Math.random() > 0.05;
         break;
       default:
         target = {

@@ -223,7 +223,7 @@
     if (buf instanceof Audio) {
       musicSource = buf;
       musicSource.loop = true;
-      musicSource.volume = inBattle ? 0.22 : 0.28;
+      musicSource.volume = inBattle ? 0.15 : 0.2;
       musicSource.play().catch(function(){});
       return true;
     }
@@ -266,7 +266,7 @@
       musicStep = 0;
       if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
       stopFileMusic();
-      if (!playFileMusic('menu')) startSynthMusic();
+      playFileMusic('menu'); // No synth fallback
     },
 
     startBattleMusic: function () {
@@ -275,7 +275,7 @@
       musicStep = 0;
       if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
       stopFileMusic();
-      if (!playFileMusic('battle')) startSynthMusic();
+      playFileMusic('battle'); // No synth fallback
     },
 
     stopMusic: function () {
@@ -295,38 +295,27 @@
     },
 
     shoot: function (x, y) { 
-      var vol = HR.audio.getVolumeForPos(x, y, 0.4);
-      if (!playBuffer(audioBuffers.laser, vol)) {
-        tone(920, 0.04, 'square', 0.035 * (vol/0.4), 280); noise(0.02 * (vol/0.4), 0.015); 
-      }
+      var vol = HR.audio.getVolumeForPos(x, y, 0.2);
+      playBuffer(audioBuffers.laser, vol);
     },
     hit: function (x, y) { 
-      var vol = HR.audio.getVolumeForPos(x, y, 0.5);
-      if (!playBuffer(audioBuffers.hit, vol)) {
-        tone(200, 0.07, 'sawtooth', 0.04 * (vol/0.5), 90); 
-      }
+      var vol = HR.audio.getVolumeForPos(x, y, 0.25);
+      playBuffer(audioBuffers.hit, vol);
     },
     explode: function (x, y) { 
-      var vol = HR.audio.getVolumeForPos(x, y, 0.8);
-      if (!playBuffer(audioBuffers.hit, vol)) {
-        noise(0.22 * (vol/0.8), 0.08); tone(80, 0.3, 'sawtooth', 0.06 * (vol/0.8), 35); 
-      }
+      var vol = HR.audio.getVolumeForPos(x, y, 0.4);
+      playBuffer(audioBuffers.hit, vol);
     },
     dash: function (x, y) { 
-      var vol = HR.audio.getVolumeForPos(x, y, 0.45);
-      tone(380, 0.12, 'sine', 0.045 * (vol/0.45), 680); noise(0.05 * (vol/0.45), 0.025); 
+      // Minimal swoosh sound since there's no mp3 file for it
+      var vol = HR.audio.getVolumeForPos(x, y, 0.15);
+      tone(380, 0.12, 'sine', 0.045 * (vol/0.15), 680); noise(0.05 * (vol/0.15), 0.025); 
     },
     levelUp: function () {
-      if (!playBuffer(audioBuffers.powerup, 0.6)) {
-        [523, 659, 784, 988].forEach(function (f, i) {
-          setTimeout(function () { tone(f, 0.12, 'sine', 0.05); }, i * 70);
-        });
-      }
+      playBuffer(audioBuffers.powerup, 0.3);
     },
     ui: function () { 
-      if (!playBuffer(audioBuffers.select, 0.6)) {
-        tone(640, 0.05, 'sine', 0.03); tone(960, 0.04, 'sine', 0.02); 
-      }
+      playBuffer(audioBuffers.select, 0.3);
     },
   };
 

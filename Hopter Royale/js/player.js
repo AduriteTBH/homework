@@ -12,9 +12,11 @@
   HR.createPlayer = function (id, name, isBot) {
     isBot = !!isBot;
     var color = isBot ? '#e1b12c' : (HR.myColor || HR.PLAYER_COLORS[colorIndex++ % HR.PLAYER_COLORS.length]);
-    var variants = ['base', 'scout', 'heavy'];
-    var variant = isBot ? variants[Math.floor(Math.random() * variants.length)] : (HR.myVariant || 'base');
-    var maxHp = variant === 'heavy' ? 140 : (variant === 'scout' ? 80 : 100);
+    var allVariants = ['base', 'scout', 'heavy', 'phantom', 'spectre', 'apache', 'viper', 'goliath', 'wraith', 'titan'];
+    var variant = isBot ? allVariants[Math.floor(Math.random() * allVariants.length)] : (HR.myVariant || 'base');
+    // Variant-specific stats
+    var hpTable = { base:100, scout:80, heavy:140, phantom:90, spectre:110, apache:120, viper:75, goliath:160, wraith:85, titan:150 };
+    var maxHp = hpTable[variant] || 100;
     return {
       id: id,
       name: name,
@@ -60,7 +62,8 @@
     player.vy *= friction;
 
     var speed = Math.hypot(player.vx, player.vy);
-    var baseMaxSpd = player.variant === 'scout' ? cfg.MAX_SPEED * 1.25 : (player.variant === 'heavy' ? cfg.MAX_SPEED * 0.8 : cfg.MAX_SPEED);
+    var spdTable = { base:1.0, scout:1.25, heavy:0.8, phantom:1.15, spectre:0.95, apache:0.9, viper:1.3, goliath:0.7, wraith:1.2, titan:0.75 };
+    var baseMaxSpd = cfg.MAX_SPEED * (spdTable[player.variant] || 1.0);
     if (player.speedBoost > 0) {
       baseMaxSpd *= 1.4;
       player.speedBoost--;
@@ -113,6 +116,9 @@
     player.vx -= Math.cos(player.angle) * 3.2;
     player.vy -= Math.sin(player.angle) * 3.2;
 
+    var dmgTable = { base:1.0, scout:0.8, heavy:1.3, phantom:1.1, spectre:1.15, apache:1.25, viper:0.85, goliath:1.0, wraith:0.9, titan:1.2 };
+    var dmg = (14 + player.level * 1.4) * (dmgTable[player.variant] || 1);
+
     state.bullets.push({
       id: player.id + '-' + Date.now() + '-' + Math.random(),
       x: player.x + Math.cos(player.angle) * 32,
@@ -122,7 +128,7 @@
       ownerId: player.id,
       size: bSize,
       life: HR.CONFIG.BULLET_LIFE,
-      damage: (14 + player.level * 1.4) * (player.variant === 'heavy' ? 1.3 : (player.variant === 'scout' ? 0.8 : 1)),
+      damage: dmg,
     });
 
     if (isLocal && HR.audio) HR.audio.shoot();

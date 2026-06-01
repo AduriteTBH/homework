@@ -2,9 +2,16 @@
   var ASSET_PATHS = {
     logo: 'assets/logo.svg',
     logoPng: 'assets/logo.png',
-    hopterBase: 'assets/sprites/hopter-base.png',
-    hopterScout: 'assets/sprites/hopter-scout.png',
-    hopterHeavy: 'assets/sprites/hopter-heavy.png',
+    hopterBase: 'assets/sprites/hopter-base-v3.png',
+    hopterScout: 'assets/sprites/hopter-scout-v3.png',
+    hopterHeavy: 'assets/sprites/hopter-heavy-v3.png',
+    hopterPhantom: 'assets/sprites/hopter-phantom-v3.png',
+    hopterSpectre: 'assets/sprites/hopter-spectre-v3.png',
+    hopterApache: 'assets/sprites/hopter-apache-v3.png',
+    hopterViper: 'assets/sprites/hopter-viper-v3.png',
+    hopterGoliath: 'assets/sprites/hopter-goliath-v3.png',
+    hopterWraith: 'assets/sprites/hopter-wraith-v3.png',
+    hopterTitan: 'assets/sprites/hopter-titan-v3.png',
     groundTile: 'assets/textures/ground-tile.png',
     crate: 'assets/textures/crate.png',
     crateGold: 'assets/textures/crate-gold.png',
@@ -13,16 +20,16 @@
     powerupSpeed: 'assets/textures/powerup-speed.png',
     gem: 'assets/textures/gem.png',
     gemSvg: 'assets/textures/gem.svg',
-    bullet: 'https://raw.githubusercontent.com/KenneyNL/Space-Shooter-Redux/master/PNG/Lasers/laserBlue01.png',
-    bulletSvg: 'https://raw.githubusercontent.com/KenneyNL/Space-Shooter-Redux/master/PNG/Lasers/laserBlue01.png',
-    menuMusic: 'assets/audio/menu.mp3',
-    menuMusicOgg: 'assets/audio/menu.ogg',
+    bullet: 'assets/textures/laserYellow.png',
+    bulletSvg: 'assets/textures/laserYellow.png',
+    menuMusic: '', // File missing
+    menuMusicOgg: '', // File missing
     battleMusic: 'assets/audio/battle.wav',
-    battleMusicOgg: 'assets/audio/battle.ogg',
-    sfxLaser: 'assets/audio/laser.ogg',
-    sfxHit: 'assets/audio/hit.ogg',
-    sfxPowerup: 'assets/audio/powerup.ogg',
-    sfxSelect: 'assets/audio/select.ogg',
+    battleMusicOgg: '', // File missing
+    sfxLaser: 'assets/audio/laser.mp3',
+    sfxHit: 'assets/audio/hit.mp3',
+    sfxPowerup: 'assets/audio/powerup.mp3',
+    sfxSelect: 'assets/audio/select.mp3',
   };
 
   var images = {};
@@ -72,6 +79,13 @@
         loadImage('hopterBase', ASSET_PATHS.hopterBase),
         loadImage('hopterScout', ASSET_PATHS.hopterScout),
         loadImage('hopterHeavy', ASSET_PATHS.hopterHeavy),
+        loadImage('hopterPhantom', ASSET_PATHS.hopterPhantom),
+        loadImage('hopterSpectre', ASSET_PATHS.hopterSpectre),
+        loadImage('hopterApache', ASSET_PATHS.hopterApache),
+        loadImage('hopterViper', ASSET_PATHS.hopterViper),
+        loadImage('hopterGoliath', ASSET_PATHS.hopterGoliath),
+        loadImage('hopterWraith', ASSET_PATHS.hopterWraith),
+        loadImage('hopterTitan', ASSET_PATHS.hopterTitan),
         loadImage('groundTile', ASSET_PATHS.groundTile),
         loadImage('crate', ASSET_PATHS.crate),
         loadImage('crateGold', ASSET_PATHS.crateGold),
@@ -96,7 +110,7 @@
 
       var w = img.naturalWidth || img.width || 128;
       var h = img.naturalHeight || img.height || 128;
-      var scale = (size * 2.15) / Math.max(w, h);
+      var scale = (size * 2.8) / Math.max(w, h);
       
       var cacheKey = key + '_' + (color || 'none');
       if (!tintCache[cacheKey]) {

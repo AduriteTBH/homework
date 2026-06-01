@@ -244,8 +244,8 @@
       text.textContent = 'Mission Failed';
       sub.textContent = winner.name + ' won the battle.';
     } else {
-      text.textContent = 'KIA';
-      sub.textContent = 'Your hopter went down.';
+      text.textContent = 'DESTROYED';
+      sub.textContent = 'Your hopter was destroyed in combat.';
     }
     panel.classList.remove('hidden');
     requestAnimationFrame(function () { panel.classList.add('overlay-enter'); });
@@ -326,19 +326,16 @@
       handlers.onJoin();
     });
 
-    var variants = ['base', 'scout', 'heavy'];
+    var variants = ['base', 'scout', 'heavy', 'phantom', 'spectre', 'apache', 'viper', 'goliath', 'wraith', 'titan'];
     var currentV = 0;
     HR.myVariant = variants[currentV];
-    HR.myColor = document.getElementById('preview-color') ? document.getElementById('preview-color').value : '#3498db';
+    HR.myColor = '#3498db';
 
     function updatePreview() {
       var v = variants[currentV];
       HR.myVariant = v;
       var lbl = document.getElementById('variant-label');
       if(lbl) lbl.textContent = v;
-      
-      var c = document.getElementById('preview-color');
-      if(c) HR.myColor = c.value;
     }
 
     var btnNext = document.getElementById('btn-next-variant');
@@ -359,9 +356,29 @@
       });
     }
 
-    var colPick = document.getElementById('preview-color');
-    if(colPick) {
-      colPick.addEventListener('input', updatePreview);
+    var colorPalette = document.getElementById('color-palette');
+    if (colorPalette && HR.PLAYER_COLORS) {
+      colorPalette.innerHTML = '';
+      HR.PLAYER_COLORS.slice(0, 10).forEach(function(c, i) {
+        var btn = document.createElement('div');
+        btn.className = 'color-swatch' + (i === 0 ? ' active' : '');
+        btn.style.backgroundColor = c;
+        btn.dataset.color = c;
+        colorPalette.appendChild(btn);
+      });
+      HR.myColor = HR.PLAYER_COLORS[0];
+    }
+
+    var swatches = document.querySelectorAll('.color-swatch');
+    if (swatches.length) {
+      swatches.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          swatches.forEach(function(b){ b.classList.remove('active'); });
+          btn.classList.add('active');
+          HR.myColor = btn.dataset.color;
+          if (HR.audio) HR.audio.ui();
+        });
+      });
     }
 
     var btnNextName = document.getElementById('btn-next-callsign');

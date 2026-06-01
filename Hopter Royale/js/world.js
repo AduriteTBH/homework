@@ -69,8 +69,12 @@
             var absorb = Math.min(p.shield, b.damage);
             p.shield -= absorb;
             p.hp -= (b.damage - absorb);
+            state.damageTexts = state.damageTexts || [];
+            state.damageTexts.push({ x: p.x, y: p.y - 20, text: Math.round(b.damage), life: 1.0, color: '#3498db' });
           } else {
             p.hp -= b.damage;
+            state.damageTexts = state.damageTexts || [];
+            state.damageTexts.push({ x: p.x, y: p.y - 20, text: Math.round(b.damage), life: 1.0, color: '#ff4757' });
           }
           hit = true;
           if (p.hp <= 0) {
@@ -88,6 +92,8 @@
           var crate = state.crates[c];
           if (Math.abs(b.x - crate.x) < 20 && Math.abs(b.y - crate.y) < 20) {
             crate.hp -= b.damage;
+            state.damageTexts = state.damageTexts || [];
+            state.damageTexts.push({ x: crate.x, y: crate.y - 15, text: Math.round(b.damage), life: 1.0, color: '#fbc531' });
             hit = true;
             if (crate.hp <= 0) {
               onExplosion(crate.x, crate.y, crate.type === 'gold' ? '#fbc531' : '#9c88ff');

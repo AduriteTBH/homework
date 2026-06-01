@@ -36,6 +36,11 @@
       if (d < lootDist) { loot = g; lootDist = d; }
     });
 
+    var inGracePeriod = state.matchStartTime && Date.now() < state.matchStartTime + 2000;
+    if (inGracePeriod) {
+      threat = null; // Do not attack for 2 seconds after match starts
+    }
+
     if (inStorm || stormDist > stormMargin) {
       bot.aiState = 'STORM';
     } else if (threat && bot.hp < bot.maxHp * 0.35 && threatDist < 380) {
@@ -95,6 +100,19 @@
     }
     if (bot.aiState === 'LOOT' && lootDist > 200 && bot.dashCooldown <= 0 && Math.random() > 0.95) {
       bot.input.dash = true;
+    }
+
+    // Anti-stuck logic for crates: if physically bumping into a crate, shoot it to clear the path!
+    var blockingCrate = null;
+    state.crates.forEach(function (c) {
+      if (HR.dist(bot.x, bot.y, c.x, c.y) < 70) {
+        blockingCrate = c;
+      }
+    });
+
+    if (blockingCrate) {
+      bot.input.angle = Math.atan2(blockingCrate.y - bot.y, blockingCrate.x - bot.x);
+      bot.input.click = true;
     }
   };
 

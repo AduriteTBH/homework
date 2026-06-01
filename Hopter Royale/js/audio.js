@@ -162,10 +162,13 @@
   }
 
   function loadAudioFile(url) {
+    if (!url) return Promise.reject(new Error('no url'));
     if (window.location.protocol === 'file:') {
-      return new Promise(function(resolve) {
+      return new Promise(function(resolve, reject) {
         var a = new Audio(url);
-        resolve(a);
+        if (a.readyState >= 3) return resolve(a);
+        a.addEventListener('loadeddata', function() { resolve(a); });
+        a.addEventListener('error', function() { reject(new Error('Audio load failed')); });
       });
     }
     return fetch(url).then(function (r) {
@@ -223,7 +226,7 @@
     if (buf instanceof Audio) {
       musicSource = buf;
       musicSource.loop = true;
-      musicSource.volume = inBattle ? 0.15 : 0.2;
+      musicSource.volume = inBattle ? 0.015 : 0.003; // Significantly lower both volumes
       musicSource.play().catch(function(){});
       return true;
     }
@@ -236,13 +239,13 @@
     musicSource.loop = true;
     musicSource.connect(musicGain);
     musicSource.start(0);
-    fadeMusic(inBattle ? 0.22 : 0.28, 800);
+    fadeMusic(inBattle ? 0.06 : 0.08, 800);
     return true;
   }
 
   function startSynthMusic() {
     if (musicTimer) return;
-    fadeMusic(inBattle ? 0.14 : 0.18, 1000);
+    fadeMusic(inBattle ? 0.05 : 0.07, 1000);
     musicTimer = setInterval(playMusicTick, inBattle ? 420 : 680);
   }
 
@@ -266,7 +269,9 @@
       musicStep = 0;
       if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
       stopFileMusic();
-      playFileMusic('menu'); // No synth fallback
+      if (!playFileMusic('menu')) {
+        startSynthMusic();
+      }
     },
 
     startBattleMusic: function () {
@@ -275,7 +280,9 @@
       musicStep = 0;
       if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
       stopFileMusic();
-      playFileMusic('battle'); // No synth fallback
+      if (!playFileMusic('battle')) {
+        startSynthMusic();
+      }
     },
 
     stopMusic: function () {
@@ -300,16 +307,43 @@
     },
     hit: function (x, y) { 
       var vol = HR.audio.getVolumeForPos(x, y, 0.25);
-      playBuffer(audioBuffers.hit, vol);
+      if (audioBuffers.hit instanceof Audio) {
+        var a = audioBuffers.hit.cloneNode();
+        a.volume = vol;
+        a.playbackRate = 1.0;
+        a.play().catch(function(){});
+      } else {
+        playBuffer(audioBuffers.hit, vol);
+      }
     },
     explode: function (x, y) { 
       var vol = HR.audio.getVolumeForPos(x, y, 0.4);
-      playBuffer(audioBuffers.hit, vol);
+      if (audioBuffers.hit instanceof Audio) {
+        var a = audioBuffers.hit.cloneNode();
+        a.volume = vol;
+        a.playbackRate = 0.5; // Pitched down for explosion
+        a.play().catch(function(){});
+      } else {
+        playBuffer(audioBuffers.hit, vol);
+      }
     },
     dash: function (x, y) { 
-      // Minimal swoosh sound since there's no mp3 file for it
       var vol = HR.audio.getVolumeForPos(x, y, 0.15);
-      tone(380, 0.12, 'sine', 0.045 * (vol/0.15), 680); noise(0.05 * (vol/0.15), 0.025); 
+      if (audioBuffers.laser instanceof Audio) {
+        var a = audioBuffers.laser.cloneNode();
+        a.volume = vol * 0.7;
+        a.playbackRate = 0.4; // Low swoosh sound using laser
+        a.play().catch(function(){});
+      }
+    },
+    pickupGem: function (x, y) {
+      var vol = HR.audio.getVolumeForPos(x, y, 0.2);
+      if (audioBuffers.select instanceof Audio) {
+        var a = audioBuffers.select.cloneNode();
+        a.volume = vol;
+        a.playbackRate = 2.5; // High pitch for gem
+        a.play().catch(function(){});
+      }
     },
     levelUp: function () {
       playBuffer(audioBuffers.powerup, 0.3);
@@ -317,18 +351,34 @@
     ui: function () { 
       playBuffer(audioBuffers.select, 0.3);
     },
+    uiHover: function () {
+      if (audioBuffers.select instanceof Audio) {
+        var a = audioBuffers.select.cloneNode();
+        a.volume = 0.1;
+        a.playbackRate = 3.0;
+        a.play().catch(function(){});
+      }
+    },
+    loadingTick: function(stepIndex) {
+      if (audioBuffers.select instanceof Audio) {
+        var a = audioBuffers.select.cloneNode();
+        a.volume = 0.25;
+        a.playbackRate = 1.0 + (stepIndex * 0.1);
+        a.play().catch(function(){});
+      }
+    }
   };
 
+  var unlocked = false;
   function unlockOnce() {
+    if (unlocked) return;
+    unlocked = true;
     HR.audio.unlock();
-    HR.audio.startMenuMusic();
+    if (!inBattle) HR.audio.startMenuMusic();
   }
 
   ['click', 'keydown', 'touchstart'].forEach(function (ev) {
-    document.addEventListener(ev, function once() {
-      unlockOnce();
-      document.removeEventListener(ev, once);
-    }, { passive: true });
+    document.addEventListener(ev, unlockOnce, { passive: true });
   });
 
   if (document.readyState === 'loading') {

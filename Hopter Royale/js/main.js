@@ -25,7 +25,7 @@
     if(callsignLbl) callsignLbl.textContent = myName;
 
     net = new HR.NetworkManager({
-      getName: function () { return myName; },
+      getName: function () { return HR.myCallsign || myName; },
       getLobbyPlayers: function () { return gameState.players; },
       onPlayerJoin: function (peerId, name) {
         gameState.players[peerId] = HR.createPlayer(peerId, name, false);
@@ -56,7 +56,13 @@
       },
       onStartGame: function (state, youAre) {
         myId = youAre || myId;
-        beginMatch(state);
+        HR.simulateLoading([
+          { text: 'Receiving map data...', delay: 500 },
+          { text: 'Synchronizing with host...', delay: 600 },
+          { text: 'Match starting!', delay: 400 }
+        ], function() {
+          beginMatch(state);
+        });
       },
       onStateUpdate: function (state) {
         applyRemoteState(state);
@@ -126,6 +132,7 @@
 
     net.createRoom(HR.setMenuStatus).then(function (code) {
       myId = net.myPeerId;
+      myName = HR.myCallsign || myName;
       gameState.players[myId] = HR.createPlayer(myId, myName, false);
       gameState.players[myId].isHost = true;
 
@@ -166,33 +173,56 @@
 
   function startSoloGame() {
     mode = 'solo';
-    gameState = HR.createInitialState();
-    myId = 'SOLO_' + Date.now();
-    gameState.players[myId] = HR.createPlayer(myId, myName, false);
+    HR.simulateLoading([
+      { text: 'Establishing secure link...', delay: 500 },
+      { text: 'Connecting to dedicated server...', delay: 400 },
+      { text: 'Waiting for players (1/30)...', delay: 700 },
+      { text: 'Waiting for players (10/30)...', delay: 300 },
+      { text: 'Waiting for players (22/30)...', delay: 500 },
+      { text: 'Waiting for players (30/30)...', delay: 200 },
+      { text: 'Match starting!', delay: 400 }
+    ], function() {
+      gameState = HR.createInitialState();
+      myId = 'SOLO_' + Date.now();
+      myName = HR.myCallsign || myName;
+      gameState.players[myId] = HR.createPlayer(myId, myName, false);
 
-    HR.fillWithBots(gameState, HR.CONFIG.MAX_PLAYERS - 1);
-    HR.spawnCrates(gameState);
-    gameState.started = true;
-    HR.countAlive(gameState);
+      HR.fillWithBots(gameState, HR.CONFIG.MAX_PLAYERS - 1);
+      HR.spawnCrates(gameState);
+      gameState.started = true;
+      gameState.matchStartTime = Date.now() + 3000;
+      HR.countAlive(gameState);
 
-    HR.showScreen('game');
-    beginMatch(gameState, true);
+      HR.showScreen('game');
+      beginMatch(gameState, true);
+    });
   }
 
   function launchMatch() {
     if (mode !== 'host') return;
 
-    var humanCount = Object.keys(gameState.players).length;
-    if (HR.CONFIG.BOT_FILL) {
-      HR.fillWithBots(gameState, Math.max(0, HR.CONFIG.MAX_PLAYERS - humanCount));
-    }
+    HR.simulateLoading([
+      { text: 'Locking lobby...', delay: 500 },
+      { text: 'Synchronizing clients...', delay: 600 },
+      { text: 'Generating map data...', delay: 700 },
+      { text: 'Match starting!', delay: 400 }
+    ], function() {
+      var botInput = document.getElementById('bot-count-input');
+      var targetBots = botInput ? parseInt(botInput.value, 10) : (HR.CONFIG.MAX_PLAYERS - 1);
+      if (isNaN(targetBots)) targetBots = HR.CONFIG.MAX_PLAYERS - 1;
+      
+      if (HR.CONFIG.BOT_FILL && targetBots > 0) {
+        HR.fillWithBots(gameState, Math.max(0, targetBots));
+      }
 
-    HR.spawnCrates(gameState);
-    gameState.started = true;
-    HR.countAlive(gameState);
+      HR.spawnCrates(gameState);
+      gameState.started = true;
+      gameState.matchStartTime = Date.now() + 3000;
+      HR.countAlive(gameState);
 
-    net.startGameForAll(sanitizeStateForNetwork(gameState));
-    beginMatch(gameState, true);
+      net.startGameForAll(sanitizeStateForNetwork(gameState));
+      beginMatch(gameState, true);
+    });
   }
 
   function beginMatch(state, isLocalHost) {
@@ -208,12 +238,18 @@
       if (hostInterval) clearInterval(hostInterval);
       hostInterval = setInterval(hostTick, 1000 / HR.CONFIG.TICK_RATE);
     }
-
+    
     requestAnimationFrame(renderLoop);
   }
 
   function hostTick() {
     if (!gameState.started) return;
+
+    if (gameState.matchStartTime && Date.now() < gameState.matchStartTime) {
+      if (mode === 'host') net.broadcastState(sanitizeStateForNetwork(gameState));
+      applyRemoteState(gameState);
+      return;
+    }
 
     var localPlayer = gameState.players[myId];
     if (localPlayer && localPlayer.alive) {
@@ -242,6 +278,7 @@
         HR.pushKillFeed(gameState, p, null);
         broadcastEvent({ kind: 'explosion', x: p.x, y: p.y, color: p.color });
         broadcastEvent({ kind: 'killfeed', killFeed: gameState.killFeed });
+        if (p.id === myId) HR.stats.addGame();
       }
     });
 
@@ -251,6 +288,7 @@
       function (victim, killer) {
         HR.pushKillFeed(gameState, victim, killer);
         broadcastEvent({ kind: 'killfeed', killFeed: gameState.killFeed });
+        if (killer && killer.id === myId) HR.stats.addKill();
       }
     );
 
@@ -260,6 +298,12 @@
     var winner = HR.checkWinner(gameState);
     if (winner) {
       gameState.started = false;
+      if (winner.id === myId) {
+        HR.stats.addWin();
+      } else {
+        var p = gameState.players[myId];
+        if (p && p.alive) HR.stats.addGame(); // If you survived but it ended
+      }
       if (hostInterval) clearInterval(hostInterval);
       if (mode === 'host') {
         net.broadcast({ type: 'GAME_OVER', winner: { id: winner.id, name: winner.name } });
@@ -281,6 +325,7 @@
     gameState.aliveCount = state.aliveCount;
     gameState.killFeed = state.killFeed || gameState.killFeed;
     gameState.winner = state.winner;
+    gameState.matchStartTime = state.matchStartTime;
 
     Object.values(state.players).forEach(function (p) {
       if (!gameState.players[p.id]) {
@@ -315,6 +360,49 @@
     return copy;
   }
 
+  HR.simulateLoading = function(steps, onComplete) {
+    if (HR.showScreen) HR.showScreen('loading');
+    
+    var text = document.getElementById('loading-text');
+    var tip = document.getElementById('loading-tip');
+    
+    if (tip) {
+      var tips = [
+        "TIP: Dash [Q] to dodge incoming fire and maneuver quickly.",
+        "TIP: Collect gems from destroyed enemies to level up your hopter.",
+        "TIP: Stay inside the safe zone! The storm will damage you.",
+        "TIP: Crates contain valuable XP. Shoot them open!",
+        "TIP: Win 3 multiplayer games to unlock custom callsigns!"
+      ];
+      tip.textContent = tips[Math.floor(Math.random() * tips.length)];
+    }
+
+    var i = 0;
+    function next() {
+      if (i >= steps.length) {
+        onComplete();
+        return;
+      }
+      if (text) text.textContent = steps[i].text;
+      if (HR.audio) {
+        if (HR.audio.loadingTick) HR.audio.loadingTick(i);
+        else HR.audio.ui();
+      }
+      setTimeout(next, steps[i].delay);
+      i++;
+    }
+    next();
+  };
+
+  HR.restartMatch = function() {
+    if (mode === 'solo') {
+      startSoloGame();
+    } else {
+      location.reload();
+    }
+  };
+
+  var lastInputTime = 0;
   function renderLoop() {
     if (!gameState.started && !gameState.winner) {
       requestAnimationFrame(renderLoop);
@@ -322,7 +410,13 @@
     }
 
     if (mode === 'client' && gameState.started) {
-      net.sendInput(HR.getInputSnapshot(canvas));
+      var snap = HR.getInputSnapshot(canvas);
+      var now = Date.now();
+      if (snap.dash || snap.click !== (HR.lastSentInput||{}).click || now - lastInputTime > 40) {
+        net.sendInput(snap);
+        HR.lastSentInput = snap;
+        lastInputTime = now;
+      }
     }
 
     var me = renderer.render(gameState, myId);

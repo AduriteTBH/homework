@@ -36,6 +36,7 @@
 
   HR.initInput = function (canvas) {
     window.addEventListener('keydown', function (e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       var key = e.key.toLowerCase();
       if (key === 'w' || e.key === 'ArrowUp') keys.w = true;
       if (key === 'a' || e.key === 'ArrowLeft') keys.a = true;
@@ -46,6 +47,7 @@
     });
 
     window.addEventListener('keyup', function (e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       var key = e.key.toLowerCase();
       if (key === 'w' || e.key === 'ArrowUp') keys.w = false;
       if (key === 'a' || e.key === 'ArrowLeft') keys.a = false;

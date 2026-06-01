@@ -26,10 +26,27 @@
   };
 
   HR.spawnCrate = function (state) {
+    var x, y, valid;
+    for (var attempts = 0; attempts < 15; attempts++) {
+      var a = Math.random() * Math.PI * 2;
+      var r = Math.random() * (HR.CONFIG.MAP_SIZE / 2 - 120);
+      x = HR.CONFIG.MAP_SIZE / 2 + Math.cos(a) * r;
+      y = HR.CONFIG.MAP_SIZE / 2 + Math.sin(a) * r;
+      valid = true;
+      for (var pid in state.players) {
+        var p = state.players[pid];
+        if (Math.hypot(p.x - x, p.y - y) < 180) {
+          valid = false;
+          break;
+        }
+      }
+      if (valid) break;
+    }
+    
     state.crates.push({
       id: Math.random().toString(36).slice(2),
-      x: HR.rand(60, HR.CONFIG.MAP_SIZE - 60),
-      y: HR.rand(60, HR.CONFIG.MAP_SIZE - 60),
+      x: x,
+      y: y,
       hp: 45 + Math.floor(Math.random() * 25),
       type: Math.random() > 0.85 ? 'gold' : 'normal',
     });
@@ -64,7 +81,16 @@
 
       Object.values(state.players).forEach(function (p) {
         if (hit || !p.alive || p.id === b.ownerId) return;
-        if (Math.hypot(p.x - b.x, p.y - b.y) < 24 + b.size) {
+        
+        var owner = state.players[b.ownerId];
+        var hitRadius = 24 + b.size;
+        
+        // If a human is shooting at a bot, make the bot's hitbox 1.5x larger!
+        if (owner && !owner.isBot && p.isBot) {
+          hitRadius = (24 * 1.5) + b.size;
+        }
+
+        if (Math.hypot(p.x - b.x, p.y - b.y) < hitRadius) {
           if (p.shield && p.shield > 0) {
             var absorb = Math.min(p.shield, b.damage);
             p.shield -= absorb;

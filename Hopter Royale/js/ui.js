@@ -3,6 +3,8 @@
     menu: document.getElementById('menu-screen'),
     lobby: document.getElementById('lobby-screen'),
     game: document.getElementById('game-ui'),
+    stats: document.getElementById('stats-screen'),
+    loading: document.getElementById('loading-screen'),
   };
   var lastKillFeedKey = '';
   var lbRows = {};
@@ -26,6 +28,7 @@
     if (name === 'menu') document.body.classList.add('at-menu');
     else if (name === 'lobby') document.body.classList.add('at-lobby');
     else if (name === 'game') document.body.classList.add('in-game');
+    else if (name === 'stats') document.body.classList.add('at-stats');
 
     if (screens[name]) {
       screens[name].classList.remove('hidden');
@@ -179,7 +182,10 @@
       li.querySelector('.lb-level').textContent = 'Lv' + p.level;
       li.classList.toggle('me', p.id === myId);
       li.classList.toggle('bot', !!p.isBot);
-      list.appendChild(li);
+      
+      if (list.children[i] !== li) {
+        list.insertBefore(li, list.children[i]);
+      }
     });
 
     Object.keys(lbRows).forEach(function (id) {
@@ -203,16 +209,19 @@
     if (key === lastKillFeedKey) return;
     lastKillFeedKey = key;
 
-    el.innerHTML = '';
     if (!feed || !feed.length) {
       el.innerHTML = '<div class="kill-entry empty">No eliminations yet</div>';
       return;
     }
 
-    feed.forEach(function (entry, i) {
+    // Only append new items
+    feed.forEach(function (entry) {
+      var id = 'kill-' + entry.time + '-' + (entry.killer || '') + '-' + (entry.victim || '');
+      if (document.getElementById(id)) return; // Already rendered
+
       var div = document.createElement('div');
+      div.id = id;
       div.className = 'kill-entry';
-      div.style.animationDelay = (i * 0.05) + 's';
 
       if (entry.killer && entry.victim) {
         div.innerHTML =
@@ -229,6 +238,18 @@
 
       el.appendChild(div);
     });
+
+    // Remove empty message if present
+    var emptyMsg = el.querySelector('.kill-entry.empty');
+    if (emptyMsg) emptyMsg.remove();
+
+    // Remove old entries to prevent infinite scrolling list
+    while (el.children.length > feed.length) {
+      el.removeChild(el.firstChild);
+    }
+    
+    // Auto-scroll to bottom
+    el.scrollTop = el.scrollHeight;
   };
 
   HR.showGameOver = function (winner, me) {
@@ -251,9 +272,11 @@
     requestAnimationFrame(function () { panel.classList.add('overlay-enter'); });
   };
 
-  HR.toggleHostStart = function (show) {
+  HR.toggleHostStart = function (isHost) {
     var btn = document.getElementById('btn-start-game');
-    if (btn) btn.classList.toggle('hidden', !show);
+    var settingsPanel = document.getElementById('host-settings-panel');
+    if (btn) btn.classList.toggle('hidden', !isHost);
+    if (settingsPanel) settingsPanel.classList.toggle('hidden', !isHost);
   };
 
   HR.copyRoomCode = function (code) {
@@ -294,11 +317,15 @@
   HR.bindMenuHandlers = function (handlers) {
     document.querySelectorAll('.portal-item[data-action]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        document.querySelectorAll('.portal-item').forEach(function (b) { b.classList.remove('active'); });
-        btn.classList.add('active');
+        var action = btn.getAttribute('data-action');
+        
+        if (action !== 'mute') {
+          document.querySelectorAll('.portal-item').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+        }
+        
         if (HR.audio) HR.audio.ui();
 
-        var action = btn.getAttribute('data-action');
         if (action === 'solo') handlers.onSolo();
         else if (action === 'host') {
           if (window.HR_ENV && !HR_ENV.guardMultiplayer()) return;
@@ -310,14 +337,17 @@
         }
         else if (action === 'mute' && HR.audio) {
           var m = HR.audio.toggleMute();
-          HR.setMenuStatus(m ? 'Music muted' : 'Music on', false);
-          setTimeout(function () { HR.setMenuStatus(''); }, 1500);
+          btn.textContent = m ? 'Music: OFF' : 'Music: ON';
+          btn.style.color = m ? '#ff6b6b' : '';
         }
       });
 
       btn.addEventListener('mouseenter', function () {
         document.querySelectorAll('.portal-item').forEach(function (b) { b.classList.remove('hover'); });
         btn.classList.add('hover');
+      });
+      btn.addEventListener('mouseleave', function () {
+        btn.classList.remove('hover');
       });
     });
 
@@ -327,13 +357,14 @@
     });
 
     var variants = ['base', 'scout', 'heavy', 'phantom', 'spectre', 'apache', 'viper', 'goliath', 'wraith', 'titan'];
-    var currentV = 0;
+    var currentV = variants.indexOf(HR.myVariant);
+    if (currentV < 0) currentV = 0;
     HR.myVariant = variants[currentV];
-    HR.myColor = '#3498db';
 
     function updatePreview() {
       var v = variants[currentV];
       HR.myVariant = v;
+      if (HR.prefs) HR.prefs.save(undefined, v, undefined);
       var lbl = document.getElementById('variant-label');
       if(lbl) lbl.textContent = v;
     }
@@ -359,14 +390,15 @@
     var colorPalette = document.getElementById('color-palette');
     if (colorPalette && HR.PLAYER_COLORS) {
       colorPalette.innerHTML = '';
-      HR.PLAYER_COLORS.slice(0, 10).forEach(function(c, i) {
+      var activeColor = HR.myColor || HR.PLAYER_COLORS[0];
+      HR.myColor = activeColor;
+      HR.PLAYER_COLORS.forEach(function(c, i) {
         var btn = document.createElement('div');
-        btn.className = 'color-swatch' + (i === 0 ? ' active' : '');
+        btn.className = 'color-swatch' + (c === activeColor ? ' active' : '');
         btn.style.backgroundColor = c;
         btn.dataset.color = c;
         colorPalette.appendChild(btn);
       });
-      HR.myColor = HR.PLAYER_COLORS[0];
     }
 
     var swatches = document.querySelectorAll('.color-swatch');
@@ -376,6 +408,7 @@
           swatches.forEach(function(b){ b.classList.remove('active'); });
           btn.classList.add('active');
           HR.myColor = btn.dataset.color;
+          if (HR.prefs) HR.prefs.save(HR.myColor, undefined, undefined);
           if (HR.audio) HR.audio.ui();
         });
       });
@@ -388,6 +421,9 @@
     function updateCallsignUI(n) {
       var lbl = document.getElementById('callsign-label');
       if(lbl) lbl.textContent = n;
+      HR.myCallsign = n;
+      if (HR.prefs) HR.prefs.save(undefined, undefined, n);
+      if (HR.setPlayerName) HR.setPlayerName(n);
     }
 
     if(btnNextName && btnPrevName) {
@@ -408,9 +444,48 @@
     document.getElementById('btn-start-game').addEventListener('click', handlers.onStart);
     document.getElementById('btn-copy-code').addEventListener('click', handlers.onCopyCode);
     document.getElementById('btn-return-base').addEventListener('click', function () { location.reload(); });
+    
+    var playAgainBtn = document.getElementById('btn-play-again');
+    if (playAgainBtn) {
+      playAgainBtn.addEventListener('click', function() {
+        var goScreen = document.getElementById('game-over-screen');
+        if (goScreen) goScreen.classList.add('hidden');
+        if (HR.restartMatch) {
+          HR.restartMatch();
+        } else {
+          location.reload();
+        }
+      });
+    }
 
-    var lobbyBack = document.getElementById('btn-lobby-back');
-    if (lobbyBack) lobbyBack.addEventListener('click', function () { location.reload(); });
+    if (document.getElementById('btn-lobby-back')) {
+      document.getElementById('btn-lobby-back').addEventListener('click', function () {
+        HR.showScreen('menu');
+      });
+    }
+
+    var statsBtn = document.getElementById('btn-stats');
+    if (statsBtn) {
+      statsBtn.addEventListener('click', function() {
+        HR.showScreen('stats');
+      });
+    }
+
+    // Add hover sound effects to all buttons
+    document.querySelectorAll('button, .portal-item').forEach(function(btn) {
+      btn.addEventListener('mouseenter', function() {
+        if (HR.audio && HR.audio.uiHover) HR.audio.uiHover();
+      });
+    });
+
+    var statsBackBtn = document.getElementById('btn-stats-back');
+    if (statsBackBtn) {
+      statsBackBtn.addEventListener('click', function() {
+        HR.showScreen('menu');
+      });
+    }
+
+    if (HR.updateStatsUI) HR.updateStatsUI();
 
     var joinInput = document.getElementById('join-code-input');
     if (joinInput) {
@@ -430,5 +505,40 @@
 
     if (HR.initMenuScene) HR.initMenuScene(true);
     playMenuIntro();
+  };
+
+  HR.updateStatsUI = function() {
+    var games = document.getElementById('stat-games');
+    if (games) games.textContent = HR.stats.games;
+    var kills = document.getElementById('stat-kills');
+    if (kills) kills.textContent = HR.stats.kills;
+    var wins = document.getElementById('stat-wins');
+    if (wins) wins.textContent = HR.stats.wins;
+
+    var hint = document.getElementById('callsign-unlock-hint');
+    var input = document.getElementById('callsign-input');
+    var label = document.getElementById('callsign-label');
+    var prev = document.getElementById('btn-prev-callsign');
+    var next = document.getElementById('btn-next-callsign');
+
+    if (HR.stats.wins >= 3) {
+      if (hint) hint.innerHTML = '<span style="color:#2ecc71;">Custom callsigns unlocked!</span>';
+      if (input) input.classList.remove('hidden');
+      if (label) label.classList.add('hidden');
+      if (prev) prev.classList.add('hidden');
+      if (next) next.classList.add('hidden');
+
+      if (input && !input.hasAttribute('data-bound')) {
+        input.setAttribute('data-bound', 'true');
+        input.value = HR.myCallsign || label.textContent || 'Player';
+        HR.myCallsign = input.value;
+        if (HR.setPlayerName) HR.setPlayerName(HR.myCallsign);
+        input.addEventListener('input', function() {
+          HR.myCallsign = input.value.trim() || 'Player';
+          if (HR.prefs) HR.prefs.save(undefined, undefined, HR.myCallsign);
+          if (HR.setPlayerName) HR.setPlayerName(HR.myCallsign);
+        });
+      }
+    }
   };
 })(window.HR);

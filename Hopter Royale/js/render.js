@@ -110,7 +110,7 @@
       
       ctx.save();
       ctx.translate(-camX + shakeX, -camY + shakeY);
-      drawGrid(ctx);
+      drawGrid(ctx, camX, camY, canvas.width, canvas.height);
       
       drawCrates(ctx, state.crates);
       
@@ -126,11 +126,40 @@
       ctx.restore();
       drawIndicators(ctx, state, me);
       drawMinimap(mmCtx, minimapCanvas, state, me);
+      drawCountdown(ctx, state);
       return me;
     }
 
     return { render: render, syncPlayers: syncPlayers };
   };
+
+  function drawCountdown(ctx, state) {
+    if (!state.matchStartTime) return;
+    var rem = state.matchStartTime - Date.now();
+    if (rem > 0) {
+      var num = Math.ceil(rem / 1000);
+      ctx.save();
+      ctx.fillStyle = '#fbc531';
+      ctx.font = '900 120px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#fbc531';
+      ctx.fillText(num, window.innerWidth / 2, window.innerHeight / 2 - 80);
+      ctx.restore();
+    } else if (rem > -1500) {
+      ctx.save();
+      ctx.fillStyle = '#00d2d3';
+      ctx.font = '900 80px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#00d2d3';
+      ctx.globalAlpha = 1 - Math.abs(rem) / 1500;
+      ctx.fillText("ENGAGE", window.innerWidth / 2, window.innerHeight / 2 - 80);
+      ctx.restore();
+    }
+  }
 
   function drawIndicators(ctx, state, me) {
     // Crate indicator removed per user request
@@ -195,38 +224,77 @@
     }
   }
 
-  function drawGrid(ctx) {
+  var starFieldCache = null;
+  function drawGrid(ctx, camX, camY, cW, cH) {
     var t = Date.now() / 800;
-    ctx.strokeStyle = 'rgba(0, 210, 211, 0.15)';
-    ctx.lineWidth = 1;
-    for (var i = 0; i <= HR.CONFIG.MAP_SIZE; i += 120) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, HR.CONFIG.MAP_SIZE);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(HR.CONFIG.MAP_SIZE, i);
-      ctx.stroke();
-    }
-    
-    // Inner pulse
-    ctx.strokeStyle = 'rgba(0, 210, 211, ' + (0.3 + Math.sin(t)*0.2) + ')';
-    ctx.lineWidth = 2;
-    for (var i = 0; i <= HR.CONFIG.MAP_SIZE; i += 480) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, HR.CONFIG.MAP_SIZE);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(HR.CONFIG.MAP_SIZE, i);
-      ctx.stroke();
+    var cx = HR.CONFIG.MAP_SIZE / 2;
+    var cy = HR.CONFIG.MAP_SIZE / 2;
+    var radius = HR.CONFIG.MAP_SIZE / 2;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.clip(); // clip the grid strictly to the circle
+
+    if (!starFieldCache) {
+      starFieldCache = [];
+      for (var i = 0; i < 800; i++) {
+         var sx = (Math.sin(i * 12.9898) * 43758.5453 % 1) * HR.CONFIG.MAP_SIZE;
+         if (sx < 0) sx += HR.CONFIG.MAP_SIZE;
+         var sy = (Math.sin(i * 78.233) * 43758.5453 % 1) * HR.CONFIG.MAP_SIZE;
+         if (sy < 0) sy += HR.CONFIG.MAP_SIZE;
+         starFieldCache.push({ x: sx, y: sy, s: (i % 3) === 0 ? 2 : 1 });
+      }
     }
 
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.beginPath();
+    for (var i = 0; i < 800; i++) {
+       var s = starFieldCache[i];
+       if (s.x > camX - 20 && s.x < camX + cW + 20 && s.y > camY - 20 && s.y < camY + cH + 20) {
+         ctx.rect(s.x, s.y, s.s, s.s);
+       }
+    }
+    ctx.fill();
+
+    ctx.strokeStyle = 'rgba(0, 210, 211, 0.15)';
+    ctx.lineWidth = 1;
+    var startX = Math.max(0, Math.floor(camX / 120) * 120);
+    var endX = Math.min(HR.CONFIG.MAP_SIZE, camX + cW);
+    var startY = Math.max(0, Math.floor(camY / 120) * 120);
+    var endY = Math.min(HR.CONFIG.MAP_SIZE, camY + cH);
+
+    ctx.beginPath();
+    for (var i = startX; i <= endX; i += 120) { ctx.moveTo(i, startY); ctx.lineTo(i, endY); }
+    for (var i = startY; i <= endY; i += 120) { ctx.moveTo(startX, i); ctx.lineTo(endX, i); }
+    ctx.stroke();
+    
+    // Inner pulse
+    ctx.strokeStyle = 'rgba(0, 210, 211, ' + (0.2 + Math.sin(t)*0.15) + ')';
+    ctx.lineWidth = 2;
+    var startX2 = Math.max(0, Math.floor(camX / 480) * 480);
+    var startY2 = Math.max(0, Math.floor(camY / 480) * 480);
+    ctx.beginPath();
+    for (var i = startX2; i <= endX; i += 480) { ctx.moveTo(i, startY2); ctx.lineTo(i, endY); }
+    for (var i = startY2; i <= endY; i += 480) { ctx.moveTo(startX2, i); ctx.lineTo(endX, i); }
+    ctx.stroke();
+    ctx.restore();
+
+    // Draw circular high-tech glowing outer border
+    ctx.save();
     ctx.strokeStyle = '#ff4757';
-    ctx.lineWidth = 10;
-    ctx.strokeRect(0, 0, HR.CONFIG.MAP_SIZE, HR.CONFIG.MAP_SIZE);
+    ctx.lineWidth = 12;
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = '#ff4757';
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 0;
+    ctx.stroke();
+    ctx.restore();
   }
 
   function drawCrates(ctx, crates) {
@@ -350,8 +418,8 @@
         ctx.rotate(Math.atan2(b.vy, b.vx) + Math.PI/2);
         ctx.shadowBlur = 8;
         ctx.shadowColor = '#fbc531';
-        var bw = b.size * 1.5;
-        var bh = b.size * 4;
+        var bw = b.size * 0.75;
+        var bh = b.size * 2;
         ctx.drawImage(bulletImg, -bw, -bh, bw * 2, bh * 2);
       } else {
         ctx.fillStyle = '#ffe066';
@@ -619,12 +687,20 @@
     var scale = canvas.width / HR.CONFIG.MAP_SIZE;
     mmCtx.clearRect(0, 0, canvas.width, canvas.height);
 
+    var cx = canvas.width / 2;
+    var cy = canvas.height / 2;
+    var radius = canvas.width / 2;
+
     mmCtx.fillStyle = 'rgba(6,9,14,0.95)';
-    mmCtx.fillRect(0, 0, canvas.width, canvas.height);
+    mmCtx.beginPath();
+    mmCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+    mmCtx.fill();
 
     mmCtx.strokeStyle = 'rgba(255,255,255,0.08)';
     mmCtx.lineWidth = 1;
-    mmCtx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+    mmCtx.beginPath();
+    mmCtx.arc(cx, cy, radius - 1, 0, Math.PI * 2);
+    mmCtx.stroke();
 
     mmCtx.fillStyle = 'rgba(255, 70, 50, 0.25)';
     mmCtx.beginPath();

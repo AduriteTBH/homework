@@ -26,7 +26,8 @@
         <button type="button" class="portal-item" data-action="solo">Singleplayer</button>
         <button type="button" class="portal-item" data-action="host">Host Multiplayer</button>
         <button type="button" class="portal-item" data-action="join">Join Multiplayer</button>
-        <button type="button" class="portal-item" data-action="mute">Toggle Music</button>
+        <button type="button" class="portal-item" data-action="mute" id="btn-toggle-music">Music: ON</button>
+        <button type="button" class="portal-item" data-action="stats" id="btn-stats">Stats</button>
       </nav>
 
       <footer class="portal-footer">
@@ -48,6 +49,7 @@
       <div class="variant-switcher callsign-switcher">
         <button type="button" id="btn-prev-callsign">&lt;</button>
         <span id="callsign-label" class="callsign-display">SkyHawk</span>
+        <input type="text" id="callsign-input" class="callsign-display hidden" maxlength="12" style="background: rgba(0,0,0,0.3); border: 1px solid #444; color: white; text-align: center; font-weight: bold; width: 140px; font-family: Outfit, sans-serif; border-radius: 4px;" />
         <button type="button" id="btn-next-callsign">&gt;</button>
       </div>
       
@@ -85,11 +87,43 @@
         <button type="button" id="btn-start-game" class="portal-item accent hidden">Launch Mission</button>
         <button type="button" id="btn-lobby-back" class="portal-item">Return to Menu</button>
       </nav>
+      
+      <div id="host-settings-panel" class="portal-lobby-list hidden" style="margin-bottom: 20px;">
+        <p class="subpanel-title">Host Settings</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+          <label for="bot-count-input" style="color: #a29bfe; font-size: 0.85rem; letter-spacing: 1px;">Bot Fill Target:</label>
+          <input type="number" id="bot-count-input" value="29" min="0" max="50" style="width: 60px; background: rgba(0,0,0,0.5); border: 1px solid rgba(162, 155, 254, 0.4); color: white; padding: 5px; border-radius: 4px; text-align: center; outline: none; font-family: monospace;">
+        </div>
+      </div>
+
       <div class="portal-lobby-list">
         <p class="subpanel-title">Pilots</p>
         <ul id="player-list"></ul>
         <p id="lobby-bot-fill" class="bot-fill-hint"></p>
         <p id="lobby-status"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS SCREEN -->
+  <div id="stats-screen" class="screen portal-screen hidden">
+    <canvas id="stats-bg-canvas" class="menu-bg-canvas"></canvas>
+    <div class="portal-vignette"></div>
+    <div class="portal-layout">
+      <header class="portal-header">
+        <div class="portal-logo small">SERVICE RECORD</div>
+      </header>
+      <nav class="portal-nav">
+        <button type="button" id="btn-stats-back" class="portal-item">Return to Menu</button>
+      </nav>
+      <div class="portal-lobby-list">
+        <p class="subpanel-title">Career Stats</p>
+        <div style="font-size: 24px; color: white; line-height: 1.8; margin-top: 20px;">
+          <p>Games Played: <strong id="stat-games" style="color: #fbc531;">0</strong></p>
+          <p>Total KOs: <strong id="stat-kills" style="color: #fbc531;">0</strong></p>
+          <p>Total Wins: <strong id="stat-wins" style="color: #fbc531;">0</strong></p>
+          <p id="callsign-unlock-hint" style="margin-top: 30px; font-size: 16px; color: #888;">Win 3 games to unlock custom callsigns!</p>
+        </div>
       </div>
     </div>
   </div>
@@ -117,11 +151,18 @@
     </div>
 
     <div id="hud-bottom">
-      <div class="bar-wrap bar-hp"><div id="hud-hp-bar" class="bar-fill"></div></div>
-      <div class="bar-wrap bar-xp"><div id="hud-xp-bar" class="bar-fill"></div></div>
+      <div class="bar-wrap bar-hp">
+        <div class="bar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+        <div id="hud-hp-bar" class="bar-fill"></div>
+      </div>
+      <div class="bar-wrap bar-xp">
+        <div class="bar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+        <div id="hud-xp-bar" class="bar-fill"></div>
+      </div>
       <div class="bar-wrap bar-dash dash-wrap">
-        <span class="bar-label">DASH [Q]</span>
+        <div class="bar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
         <div id="hud-dash-bar" class="bar-fill dash-fill"></div>
+        <div class="bar-text-right">DASH [Q]</div>
       </div>
       <div id="hud-level">Level 1</div>
     </div>
@@ -129,7 +170,36 @@
     <div id="game-over-screen" class="hidden">
       <h2 id="game-over-text">KIA</h2>
       <p id="game-over-sub">Your hopter went down.</p>
-      <button id="btn-return-base" class="primary">Return to Base</button>
+      <div style="display: flex; gap: 15px; margin-top: 20px;">
+        <button id="btn-play-again" class="primary">PLAY AGAIN</button>
+        <button id="btn-return-base" class="secondary">RETURN TO BASE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING SCREEN -->
+  <style>
+    .lds-ring { display: inline-block; position: relative; width: 60px; height: 60px; }
+    .lds-ring div { box-sizing: border-box; display: block; position: absolute; width: 48px; height: 48px; margin: 6px; border: 4px solid #fbc531; border-radius: 50%; animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: #fbc531 transparent transparent transparent; }
+    .lds-ring div:nth-child(1) { animation-delay: -0.45s; }
+    .lds-ring div:nth-child(2) { animation-delay: -0.3s; }
+    .lds-ring div:nth-child(3) { animation-delay: -0.15s; }
+    @keyframes lds-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+  <div id="loading-screen" class="screen portal-screen hidden" style="background: radial-gradient(circle at center, #1a253a 0%, #050a14 100%);">
+    <div class="portal-vignette"></div>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; text-align: center;">
+      <!-- Game Logo -->
+      <div style="margin-bottom: 40px; padding-left: 15px;">
+        <img src="assets/logo.svg" alt="Hopter Royale" style="width: 280px; filter: drop-shadow(0 0 10px rgba(0,210,211,0.5));" onerror="this.style.display='none';">
+      </div>
+      
+      <div class="lds-ring" style="margin-bottom: 30px;"><div></div><div></div><div></div><div></div></div>
+      <br/>
+      
+      <div id="loading-text" style="display: inline-block; color: #fbc531; font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 4px; border: 1px solid #fbc531;">Connecting...</div>
+      
+      <p id="loading-tip" style="margin-top: 50px; color: #ccc; font-size: 16px; font-style: italic; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.5;"></p>
     </div>
   </div>
 

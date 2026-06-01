@@ -38,7 +38,6 @@
   { "name": "Bloxorz", "file": "bloxorz", "icon": "🧊" },
   { "name": "Game Of Life", "file": "gameoflife", "icon": "🌿" },
   { "name": "Soccer Random", "file": "soccer-random", "icon": "⚽" },
-  { "name": "Hopter Royale (H&H Exclusive)", "file": "Hopter Royale", "icon": "🔫" },
   { "name": "Getaway Shootout", "file": "getawayshootout.html", "icon": "🏃" },
   { "name": "H&H Crossy", "file": "H&H Crossy.html", "icon": "🐔" },
   { "name": "3D Flight Simulator", "file": "3Dflightsimulator.html", "icon": "✈️" },
@@ -165,5 +164,6 @@
   { "name": "Wheelie Bike", "file": "wheeliebike.html", "icon": "🚲" },
   { "name": "Wordle Unlimited", "file": "wordleunlimited.html", "icon": "🔤" },
   { "name": "Zombie Rush", "file": "zombierush.html", "icon": "🧟" },
-  { "name": "Steal A Brainrot", "file": "steal-a-brainrot", "icon": "🏃" }
+  { "name": "Steal A Brainrot", "file": "steal-a-brainrot", "icon": "🏃" },
+  { "name": "Hopter Royale (H&H Exclusive)", "file": "Hopter Royale", "icon": "🔫" }
 ]

@@ -18,11 +18,11 @@
     powerupHealth: 'assets/textures/powerup-health.png',
     powerupShield: 'assets/textures/powerup-shield.png',
     powerupSpeed: 'assets/textures/powerup-speed.png',
-    gem: 'assets/textures/gem.png',
+    gem: 'assets/textures/gem.svg',
     gemSvg: 'assets/textures/gem.svg',
     bullet: 'assets/textures/laserYellow.png',
     bulletSvg: 'assets/textures/laserYellow.png',
-    menuMusic: '', // File missing
+    menuMusic: 'assets/audio/menu.wav',
     menuMusicOgg: '', // File missing
     battleMusic: 'assets/audio/battle.wav',
     battleMusicOgg: '', // File missing

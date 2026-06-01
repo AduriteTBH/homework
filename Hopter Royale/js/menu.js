@@ -117,10 +117,10 @@
       var h = c.el.height;
       if (!ctx || w <= 0) return;
 
-      var g = ctx.createLinearGradient(0, 0, w * 0.4, h);
-      g.addColorStop(0, '#0e1520');
-      g.addColorStop(0.45, '#0a0c10');
-      g.addColorStop(1, '#06080c');
+      var g = ctx.createLinearGradient(0, 0, w * 0.8, h);
+      g.addColorStop(0, '#1c293e');
+      g.addColorStop(0.5, '#121a28');
+      g.addColorStop(1, '#080c14');
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
 

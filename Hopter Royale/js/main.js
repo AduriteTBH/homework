@@ -117,8 +117,12 @@
     }
 
     var fileHint = document.getElementById('file-mode-hint');
-    if (fileHint && window.HR_ENV && HR_ENV.isFile) {
-      fileHint.classList.remove('hidden');
+    if (window.HR_ENV && HR_ENV.isFile) {
+      if (fileHint) fileHint.classList.remove('hidden');
+      var btnHost = document.querySelector('[data-action="host"]');
+      var btnJoin = document.querySelector('[data-action="join"]');
+      if (btnHost) { btnHost.disabled = true; btnHost.style.opacity = '0.3'; btnHost.style.cursor = 'not-allowed'; btnHost.title = 'Not available in file mode'; }
+      if (btnJoin) { btnJoin.disabled = true; btnJoin.style.opacity = '0.3'; btnJoin.style.cursor = 'not-allowed'; btnJoin.title = 'Not available in file mode'; }
     }
   }
 
@@ -403,6 +407,8 @@
   };
 
   var lastInputTime = 0;
+  var lastFrame = Date.now();
+  var rotorPhase = 0;
   function renderLoop() {
     if (!gameState.started && !gameState.winner) {
       requestAnimationFrame(renderLoop);
@@ -417,6 +423,27 @@
         HR.lastSentInput = snap;
         lastInputTime = now;
       }
+    }
+
+    var now = Date.now();
+    var dt = (now - lastFrame) / 1000;
+    lastFrame = now;
+    rotorPhase += 0.45 * dt;
+
+    HR.fpsFrames = (HR.fpsFrames || 0) + 1;
+    if (!HR.fpsTime) HR.fpsTime = now;
+    if (now - HR.fpsTime >= 1000) {
+      var avgFps = HR.fpsFrames / ((now - HR.fpsTime) / 1000);
+      var fpsEl = document.getElementById('fps-counter');
+      if (fpsEl) fpsEl.textContent = Math.round(avgFps) + ' FPS';
+
+      if (avgFps < 40 && !HR.RUNTIME_LOW_GRAPHICS) {
+        HR.RUNTIME_LOW_GRAPHICS = true;
+      } else if (avgFps > 50 && HR.RUNTIME_LOW_GRAPHICS) {
+        HR.RUNTIME_LOW_GRAPHICS = false;
+      }
+      HR.fpsFrames = 0;
+      HR.fpsTime = now;
     }
 
     var me = renderer.render(gameState, myId);

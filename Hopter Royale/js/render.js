@@ -11,6 +11,8 @@
 
   HR.spawnParticles = function (x, y, color, count) {
     count = count || 18;
+    var isLowGraphics = (HR.CONFIG && HR.CONFIG.GRAPHICS_MODE === 'LOW') || (HR.RUNTIME_LOW_GRAPHICS && (!HR.CONFIG || HR.CONFIG.GRAPHICS_MODE === 'AUTO'));
+    if (isLowGraphics) count = Math.ceil(count * 0.25); // 75% fewer particles on Low Graphics
     for (var i = 0; i < count; i++) {
       particles.push({
         x: x, y: y,
@@ -535,7 +537,9 @@
           x: p.x, y: p.y, angle: p.angle, r: r, color: p.color,
           rotor: p.rotor, life: 0.7, variant: p.variant
         });
-        if (dashTrails.length > 40) dashTrails.shift();
+        var isLowGraphics = (HR.CONFIG && HR.CONFIG.GRAPHICS_MODE === 'LOW') || (HR.RUNTIME_LOW_GRAPHICS && (!HR.CONFIG || HR.CONFIG.GRAPHICS_MODE === 'AUTO'));
+        var maxTrails = isLowGraphics ? 8 : 40;
+        if (dashTrails.length > maxTrails) dashTrails.shift();
       }
 
       ctx.save();
@@ -553,26 +557,9 @@
         // Draw the dynamic spinning rotor on top of the loaded sprite!
         drawRotorBlur(ctx, r, p.rotor, false);
       }
-
-      ctx.shadowBlur = 0;
-      ctx.restore();
       
-      if (dashing && p.id === myId) {
-        ctx.save();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.lineWidth = 1.5;
-        for (var i = 0; i < 20; i++) {
-           var angle = Math.random() * Math.PI * 2;
-           var dist = 80 + Math.random() * 100;
-           var len = 100 + Math.random() * 200;
-           ctx.beginPath();
-           ctx.moveTo(p.x + Math.cos(angle) * dist, p.y + Math.sin(angle) * dist);
-           ctx.lineTo(p.x + Math.cos(angle) * (dist + len), p.y + Math.sin(angle) * (dist + len));
-           ctx.stroke();
-        }
-        ctx.restore();
-      }
-
+      // Speed lines removed to improve dash feel and performance
+      ctx.restore();
       var nameY = p.y - r - 16;
       ctx.fillStyle = 'rgba(0,0,0,0.55)';
       ctx.fillRect(p.x - 36, nameY - 10, 72, 14);

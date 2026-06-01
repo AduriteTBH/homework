@@ -64,6 +64,9 @@ body.in-game canvas#gameCanvas {
 .portal-screen {
   position: absolute; inset: 0; z-index: 10; overflow: hidden;
 }
+.portal-screen .portal-layout {
+  margin: 0 auto;
+}
 
 .menu-bg-canvas {
   position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
@@ -71,7 +74,7 @@ body.in-game canvas#gameCanvas {
 
 .portal-vignette {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: radial-gradient(ellipse 80% 90% at 15% 50%, rgba(0,0,0,0.1), rgba(0,0,0,0.85) 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.0), rgba(0,0,0,0.4) 100%);
 }
 
 .portal-layout {
@@ -79,11 +82,13 @@ body.in-game canvas#gameCanvas {
   height: 100%; display: flex; flex-direction: column;
   justify-content: center;
   padding: max(24px, env(safe-area-inset-top)) max(32px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-bottom));
-  max-width: min(520px, 92vw);
+  width: 400px;
+  max-width: 100%;
 }
 
 .portal-header {
   margin-bottom: clamp(28px, 6vh, 48px);
+  padding-left: 18px;
   opacity: 0;
   animation: fadeSlideDown 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
 }
@@ -91,6 +96,7 @@ body.in-game canvas#gameCanvas {
 .portal-footer {
   margin-top: auto;
   padding-top: clamp(24px, 5vh, 40px);
+  padding-left: 18px;
   border-top: 1px solid var(--line);
   opacity: 0;
   animation: fadeSlideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
@@ -224,9 +230,9 @@ body.menu-intro-done .portal-item {
 
 .portal-subpanel {
   position: absolute;
-  z-index: 5;
-  top: 50%; right: max(24px, 5vw);
-  transform: translateY(-50%) scale(1);
+  z-index: 50;
+  top: 50%; left: 50%; right: auto;
+  transform: translate(-50%, -50%) scale(1);
   width: min(300px, 88vw);
   padding: 24px;
   background: var(--panel);
@@ -243,7 +249,7 @@ body.menu-intro-done .portal-item {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(-50%) scale(0.94) translateX(12px);
+  transform: translate(-50%, -50%) scale(0.94) translateY(12px);
 }
 
 .subpanel-title {
@@ -454,7 +460,8 @@ body.menu-intro-done .portal-item {
 .lb-row.bot .lb-name { color: var(--gold); opacity: 0.85; }
 .lb-rank { color: var(--muted); font-weight: 700; }
 .lb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lb-stat { color: var(--muted); font-size: 0.9em; }
+.lb-stat { color: var(--muted); font-size: 0.9em; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+.lb-icon { width: 14px; height: 14px; opacity: 0.8; stroke: var(--muted); }
 
 #kill-feed-panel {
   position: absolute;
@@ -757,7 +764,7 @@ button.primary:hover {
 
 @media (max-width: 600px) {
   .portal-subpanel {
-    top: auto; bottom: 16px; right: 50%; transform: translateX(50%);
+    top: 50%; left: 50%; right: auto; transform: translate(-50%, -50%);
   }
   .portal-layout { max-width: 100%; padding-left: 20px; padding-right: 20px; }
 }
@@ -770,15 +777,15 @@ button.primary:hover {
 }
 
 @media (min-width: 1100px) {
-  .portal-subpanel { right: max(8vw, 80px); }
+  .portal-subpanel { right: auto; }
 }
 
-/* Visual Customizer */
 .visual-customizer {
-  position: absolute; right: max(5vw, 40px); top: 50%;
-  transform: translateY(-50%); z-index: 10;
-  background: rgba(10, 12, 18, 0.6);
-  border: 1px solid var(--line); border-radius: 8px;
+  position: relative;
+  z-index: 10;
+  background: rgba(10, 12, 18, 0.4);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px;
   padding: 24px; text-align: center;
   backdrop-filter: blur(12px); width: 280px;
   transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
@@ -787,7 +794,7 @@ button.primary:hover {
 #join-panel:not(.panel-closed) ~ #visual-customizer {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-50%) translateX(20px);
+  transform: translateX(20px);
 }
 .callsign-edit {
   width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--accent);

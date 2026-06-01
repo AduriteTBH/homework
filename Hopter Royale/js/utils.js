@@ -32,20 +32,23 @@
     color: null,
     variant: null,
     callsign: null,
+    graphicsMode: 'AUTO',
     load: function() {
       try {
         var p = JSON.parse(localStorage.getItem('hr_prefs') || '{}');
         this.color = p.color;
         this.variant = p.variant;
         this.callsign = p.callsign;
+        this.graphicsMode = p.graphicsMode || 'AUTO';
       } catch(e) {}
     },
-    save: function(c, v, n) {
+    save: function(c, v, n, gm) {
       if(c!==undefined) this.color = c;
       if(v!==undefined) this.variant = v;
       if(n!==undefined) this.callsign = n;
+      if(gm!==undefined) this.graphicsMode = gm;
       try {
-        localStorage.setItem('hr_prefs', JSON.stringify({ color: this.color, variant: this.variant, callsign: this.callsign }));
+        localStorage.setItem('hr_prefs', JSON.stringify({ color: this.color, variant: this.variant, callsign: this.callsign, graphicsMode: this.graphicsMode }));
       } catch(e) {}
     }
   };
@@ -53,6 +56,7 @@
   HR.myColor = HR.prefs.color;
   HR.myVariant = HR.prefs.variant;
   HR.myCallsign = HR.prefs.callsign;
+  if (HR.CONFIG) HR.CONFIG.GRAPHICS_MODE = HR.prefs.graphicsMode;
 
   HR.stats = {
     wins: 0,

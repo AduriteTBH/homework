@@ -4,6 +4,7 @@
     lobby: document.getElementById('lobby-screen'),
     game: document.getElementById('game-ui'),
     stats: document.getElementById('stats-screen'),
+    settings: document.getElementById('settings-screen'),
     loading: document.getElementById('loading-screen'),
   };
   var lastKillFeedKey = '';
@@ -178,8 +179,8 @@
 
       li.querySelector('.lb-rank').textContent = String(i + 1);
       li.querySelector('.lb-name').textContent = p.name;
-      li.querySelector('.lb-kills').textContent = (p.kills || 0) + 'K';
-      li.querySelector('.lb-level').textContent = 'Lv' + p.level;
+      li.querySelector('.lb-kills').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lb-icon"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>' + (p.kills || 0);
+      li.querySelector('.lb-level').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lb-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' + p.level;
       li.classList.toggle('me', p.id === myId);
       li.classList.toggle('bot', !!p.isBot);
       
@@ -271,6 +272,44 @@
     panel.classList.remove('hidden');
     requestAnimationFrame(function () { panel.classList.add('overlay-enter'); });
   };
+
+  var btnGraphics = document.getElementById('btn-toggle-graphics');
+  if (btnGraphics) {
+    var updateGraphicsBtn = function() {
+      if (HR.CONFIG) {
+        var mode = HR.CONFIG.GRAPHICS_MODE || 'AUTO';
+        btnGraphics.textContent = 'Graphics: ' + mode;
+        if (mode === 'AUTO') btnGraphics.style.color = '#fbc531';
+        else if (mode === 'HIGH') btnGraphics.style.color = '#ff4757';
+        else btnGraphics.style.color = '#00d2d3';
+      }
+    };
+    updateGraphicsBtn();
+    btnGraphics.addEventListener('click', function() {
+      if (HR.CONFIG) {
+        var modes = ['AUTO', 'HIGH', 'LOW'];
+        var idx = modes.indexOf(HR.CONFIG.GRAPHICS_MODE || 'AUTO');
+        HR.CONFIG.GRAPHICS_MODE = modes[(idx + 1) % 3];
+      }
+      if (HR.prefs) HR.prefs.save(undefined, undefined, undefined, HR.CONFIG.GRAPHICS_MODE);
+      updateGraphicsBtn();
+    });
+  }
+
+  var btnSaveCustom = document.getElementById('btn-save-custom');
+  
+  var btnSettings = document.getElementById('btn-settings');
+  var btnSettingsBack = document.getElementById('btn-settings-back');
+  if (btnSettings && btnSettingsBack) {
+    btnSettings.addEventListener('click', function () {
+      if (HR.audio) HR.audio.ui();
+      HR.showScreen('settings');
+    });
+    btnSettingsBack.addEventListener('click', function () {
+      if (HR.audio) HR.audio.ui();
+      HR.showScreen('menu');
+    });
+  }
 
   HR.toggleHostStart = function (isHost) {
     var btn = document.getElementById('btn-start-game');

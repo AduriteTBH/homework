@@ -14,20 +14,21 @@
     <canvas id="menu-bg-canvas" class="menu-bg-canvas"></canvas>
     <div class="portal-vignette"></div>
 
-    <div class="portal-layout">
+    <div class="menu-flex-wrapper" style="position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; z-index: 2 !important; display: flex !important; justify-content: center !important; align-items: center !important; gap: 80px !important; width: max-content !important;">
+      <div class="portal-layout" style="height: auto !important; padding: 0 !important; width: auto !important; min-width: 280px !important; margin: 0 !important;">
       <header class="portal-header">
         <img src="assets/logo.svg" alt="Hopter Royale" class="portal-logo-img" id="game-logo"
              onerror="this.classList.add('logo-missing'); this.nextElementSibling.classList.remove('hidden');">
         <div class="portal-logo portal-logo-fallback hidden">HOPTER<span>ROYALE</span></div>
-        <div class="portal-tag">H&amp;H Inc · Aerial Combat Program</div>
+        <div class="portal-tag">H&amp;H Inc · Made By H&H Team</div>
       </header>
 
       <nav class="portal-nav" id="portal-nav">
         <button type="button" class="portal-item" data-action="solo">Singleplayer</button>
         <button type="button" class="portal-item" data-action="host">Host Multiplayer</button>
         <button type="button" class="portal-item" data-action="join">Join Multiplayer</button>
-        <button type="button" class="portal-item" data-action="mute" id="btn-toggle-music">Music: ON</button>
-        <button type="button" class="portal-item" data-action="stats" id="btn-stats">Stats</button>
+        <button type="button" class="portal-item" id="btn-settings">Settings</button>
+        <button type="button" class="portal-item" id="btn-stats">Stats</button>
       </nav>
 
       <footer class="portal-footer">
@@ -43,7 +44,7 @@
       <button type="button" class="portal-subbtn ghost" data-close-panel>Back</button>
     </div>
 
-    <div id="visual-customizer" class="visual-customizer">
+      <div id="visual-customizer" class="visual-customizer" style="position: relative !important; right: auto !important; top: auto !important; transform: none !important; margin: 0 !important; opacity: 1;">
       <p class="subpanel-title">PILOT CALLSIGN</p>
       
       <div class="variant-switcher callsign-switcher">
@@ -67,6 +68,7 @@
         <span>Paint Job:</span>
         <div class="color-palette" id="color-palette"></div>
       </div>
+    </div>
     </div>
 
     <p id="file-mode-hint" class="portal-toast hidden">File mode — singleplayer only</p>
@@ -111,7 +113,7 @@
     <div class="portal-vignette"></div>
     <div class="portal-layout">
       <header class="portal-header">
-        <div class="portal-logo small">SERVICE RECORD</div>
+        <div class="portal-logo small">STATS</div>
       </header>
       <nav class="portal-nav">
         <button type="button" id="btn-stats-back" class="portal-item">Return to Menu</button>
@@ -123,6 +125,27 @@
           <p>Total KOs: <strong id="stat-kills" style="color: #fbc531;">0</strong></p>
           <p>Total Wins: <strong id="stat-wins" style="color: #fbc531;">0</strong></p>
           <p id="callsign-unlock-hint" style="margin-top: 30px; font-size: 16px; color: #888;">Win 3 games to unlock custom callsigns!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS SCREEN -->
+  <div id="settings-screen" class="screen portal-screen hidden">
+    <canvas id="settings-bg-canvas" class="menu-bg-canvas"></canvas>
+    <div class="portal-vignette"></div>
+    <div class="portal-layout">
+      <header class="portal-header">
+        <div class="portal-logo small">SYSTEM CONFIG</div>
+      </header>
+      <nav class="portal-nav">
+        <button type="button" id="btn-settings-back" class="portal-item">Return to Menu</button>
+      </nav>
+      <div class="portal-lobby-list">
+        <p class="subpanel-title">Preferences</p>
+        <div style="font-size: 24px; color: white; line-height: 1.8; margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+           <button type="button" id="btn-toggle-graphics" class="portal-item" style="width: 100%; max-width: 300px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">Graphics: AUTO</button>
+           <button type="button" data-action="mute" id="btn-toggle-music" class="portal-item" style="width: 100%; max-width: 300px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">Music: ON</button>
         </div>
       </div>
     </div>
@@ -166,6 +189,7 @@
       </div>
       <div id="hud-level">Level 1</div>
     </div>
+    <div id="fps-counter" style="position: absolute; left: 15px; bottom: 15px; color: #00d2d3; font-weight: bold; font-family: Outfit, sans-serif; z-index: 1000; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
 
     <div id="game-over-screen" class="hidden">
       <h2 id="game-over-text">KIA</h2>

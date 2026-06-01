@@ -66,6 +66,7 @@
   };
 
   HR.updateBullets = function (state, onExplosion, onKill) {
+    var playersList = Object.values(state.players);
     for (var i = state.bullets.length - 1; i >= 0; i--) {
       var b = state.bullets[i];
       b.x += b.vx;
@@ -79,7 +80,7 @@
 
       var hit = false;
 
-      Object.values(state.players).forEach(function (p) {
+      playersList.forEach(function (p) {
         if (hit || !p.alive || p.id === b.ownerId) return;
         
         var owner = state.players[b.ownerId];
@@ -89,6 +90,9 @@
         if (owner && !owner.isBot && p.isBot) {
           hitRadius = (24 * 1.5) + b.size;
         }
+
+        // Fast bounding box check to prevent massive lag!
+        if (Math.abs(p.x - b.x) > hitRadius || Math.abs(p.y - b.y) > hitRadius) return;
 
         if (Math.hypot(p.x - b.x, p.y - b.y) < hitRadius) {
           if (p.shield && p.shield > 0) {

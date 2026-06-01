@@ -1,5 +1,30 @@
 (function (HR) {
+  
+  // High Performance Interceptor for Low-End Devices (Chromebooks)
+  // shadowBlur is the #1 cause of Canvas2D lag. We intercept it globally.
+  var originalShadowBlur = Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype, 'shadowBlur');
+  if (originalShadowBlur) {
+    Object.defineProperty(CanvasRenderingContext2D.prototype, 'shadowBlur', {
+      set: function(val) {
+        var isLow = false;
+        if (HR.CONFIG) {
+          if (HR.CONFIG.GRAPHICS_MODE === 'LOW') isLow = true;
+          else if (HR.CONFIG.GRAPHICS_MODE === 'AUTO' && HR.RUNTIME_LOW_GRAPHICS) isLow = true;
+        }
+        if (isLow) {
+          originalShadowBlur.set.call(this, 0);
+        } else {
+          originalShadowBlur.set.call(this, val);
+        }
+      },
+      get: function() { return originalShadowBlur.get.call(this); }
+    });
+  }
+
+  HR.RUNTIME_LOW_GRAPHICS = false;
+
   HR.CONFIG = {
+    GRAPHICS_MODE: 'AUTO',
     MAP_SIZE: 5000,
     MAX_PLAYERS: 30,
     TICK_RATE: 30,
@@ -16,7 +41,7 @@
     ACCEL: 0.95,
     MAX_SPEED: 9.2,
     FRICTION: 0.88,
-    BULLET_LIFE: 80,
+    BULLET_LIFE: 45,
     DASH_SPEED: 26,
     DASH_DURATION: 6,
     DASH_COOLDOWN: 50,

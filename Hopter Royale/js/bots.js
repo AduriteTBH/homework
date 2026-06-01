@@ -18,7 +18,8 @@
     Object.values(state.players).forEach(function (p) {
       if (p.id === bot.id || !p.alive) return;
       var d = HR.dist(bot.x, bot.y, p.x, p.y);
-      if ((p.level > bot.level + 1 && d < 420) || d < 520) {
+      var aggroRange = p.isBot ? 380 : 520; // Ignore other bots from far away
+      if ((p.level > bot.level + 1 && d < aggroRange - 100) || d < aggroRange) {
         if (d < threatDist) {
           threat = p;
           threatDist = d;
@@ -73,11 +74,13 @@
       case 'HUNT':
         if (threat) {
           var t = HR.dist(bot.x, bot.y, threat.x, threat.y) / 18;
+          var aimJitter = threat.isBot ? 140 : 80; // Miss more often, especially against bots
           target = {
-            x: threat.x + threat.vx * t * 0.6,
-            y: threat.y + threat.vy * t * 0.6,
+            x: threat.x + threat.vx * t * 0.6 + (Math.random() - 0.5) * aimJitter,
+            y: threat.y + threat.vy * t * 0.6 + (Math.random() - 0.5) * aimJitter,
           };
-          if (threatDist < 420) bot.input.click = Math.random() > 0.08;
+          var fireChance = threat.isBot ? 0.3 : 0.15; // Shoot less often at bots
+          if (threatDist < 420) bot.input.click = Math.random() > fireChance;
         }
         break;
       case 'LOOT':

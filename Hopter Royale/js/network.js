@@ -63,7 +63,7 @@
       aJoin.onMessage = function (data, info) {
         if (!self.isHost) return;
         var peerId = info.peerId;
-        if (self.handlers.onPlayerJoin) self.handlers.onPlayerJoin(peerId, data.name, peerId);
+        if (self.handlers.onPlayerJoin) self.handlers.onPlayerJoin(peerId, data.name, data.color, data.variant);
         aJoinAck.send({
           peerId: peerId,
           players: self.handlers.getLobbyPlayers ? self.handlers.getLobbyPlayers() : {}
@@ -95,8 +95,12 @@
       };
 
       aEvent.onMessage = function (data, info) {
-        if (self.isHost || info.peerId !== self.hostId) return;
-        if (self.handlers.onEvent) self.handlers.onEvent(data);
+        if (self.isHost) {
+          if (self.handlers.onClientEvent) self.handlers.onClientEvent(info.peerId, data);
+        } else {
+          if (info.peerId !== self.hostId) return;
+          if (self.handlers.onEvent) self.handlers.onEvent(data);
+        }
       };
 
       aGameOver.onMessage = function (data, info) {
@@ -113,7 +117,11 @@
       self.room.onPeerJoin = function (peerId) {
         self.connections[peerId] = true;
         if (!self.isHost) {
-          aJoin.send({ name: self.handlers.getName() }, peerId);
+          aJoin.send({ 
+             name: self.handlers.getName(),
+             color: self.handlers.getColor ? self.handlers.getColor() : null,
+             variant: self.handlers.getVariant ? self.handlers.getVariant() : null
+          }, peerId);
         }
       };
 

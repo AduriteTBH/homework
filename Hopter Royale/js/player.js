@@ -9,12 +9,12 @@
     return level * 30;
   };
 
-  HR.createPlayer = function (id, name, isBot) {
+  HR.createPlayer = function (id, name, isBot, optColor, optVariant) {
     isBot = !!isBot;
     var botColors = ['#e1b12c', '#e84118', '#00a8ff', '#9c88ff', '#4cd137', '#e84393', '#ff9f43', '#00cec9', '#fd79a8', '#ff7675', '#a29bfe', '#55efc4', '#81ecec', '#fab1a0', '#ffeaa7'];
-    var color = isBot ? HR.pick(botColors) : (HR.myColor || HR.PLAYER_COLORS[colorIndex++ % HR.PLAYER_COLORS.length]);
+    var color = optColor ? optColor : (isBot ? HR.pick(botColors) : (HR.myColor || HR.PLAYER_COLORS[colorIndex++ % HR.PLAYER_COLORS.length]));
     var allVariants = ['base', 'scout', 'heavy', 'phantom', 'spectre', 'apache', 'viper', 'goliath', 'wraith', 'titan'];
-    var variant = isBot ? allVariants[Math.floor(Math.random() * allVariants.length)] : (HR.myVariant || 'base');
+    var variant = optVariant ? optVariant : (isBot ? allVariants[Math.floor(Math.random() * allVariants.length)] : (HR.myVariant || 'base'));
     // Variant-specific stats
     var hpTable = { base:100, scout:80, heavy:140, phantom:90, spectre:110, apache:120, viper:75, goliath:160, wraith:85, titan:150 };
     var maxHp = hpTable[variant] || 100;

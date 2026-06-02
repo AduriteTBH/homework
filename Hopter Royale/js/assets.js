@@ -106,7 +106,7 @@
     drawHopter: function (ctx, size, color, rotor, ghost, variant) {
       var key = 'hopter' + (variant ? variant.charAt(0).toUpperCase() + variant.slice(1) : 'Base');
       var img = images[key] || images.hopterBase;
-      if (!img) return false;
+      if (!img || img.naturalWidth <= 1 || img.naturalHeight <= 1) return false;
 
       var w = img.naturalWidth || img.width || 128;
       var h = img.naturalHeight || img.height || 128;

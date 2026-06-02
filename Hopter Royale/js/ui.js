@@ -115,9 +115,14 @@
     var humans = Object.values(players).filter(function (p) { return !p.isBot; }).length;
     var max = HR.CONFIG.MAX_PLAYERS;
     var bots = Math.max(0, max - humans);
-    el.textContent = bots > 0
-      ? humans + ' pilots · ' + bots + ' bots at launch (' + max + ' total)'
-      : 'Full lobby — ' + max + ' human pilots';
+    el.classList.remove('full', 'bots');
+    if (bots > 0) {
+      el.innerHTML = '<span style="opacity:0.7">👥 ' + humans + ' Pilots</span> &nbsp;|&nbsp; <span style="opacity:0.9">🤖 ' + bots + ' Bots</span>';
+      el.classList.add('bots');
+    } else {
+      el.innerHTML = '✨ Full Lobby (' + max + ' Pilots)';
+      el.classList.add('full');
+    }
   };
 
   HR.updateHud = function (state, me) {
@@ -145,6 +150,7 @@
     HR.updateLeaderboard(state, me.id);
   };
 
+  var lbRows = {};
   HR.updateLeaderboard = function (state, myId) {
     var list = document.getElementById('leaderboard-list');
     if (!list) return;
@@ -197,6 +203,7 @@
     });
   };
 
+  var lastKillFeedKey = '';
   function killFeedKey(feed) {
     if (!feed || !feed.length) return 'empty';
     return feed.map(function (e) { return (e.time || 0) + ':' + e.text; }).join('|');
@@ -215,10 +222,9 @@
       return;
     }
 
-    // Only append new items
     feed.forEach(function (entry) {
       var id = 'kill-' + entry.time + '-' + (entry.killer || '') + '-' + (entry.victim || '');
-      if (document.getElementById(id)) return; // Already rendered
+      if (document.getElementById(id)) return;
 
       var div = document.createElement('div');
       div.id = id;
@@ -240,16 +246,13 @@
       el.appendChild(div);
     });
 
-    // Remove empty message if present
     var emptyMsg = el.querySelector('.kill-entry.empty');
     if (emptyMsg) emptyMsg.remove();
 
-    // Remove old entries to prevent infinite scrolling list
     while (el.children.length > feed.length) {
       el.removeChild(el.firstChild);
     }
     
-    // Auto-scroll to bottom
     el.scrollTop = el.scrollHeight;
   };
 
@@ -348,8 +351,6 @@
     });
   }
 
-  var btnSaveCustom = document.getElementById('btn-save-custom');
-  
   var btnSettings = document.getElementById('btn-settings');
   var btnSettingsBack = document.getElementById('btn-settings-back');
   if (btnSettings && btnSettingsBack) {
@@ -507,7 +508,6 @@
 
     var btnNextName = document.getElementById('btn-next-callsign');
     var btnPrevName = document.getElementById('btn-prev-callsign');
-    var currentNameIdx = 0;
     
     function updateCallsignUI(n) {
       var lbl = document.getElementById('callsign-label');
@@ -539,9 +539,11 @@
     var playAgainBtn = document.getElementById('btn-play-again');
     if (playAgainBtn) {
       playAgainBtn.addEventListener('click', function() {
-        var goScreen = document.getElementById('game-over-screen');
-        if (goScreen) goScreen.classList.add('hidden');
-        if (HR.restartMatch) {
+        if (HR.votePlayAgain) {
+          HR.votePlayAgain(playAgainBtn);
+        } else if (HR.restartMatch) {
+          var goScreen = document.getElementById('game-over-screen');
+          if (goScreen) goScreen.classList.add('hidden');
           HR.restartMatch();
         } else {
           location.reload();
@@ -554,48 +556,6 @@
         HR.showScreen('menu');
       });
     }
-
-    var statsBtn = document.getElementById('btn-stats');
-    if (statsBtn) {
-      statsBtn.addEventListener('click', function() {
-        HR.showScreen('stats');
-      });
-    }
-
-    // Add hover sound effects to all buttons
-    document.querySelectorAll('button, .portal-item').forEach(function(btn) {
-      btn.addEventListener('mouseenter', function() {
-        if (HR.audio && HR.audio.uiHover) HR.audio.uiHover();
-      });
-    });
-
-    var statsBackBtn = document.getElementById('btn-stats-back');
-    if (statsBackBtn) {
-      statsBackBtn.addEventListener('click', function() {
-        HR.showScreen('menu');
-      });
-    }
-
-    if (HR.updateStatsUI) HR.updateStatsUI();
-
-    var joinInput = document.getElementById('join-code-input');
-    if (joinInput) {
-      joinInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-          closeJoinPanel();
-          handlers.onJoin();
-        }
-      });
-    }
-
-    window.addEventListener('keydown', function (e) {
-      if (e.key.toLowerCase() === 'm' && !screens.game.classList.contains('hidden')) {
-        HR.toggleMapExpanded();
-      }
-    });
-
-    if (HR.initMenuScene) HR.initMenuScene(true);
-    playMenuIntro();
   };
 
   HR.updateStatsUI = function() {

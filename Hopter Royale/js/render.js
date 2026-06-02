@@ -769,9 +769,9 @@
       ctx.fillStyle = color;
     } else {
       var grad = ctx.createLinearGradient(-r, -r, r, r);
-      grad.addColorStop(0, HR.lighten(color, 45));
+      grad.addColorStop(0, lighten(color, 45));
       grad.addColorStop(0.5, color);
-      grad.addColorStop(1, HR.darken(color, 30));
+      grad.addColorStop(1, darken(color, 30));
       ctx.fillStyle = grad;
     }
     

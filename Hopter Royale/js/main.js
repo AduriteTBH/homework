@@ -26,9 +26,11 @@
 
     net = new HR.NetworkManager({
       getName: function () { return HR.myCallsign || myName; },
+      getColor: function () { return HR.myColor; },
+      getVariant: function () { return HR.myVariant; },
       getLobbyPlayers: function () { return gameState.players; },
-      onPlayerJoin: function (peerId, name) {
-        gameState.players[peerId] = HR.createPlayer(peerId, name, false);
+      onPlayerJoin: function (peerId, name, color, variant) {
+        gameState.players[peerId] = HR.createPlayer(peerId, name, false, color, variant);
         gameState.players[peerId].isHost = false;
         HR.updateLobbyList(gameState.players);
       },
@@ -61,6 +63,7 @@
           { text: 'Synchronizing with host...', delay: 600 },
           { text: 'Match starting!', delay: 400 }
         ], function() {
+
           beginMatch(state);
         });
       },
@@ -73,6 +76,16 @@
         } else if (data.kind === 'killfeed') {
           gameState.killFeed = data.killFeed;
           HR.updateKillFeed(gameState.killFeed);
+        } else if (data.type === 'VOTE_COUNT') {
+          var btn = document.getElementById('btn-play-again');
+          if (btn && !btn.disabled) {
+            btn.textContent = 'Play Again (' + data.votes + '/' + data.required + ')';
+          }
+        }
+      },
+      onClientEvent: function (peerId, data) {
+        if (data.type === 'VOTE_RESTART') {
+          processRestartVote(peerId);
         }
       },
       onHostDisconnected: function () {
@@ -113,6 +126,7 @@
       requestAnimationFrame(function () {
         menuScreen.classList.add('screen-enter');
         document.body.classList.add('menu-intro-done');
+        if (HR.initMenuScene) HR.initMenuScene(true);
       });
     }
 
@@ -425,6 +439,82 @@ var winner = HR.checkWinner(gameState);
       location.reload();
     }
   };
+
+  var restartVotes = {};
+
+  HR.votePlayAgain = function(btn) {
+    if (mode === 'solo') {
+      startSoloGame();
+    } else {
+      if (!net) return;
+      btn.textContent = 'Voting...';
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+      
+      if (mode === 'host') {
+         processRestartVote(myId);
+      } else {
+         net.actions.sendEvent({ type: 'VOTE_RESTART', peerId: myId });
+      }
+    }
+  };
+
+  function processRestartVote(voterId) {
+    if (mode !== 'host') return;
+    restartVotes[voterId] = true;
+    checkRestartThreshold();
+  }
+
+  function checkRestartThreshold() {
+    var humanCount = Object.values(gameState.players).filter(function(p) { return !p.isBot; }).length;
+    var votes = Object.keys(restartVotes).length;
+    var threshold = Math.ceil(humanCount * 0.66);
+    if (votes >= threshold) {
+       executeSoftRestart();
+    } else {
+       net.broadcastEvent({ type: 'VOTE_COUNT', votes: votes, required: threshold });
+       var btn = document.getElementById('btn-play-again');
+       if (btn && !btn.disabled) {
+         btn.textContent = 'Play Again (' + votes + '/' + threshold + ')';
+       }
+    }
+  }
+
+  function executeSoftRestart() {
+    restartVotes = {};
+    var oldHumans = Object.values(gameState.players).filter(function(p) { return !p.isBot; });
+    gameState = HR.createInitialState();
+    
+    oldHumans.forEach(function(h) {
+       h.hp = h.maxHp;
+       h.level = 1;
+       h.xp = 0;
+       h.kills = 0;
+       h.alive = true;
+       h.shield = 0;
+       h.speedBoost = 0;
+       h.fireCooldown = 0;
+       h.dashCooldown = 0;
+       h.dashTimer = 0;
+       
+       var a = Math.random() * Math.PI * 2;
+       var rad = Math.random() * (HR.CONFIG.MAP_SIZE / 2 - 120);
+       h.x = HR.CONFIG.MAP_SIZE / 2 + Math.cos(a) * rad;
+       h.y = HR.CONFIG.MAP_SIZE / 2 + Math.sin(a) * rad;
+       
+       gameState.players[h.id] = h;
+    });
+
+    HR.fillWithBots(gameState, HR.CONFIG.MAX_PLAYERS - oldHumans.length);
+    gameState.started = true;
+    gameState.startTime = Date.now();
+    
+    Object.keys(net.connections).forEach(function (peerId) {
+       net.actions.sendStartGame({ state: gameState, youAre: peerId }, peerId);
+    });
+    
+    beginMatch(gameState, true);
+  }
 
   var lastInputTime = 0;
   var lastFrame = Date.now();

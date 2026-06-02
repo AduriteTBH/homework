@@ -340,7 +340,30 @@ body.menu-intro-done .portal-item {
 }
 
 .bot-fill-hint {
-  font-size: 0.82rem; color: var(--accent); margin-top: 8px;
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--muted);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.bot-fill-hint.full {
+  background: rgba(93, 255, 177, 0.1);
+  border-color: rgba(93, 255, 177, 0.3);
+  color: var(--accent);
+}
+
+.bot-fill-hint.bots {
+  background: rgba(255, 213, 107, 0.1);
+  border-color: rgba(255, 213, 107, 0.3);
+  color: var(--gold);
 }
 
 #lobby-status { color: var(--muted); font-size: 0.85rem; margin-top: 6px; }
@@ -987,9 +1010,14 @@ button.primary:hover {
   transform: translateX(-50%) translateY(40px) scale(0.85);
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: linear-gradient(90deg, rgba(232, 65, 24, 0), rgba(232, 65, 24, 0.8) 20%, rgba(232, 65, 24, 0.8) 80%, rgba(232, 65, 24, 0));
-  padding: 8px 40px;
+  gap: 12px;
+  background: rgba(10, 11, 20, 0.7);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 71, 87, 0.15);
+  border-radius: 40px;
+  padding: 10px 28px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -997,8 +1025,8 @@ button.primary:hover {
   color: white;
   text-transform: uppercase;
   font-family: Outfit, sans-serif;
-  letter-spacing: 2px;
-  font-weight: 900;
+  letter-spacing: 1px;
+  font-weight: 800;
 }
 
 #personal-kill-notification.show {
@@ -1007,23 +1035,32 @@ button.primary:hover {
 }
 
 .kill-skull {
-  color: #fbc531;
+  color: #fff;
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 0 5px #fbc531);
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+  margin-top: -2px; /* slight visual optical alignment tweak */
+}
+
+.kill-skull svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .kill-text {
-  font-size: 16px;
-  color: #fff;
-  text-shadow: 0 0 5px rgba(0,0,0,0.8);
+  font-size: 15px;
+  color: #f1f2f6;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .kill-name {
   color: #00d2d3;
-  font-size: 18px;
-  text-shadow: 0 0 8px #00d2d3, 0 0 2px #000;
+  font-size: 15px;
+  font-weight: 900;
+  text-shadow: 0 0 8px rgba(0, 210, 211, 0.6), 0 0 2px #000;
 }

@@ -16,15 +16,16 @@ class InteriorManager {
         this.interiorGroup = new THREE.Group();
         this.scene.add(this.interiorGroup);
 
-        // Bounding boxes for walk boundaries (expanded for alcoves)
+        // Bounding boxes for walk boundaries (expanded for alcoves and up to front windshield at -35.5)
         this.bounds = {
             minX: -6.5, maxX: 6.5,
-            minZ: -38, maxZ: 22,
+            minZ: -35.0, maxZ: 22,
             minY: 0, maxY: 3.5
         };
 
         // Pointer Lock State
         this.isLocked = false;
+        this.mouseSensitivityMultiplier = 1.0;
         
         // Pilot Seat location
         this.seatPosition = new THREE.Vector3(0, 0.8, -32);
@@ -78,9 +79,9 @@ class InteriorManager {
         });
 
         // 1. Segmented Floor Panels to prevent Z-fighting and avoid clipping empty space at the cockpit
-        const floorGeomMain = new THREE.BoxGeometry(8, 0.1, 75);
+        const floorGeomMain = new THREE.BoxGeometry(8, 0.1, 65.5);
         const floorMeshMain = new THREE.Mesh(floorGeomMain, floorMat);
-        floorMeshMain.position.set(0, -0.05, -7.5);
+        floorMeshMain.position.set(0, -0.05, -2.75);
         this.interiorGroup.add(floorMeshMain);
 
         const floorGeomLeft = new THREE.BoxGeometry(2.5, 0.1, 8);
@@ -105,25 +106,25 @@ class InteriorManager {
         };
 
         // Left wall trims (x = -3.9)
-        // Segment 1: center z = -20, length = 36
-        createTrim(cyanGlowMat, -3.9, 3.4, -20, 36);
-        createTrim(orangeGlowMat, -3.9, 1.2, -20, 36);
+        // Segment 1: center z = -18.75, length = 33.5 (ends at windshield)
+        createTrim(cyanGlowMat, -3.9, 3.4, -18.75, 33.5);
+        createTrim(orangeGlowMat, -3.9, 1.2, -18.75, 33.5);
         // Segment 2: center z = 15.5, length = 19
         createTrim(cyanGlowMat, -3.9, 3.4, 15.5, 19);
         createTrim(orangeGlowMat, -3.9, 1.2, 15.5, 19);
 
         // Right wall trims (x = 3.9)
-        // Segment 1: center z = -27, length = 22
-        createTrim(cyanGlowMat, 3.9, 3.4, -27, 22);
-        createTrim(orangeGlowMat, 3.9, 1.2, -27, 22);
+        // Segment 1: center z = -25.75, length = 19.5 (ends at windshield)
+        createTrim(cyanGlowMat, 3.9, 3.4, -25.75, 19.5);
+        createTrim(orangeGlowMat, 3.9, 1.2, -25.75, 19.5);
         // Segment 2: center z = 8.5, length = 33
         createTrim(cyanGlowMat, 3.9, 3.4, 8.5, 33);
         createTrim(orangeGlowMat, 3.9, 1.2, 8.5, 33);
 
         // 2. Segmented Ceiling Panels
-        const ceilingGeomMain = new THREE.BoxGeometry(8, 0.1, 75);
+        const ceilingGeomMain = new THREE.BoxGeometry(8, 0.1, 65.5);
         const ceilingMeshMain = new THREE.Mesh(ceilingGeomMain, metalMat);
-        ceilingMeshMain.position.set(0, 3.5, -7.5);
+        ceilingMeshMain.position.set(0, 3.5, -2.75);
         this.interiorGroup.add(ceilingMeshMain);
 
         const ceilingGeomLeft = new THREE.BoxGeometry(2.5, 0.1, 8);
@@ -140,9 +141,9 @@ class InteriorManager {
         const wallHeight = 3.5;
         const wallThickness = 0.2;
         
-        // Left Wall Segment 1 (z = -38 to z = -2)
-        const leftWall1 = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, 36), metalMat);
-        leftWall1.position.set(-4, wallHeight / 2, -20);
+        // Left Wall Segment 1 (z = -35.5 to z = -2)
+        const leftWall1 = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, 33.5), metalMat);
+        leftWall1.position.set(-4, wallHeight / 2, -18.75);
         this.interiorGroup.add(leftWall1);
 
         // Left Wall Segment 2 (z = 6 to z = 25)
@@ -164,9 +165,9 @@ class InteriorManager {
         this.interiorGroup.add(leftAlcoveSide2);
 
 
-        // Right Wall Segment 1 (z = -38 to z = -16)
-        const rightWall1 = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, 22), metalMat);
-        rightWall1.position.set(4, wallHeight / 2, -27);
+        // Right Wall Segment 1 (z = -35.5 to z = -16)
+        const rightWall1 = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, 19.5), metalMat);
+        rightWall1.position.set(4, wallHeight / 2, -25.75);
         this.interiorGroup.add(rightWall1);
 
         // Right Wall Segment 2 (z = -8 to z = 25)
@@ -193,16 +194,16 @@ class InteriorManager {
         this.interiorGroup.add(backWall);
 
         const frontWindshield = new THREE.Mesh(new THREE.BoxGeometry(8, 2, wallThickness), glassMat);
-        frontWindshield.position.set(0, 2.5, -40);
+        frontWindshield.position.set(0, 2.5, -35.5);
         this.interiorGroup.add(frontWindshield);
 
         const frontLowerWall = new THREE.Mesh(new THREE.BoxGeometry(8, 1.5, wallThickness), metalMat);
-        frontLowerWall.position.set(0, 0.75, -40);
+        frontLowerWall.position.set(0, 0.75, -35.5);
         this.interiorGroup.add(frontLowerWall);
 
         // 5. Spaceship structural bulkheads / wall ribs
         // Places vertical arches at intervals along the corridor, adapting to alcove widths
-        for (let z = -38; z <= 22; z += 6.5) {
+        for (let z = -31.5; z <= 22; z += 6.5) {
             const inLeftAlcove = (z >= -2.5 && z <= 6.5);
             const inRightAlcove = (z >= -16.5 && z <= -7.5);
 
@@ -501,8 +502,6 @@ class InteriorManager {
         centerStrut.rotation.x = -0.2;
         this.interiorGroup.add(centerStrut);
 
-        // Spawn a procedural co-pilot companion in the copilot seat
-        this.createCompanionPlaceholder(new THREE.Vector3(2, 0.8, -32));
 
         // === LIGHTING — PER-PIXEL PHONG — MATCHES ORIGINAL TEAL CORRIDOR LOOK ===
         // AmbientLight fills all dark areas with a faint blue-teal base. Increased brightness.
@@ -566,7 +565,7 @@ class InteriorManager {
             if (!this.active || !this.isLocked) return;
 
             // Sensitivity scaling
-            const sensitivity = 0.0022;
+            const sensitivity = 0.0022 * this.mouseSensitivityMultiplier;
             this.player.yaw -= e.movementX * sensitivity;
             this.player.pitch -= e.movementY * sensitivity;
 
@@ -707,51 +706,7 @@ class InteriorManager {
         return texture;
     }
 
-    /**
-     * Spawns a low-poly procedural figure in the copilot seat as an NPC.
-     */
-    createCompanionPlaceholder(position) {
-        const bodyMat = new THREE.MeshPhongMaterial({ color: 0x0ea5e9, shininess: 30 });
-        const skinMat = new THREE.MeshPhongMaterial({ color: 0xffedd5, shininess: 20 });
-        const hairMat = new THREE.MeshPhongMaterial({ color: 0xb45309, shininess: 10 });
 
-        const characterGroup = new THREE.Group();
-
-        // Torso
-        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.2, 0.9, 8), bodyMat);
-        torso.position.set(0, 0.45, 0);
-        characterGroup.add(torso);
-
-        // Head
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), skinMat);
-        head.position.set(0, 1.05, 0);
-        characterGroup.add(head);
-
-        // Hair
-        const hair = new THREE.Mesh(new THREE.SphereGeometry(0.21, 8, 8), hairMat);
-        hair.position.set(0, 1.1, 0.03);
-        characterGroup.add(hair);
-
-        // Arms/Legs in sitting configuration
-        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.7), bodyMat);
-        leg.position.set(-0.2, 0.2, -0.3);
-        characterGroup.add(leg);
-        const legR = leg.clone();
-        legR.position.x = 0.2;
-        characterGroup.add(legR);
-
-        const arm = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.5, 0.15), bodyMat);
-        arm.position.set(-0.35, 0.5, 0);
-        characterGroup.add(arm);
-        const armR = arm.clone();
-        armR.position.x = 0.35;
-        characterGroup.add(armR);
-
-        characterGroup.position.copy(position);
-        characterGroup.rotation.set(0, Math.PI, 0);
-        this.interiorGroup.add(characterGroup);
-        this.companionMesh = characterGroup;
-    }
 
     /**
      * Enters walking state, resetting positions and showing instruct overlays.

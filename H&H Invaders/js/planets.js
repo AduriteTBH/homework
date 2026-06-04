@@ -20,8 +20,14 @@ class EnvironmentManager {
      * Initializes and positions all planets in the background.
      */
     initPlanets() {
-        // Randomize positions, sizes, and colors for a unique layout every launch
-        const rPos = () => (Math.random() - 0.5) * 800; // Wider horizontal spread
+        // Randomize sizes and colors for a unique layout every launch
+        // Helper to force planets to spawn strictly on the far left or far right, leaving the center clear
+        const sideSpawnX = () => {
+            const side = Math.random() < 0.5 ? -1 : 1;
+            return side * (250 + Math.random() * 300); // Spawns between 250 to 550 on either side
+        };
+        const rPosY = () => (Math.random() - 0.5) * 200;
+
         // Push them WAY back so they don't block the flight path
         const zDist1 = -800 - Math.random() * 400;
         const zDist2 = -1200 - Math.random() * 600;
@@ -39,7 +45,7 @@ class EnvironmentManager {
         const earthMat = new THREE.MeshBasicMaterial({ map: earthTextures.map });
         
         const earthMesh = new THREE.Mesh(earthGeom, earthMat);
-        earthMesh.position.set(-300 + rPos(), -100 + rPos()*0.5, zDist1);
+        earthMesh.position.set(sideSpawnX(), rPosY(), zDist1);
         earthMesh.rotation.set(Math.random(), Math.random(), Math.random());
         
         // Lethal winds property
@@ -81,7 +87,8 @@ class EnvironmentManager {
         const giantMat = new THREE.MeshBasicMaterial({ map: giantTexture });
 
         const giantMesh = new THREE.Mesh(giantGeom, giantMat);
-        giantMesh.position.set(400 + rPos(), 200 + rPos()*0.5, zDist2);
+        // Ensure Gas Giant is also strictly on the side
+        giantMesh.position.set(sideSpawnX(), rPosY(), zDist2);
         giantMesh.rotation.set(Math.random(), Math.random(), Math.random());
         
         // Lethal winds property
@@ -423,8 +430,10 @@ class EnvironmentManager {
             if (planet.position.z > 200) {
                 // Throw it far into the background
                 planet.position.z = -1200 - Math.random() * 800;
-                // Randomize lateral/vertical position so it slices through the playable area!
-                planet.position.x = (Math.random() - 0.5) * 250;
+                
+                // Randomize lateral position to push strictly to the left or right!
+                const side = Math.random() < 0.5 ? -1 : 1;
+                planet.position.x = side * (250 + Math.random() * 300);
                 planet.position.y = (Math.random() - 0.5) * 100;
 
                 // Randomize scale massively to give variance

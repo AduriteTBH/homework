@@ -83,7 +83,7 @@ class ProjectileManager {
         if (!isPlayerOwned) {
             geom = this.laserGeom;
             mat = this.enemyMat;
-            speed = 85;
+            speed = 150; // Increased from 85 for harder difficulty
         } else {
             switch (type) {
                 case 'RAPID':

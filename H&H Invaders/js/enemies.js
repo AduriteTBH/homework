@@ -336,22 +336,25 @@ class EnemyManager {
             return;
         }
 
-        // Choose random ship
-        const shooter = activeEnemies[Math.floor(Math.random() * activeEnemies.length)];
+        // Choose a random subset of ships to fire a volley (2 to 4 ships at once)
+        const volleyCount = Math.min(activeEnemies.length, Math.floor(Math.random() * 3) + 2);
         
-        const nozzle = new THREE.Vector3().copy(shooter.mesh.position);
-        
-        // Target player position (aim slightly ahead or centered)
-        const targetPos = new THREE.Vector3(
-            (Math.random() - 0.5) * 20, 
-            (Math.random() - 0.5) * 10, 
-            0
-        );
+        for (let i = 0; i < volleyCount; i++) {
+            const shooter = activeEnemies[Math.floor(Math.random() * activeEnemies.length)];
+            const nozzle = new THREE.Vector3().copy(shooter.mesh.position);
+            
+            // Target player position (aim slightly ahead or centered)
+            const targetPos = new THREE.Vector3(
+                (Math.random() - 0.5) * 20, 
+                (Math.random() - 0.5) * 10, 
+                0
+            );
 
-        const dir = new THREE.Vector3().copy(targetPos).sub(nozzle).normalize();
+            const dir = new THREE.Vector3().copy(targetPos).sub(nozzle).normalize();
 
-        // Spawn magenta projectile
-        this.projectileManager.spawnProjectile(nozzle, dir, false, 'LASER', 10);
+            // Spawn magenta projectile
+            this.projectileManager.spawnProjectile(nozzle, dir, false, 'LASER', 10);
+        }
     }
 
     /**

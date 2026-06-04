@@ -32,7 +32,7 @@
             style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
             <h1
                 style="color: #00f3ff; font-family: 'Orbitron'; font-size: 32px; text-shadow: 0 0 20px #00f3ff; letter-spacing: 0.3rem; margin-bottom: 20px;">
-                SYSTEM STARTUP SEQUENCE</h1>
+                LAUNCHING...</h1>
             <p id="loading-status" class="subtitle"
                 style="font-size: 18px; color: #ff00ff; letter-spacing: 0.2rem; animation: pulse 1.5s infinite;">
                 PRECOMPILING GPU SHADERS...</p>
@@ -53,7 +53,7 @@
             <!-- Root Main Menu -->
             <div id="menu-root" class="menu-page active-page">
                 <img src="assets/hh_invaders_logo.svg" alt="H&H Invaders" class="game-logo" />
-                <p class="subtitle">Made By H&H Inc. (Beta 1.0a)</p>
+                <p class="subtitle">Made By H&H Inc. (Beta 1.0b)</p>
 
                 <div class="menu-buttons">
                     <button id="start-btn" class="tech-btn primary-btn">LAUNCH</button>
@@ -238,6 +238,56 @@
             <div class="reticle-ring"></div>
             <div class="reticle-dot"></div>
             <div class="reticle-brackets"></div>
+        </div>
+    </div>
+
+    <!-- PAUSE MENU OVERLAY -->
+    <div id="pause-menu" class="overlay hidden">
+        <div class="menu-content">
+            <h2 class="title-text">SYSTEM PAUSED</h2>
+            <p class="subtitle font-mono">TACTICAL LINK SUSPENDED</p>
+
+            <div class="controls-guide"
+                style="text-align: left; margin: 25px 0; padding: 15px 25px; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 4px;">
+                <h3 style="color: #00f3ff; margin-top: 0; font-size: 16px; letter-spacing: 1px;">FLIGHT CONTROLS</h3>
+                <ul
+                    style="list-style: none; padding: 0; margin: 0 0 20px 0; color: #cbd5e1; font-size: 14px; font-family: 'Orbitron', sans-serif;">
+                    <li style="margin-bottom: 5px;"><strong style="color: #fff; display: inline-block; width: 100px;">W
+                            / S</strong> Thrust Forward / Brake</li>
+                    <li style="margin-bottom: 5px;"><strong style="color: #fff; display: inline-block; width: 100px;">A
+                            / D</strong> Strafe Left / Right</li>
+                    <li style="margin-bottom: 5px;"><strong
+                            style="color: #fff; display: inline-block; width: 100px;">Shift</strong> Boost Thrusters
+                    </li>
+                    <li style="margin-bottom: 5px;"><strong
+                            style="color: #fff; display: inline-block; width: 100px;">L-Click</strong> Fire Weapon</li>
+                    <li style="margin-bottom: 5px;"><strong style="color: #fff; display: inline-block; width: 100px;">1
+                            - 5</strong> Switch Weapons</li>
+                    <li style="margin-bottom: 5px;"><strong
+                            style="color: #fff; display: inline-block; width: 100px;">F</strong> Leave Seat</li>
+                </ul>
+
+                <h3 style="color: #00f3ff; margin-top: 0; font-size: 16px; letter-spacing: 1px;">WALKING CONTROLS</h3>
+                <ul
+                    style="list-style: none; padding: 0; margin: 0; color: #cbd5e1; font-size: 14px; font-family: 'Orbitron', sans-serif;">
+                    <li style="margin-bottom: 5px;"><strong style="color: #fff; display: inline-block; width: 100px;">W
+                            A S D</strong> Move Character</li>
+                    <li style="margin-bottom: 5px;"><strong
+                            style="color: #fff; display: inline-block; width: 100px;">Space</strong> Jump</li>
+                    <li style="margin-bottom: 5px;"><strong
+                            style="color: #fff; display: inline-block; width: 100px;">Shift</strong> Sprint</li>
+                    <li style="margin-bottom: 5px;"><strong
+                            style="color: #fff; display: inline-block; width: 100px;">E</strong> Interact</li>
+                    <li style="margin-bottom: 5px;"><strong
+                            style="color: #fff; display: inline-block; width: 100px;">V</strong> Toggle View (1st/3rd)
+                    </li>
+                </ul>
+            </div>
+
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+                <button class="tech-btn primary-btn" id="btn-resume">RESUME FLIGHT [ESC]</button>
+                <button class="tech-btn" id="btn-quit-pause">ABORT TO MENU</button>
+            </div>
         </div>
     </div>
 

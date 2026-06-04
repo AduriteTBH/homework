@@ -12,6 +12,7 @@ class AudioSystem {
         this.engineGain = null;
         this.beamSound = null;
         this.unlocked = false;
+        this.masterVolValue = 1.0;
     }
 
     /**
@@ -26,7 +27,7 @@ class AudioSystem {
             
             // Set up master gain node (limiter/volume)
             this.masterVolume = this.ctx.createGain();
-            this.masterVolume.gain.setValueAtTime(0.5, this.ctx.currentTime); // 50% volume default
+            this.masterVolume.gain.setValueAtTime(0.5 * this.masterVolValue, this.ctx.currentTime); // 50% max volume default
             this.masterVolume.connect(this.ctx.destination);
             
             // Start the continuous engine hum
@@ -36,6 +37,17 @@ class AudioSystem {
             console.log("Audio System initialized and unlocked.");
         } catch (e) {
             console.error("Web Audio API not supported in this browser:", e);
+        }
+    }
+
+    /**
+     * Adjusts the master gain node for the entire game.
+     */
+    setMasterVolume(val) {
+        this.masterVolValue = val;
+        if (this.masterVolume && this.ctx) {
+            // Master starts at 0.5 to prevent clipping, so 100% slider = 0.5 gain
+            this.masterVolume.gain.setValueAtTime(val * 0.5, this.ctx.currentTime);
         }
     }
 

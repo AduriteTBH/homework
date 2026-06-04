@@ -102,6 +102,17 @@ class GameApp {
             this.keys[key] = false;
         });
 
+        // Pause toggle (Escape key)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (this.gameState === 'PLAYING') {
+                    this.pauseGame();
+                } else if (this.gameState === 'PAUSED') {
+                    this.resumeGame();
+                }
+            }
+        });
+
         // 2. Custom Game Events
         document.addEventListener('bossDefeated', () => {
             // Endless Mode: Do NOT trigger victory! Let the game continue.
@@ -161,6 +172,48 @@ class GameApp {
                 this.transitionToWalking();
             }
         });
+
+        // 5. Pause Menu Buttons
+        const resumeBtn = document.getElementById('btn-resume');
+        if (resumeBtn) {
+            resumeBtn.addEventListener('click', () => {
+                if (this.gameState === 'PAUSED') this.resumeGame();
+            });
+        }
+
+        const quitPauseBtn = document.getElementById('btn-quit-pause');
+        if (quitPauseBtn) {
+            quitPauseBtn.addEventListener('click', () => {
+                this.audio.playSelect();
+                const pauseMenu = document.getElementById('pause-menu');
+                if (pauseMenu) pauseMenu.classList.add('hidden');
+                
+                // End game and return to walking/menu state
+                this.gameState = 'WALKING';
+                this.transitionToWalking();
+            });
+        }
+
+        // 6. Settings Sliders
+        const sensSlider = document.getElementById('sens-mouse');
+        if (sensSlider) {
+            sensSlider.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                if (this.interior) {
+                    this.interior.mouseSensitivityMultiplier = val / 50.0; // 50 is base 1.0
+                }
+            });
+        }
+
+        const volSlider = document.getElementById('vol-master');
+        if (volSlider) {
+            volSlider.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                if (this.audio) {
+                    this.audio.setMasterVolume(val / 100.0);
+                }
+            });
+        }
     }
 
     /**
@@ -224,6 +277,25 @@ class GameApp {
         this.enemies.clearAll();
         this.asteroids.clearAll();
         
+        // Reset player metrics at the start of a fresh run
+        this.player.reset();
+        
+        // Load progress from local storage if available
+        const savedData = localStorage.getItem('hh_invaders_save');
+        if (savedData) {
+            try {
+                const data = JSON.parse(savedData);
+                this.player.waveNumber = data.waveNumber || 1;
+                this.player.score = data.score || 0;
+            } catch(e) {
+                this.player.waveNumber = 1;
+            }
+        } else {
+            this.player.waveNumber = 1;
+        }
+        
+        this.gameInProgress = false;
+        
         // Explicitly hide cockpit struts during walking phase by removing them from camera
         if (this.player && this.player.cockpitGroup) {
             this.player.cockpitGroup.visible = false;
@@ -240,10 +312,6 @@ class GameApp {
     transitionToFlight() {
         this.gameState = 'PLAYING';
         this.ui.showScreen('PLAYING'); // Exposes flight HUD meters
-        
-        // Reset player metrics
-        this.player.reset();
-        this.player.waveNumber = 1;
 
         // Explicitly show cockpit struts during flight combat
         if (this.player && this.player.cockpitGroup) {
@@ -251,10 +319,13 @@ class GameApp {
             this.sceneMgr.camera.add(this.player.cockpitGroup);
         }
         
-        // Spawn combat grid & asteroids
-        this.asteroids.initAsteroidField();
-        this.enemies.spawnWave(1);
-        this.ui.announceWave(1);
+        // Only spawn wave and reset if we are starting a brand new game
+        if (!this.gameInProgress) {
+            this.asteroids.initAsteroidField();
+            this.enemies.spawnWave(this.player.waveNumber);
+            this.ui.announceWave(this.player.waveNumber);
+            this.gameInProgress = true;
+        }
     }
 
     /**
@@ -301,6 +372,13 @@ class GameApp {
         
         // Recharge some player shield as progress bonus
         this.player.shield = Math.min(this.player.maxShield, this.player.shield + 30);
+        
+        // Save progress locally
+        const saveData = {
+            waveNumber: this.player.waveNumber,
+            score: this.player.score
+        };
+        localStorage.setItem('hh_invaders_save', JSON.stringify(saveData));
     }
 
     /**
@@ -310,6 +388,9 @@ class GameApp {
         this.gameState = 'GAMEOVER';
         this.player.setBeamState(false);
         this.audio.setBeamSoundActive(false);
+        
+        // Wipe local storage save on death
+        localStorage.removeItem('hh_invaders_save');
         
         // Save final variables to scoreboard
         this.ui.showGameOver(this.player.score, this.player.waveNumber - 1);
@@ -339,6 +420,27 @@ class GameApp {
             document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
             if (document.exitPointerLock) document.exitPointerLock();
         }
+    }
+
+    /**
+     * Pauses the game loop and displays the pause menu.
+     */
+    pauseGame() {
+        this.gameState = 'PAUSED';
+        const pauseMenu = document.getElementById('pause-menu');
+        if (pauseMenu) pauseMenu.classList.remove('hidden');
+        this.audio.playHover(); // Soft click sound
+    }
+
+    /**
+     * Resumes the game loop and hides the pause menu.
+     */
+    resumeGame() {
+        this.gameState = 'PLAYING';
+        const pauseMenu = document.getElementById('pause-menu');
+        if (pauseMenu) pauseMenu.classList.add('hidden');
+        this.audio.playSelect(); // Select sound
+        this.clock.getDelta(); // Clear accumulated time to prevent a huge jump
     }
 
     /**
@@ -405,7 +507,7 @@ class GameApp {
                 const playerColPos = new THREE.Vector3(0, 0, -3.5).applyMatrix4(this.player.camera.matrixWorld);
                 const dist = p.mesh.position.distanceTo(playerColPos);
                 
-                if (dist < p.radius + 3.2) { // Player hitbox sphere approx 3.2 units
+                if (dist < p.radius + 5.0) { // Increased Player hitbox sphere for better bullet collision
                     this.projectiles.triggerImpact(i, p.mesh.position);
                     
                     // Hurt player
@@ -465,6 +567,10 @@ class GameApp {
         // Get delta time and clamp for safety
         let dt = this.clock.getDelta();
         if (dt > this.maxDelta) dt = this.maxDelta;
+
+        if (this.gameState === 'PAUSED') {
+            dt = 0; // Freeze time completely
+        }
 
         // FPS calculation update
         if (!this.fpsFrameCount) {

@@ -78,7 +78,11 @@ export class InteriorPlayer {
             
             // Cockpit chairs
             { minX: 1.3, maxX: 2.7, minZ: -32.8, maxZ: -31.2, maxY: 0.8 },  // Co-pilot chair
-            { minX: -0.7, maxX: 0.7, minZ: -32.6, maxZ: -31.0, maxY: 1.5 }   // Pilot chair back support
+            { minX: -0.7, maxX: 0.7, minZ: -32.6, maxZ: -31.0, maxY: 1.5 }, // Pilot chair back support
+
+            // Massive Dashboard / Front Console block
+            // This prevents the player from squeezing past the chairs and walking into the windshield
+            { minX: -8.0, maxX: 8.0, minZ: -42.0, maxZ: -33.5, maxY: 3.5 }
         ];
 
         // Cinematic entry camera state

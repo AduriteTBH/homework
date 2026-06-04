@@ -22,6 +22,10 @@ class PlayerShip {
         this.boost = 100;
         this.isBoosting = false;
         
+        // Screen shake effect
+        this.shakeTime = 0;
+        this.shakeIntensity = 0;
+        
         this.maxEnergy = 100;
         this.energy = 100; // Weapon Heat/Energy
         this.score = 0;
@@ -302,9 +306,16 @@ class PlayerShip {
             this.hull = Math.max(0, this.hull - amount);
         }
 
-        // Play alert warn beep
-        this.audioSystem.playWarningAlarm();
+        // Play damage hit sound
+        this.audioSystem.playHit();
+        
+        // Trigger camera screen shake based on damage amount
+        this.shakeTime = 0.5;
+        this.shakeIntensity = Math.min(amount * 0.05, 2.0); // Cap max shake intensity
 
+        // Spawn some sparks or warning effect
+        this.scene.effects.createExplosion(this.position, 0xff0000, 10, 2.0);
+        
         // Apply screen shake css classes
         const hud = document.getElementById('game-hud');
         if (hud) {
@@ -392,6 +403,15 @@ class PlayerShip {
         const camTargetLook = new THREE.Vector3(0, 0, -40).applyMatrix4(this.camera.matrixWorld);
         camTargetLook.lerp(lookPos, 6 * now);
         this.camera.lookAt(camTargetLook);
+
+        // Apply screen shake if active
+        if (this.shakeTime > 0) {
+            this.shakeTime -= now;
+            if (this.shakeTime < 0) this.shakeTime = 0;
+            const intensity = this.shakeIntensity * (this.shakeTime / 0.5); // Decay over time
+            this.camera.position.x += (Math.random() - 0.5) * intensity;
+            this.camera.position.y += (Math.random() - 0.5) * intensity;
+        }
 
         // 4. Cockpit Sway Math (Lag slightly behind aiming mouse coordinate changes)
         const targetSwayX = -mouseX * 0.28;

@@ -1,0 +1,265 @@
+/* Base Styling and Variables */
+:root {
+    --color-bg: #030508;
+    --color-panel: rgba(10, 18, 30, 0.8);
+    --color-panel-border: #0a4a6e;
+    
+    /* Neon HUD Accents */
+    --color-cyan: #00f3ff;
+    --color-teal: #00ffaa;
+    --color-orange: #ff7700;
+    --color-magenta: #ff0055;
+    --color-white: #ffffff;
+    --color-red: #ff3333;
+    
+    /* Fonts */
+    --font-sci-fi: 'Orbitron', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    
+    /* Glows */
+    --glow-cyan: 0 0 10px rgba(0, 243, 255, 0.5), 0 0 20px rgba(0, 243, 255, 0.2);
+    --glow-teal: 0 0 10px rgba(0, 255, 170, 0.5), 0 0 20px rgba(0, 255, 170, 0.2);
+    --glow-orange: 0 0 10px rgba(255, 119, 0, 0.5), 0 0 20px rgba(255, 119, 0, 0.2);
+    --glow-magenta: 0 0 10px rgba(255, 0, 85, 0.5), 0 0 20px rgba(255, 0, 85, 0.2);
+    --glow-red: 0 0 10px rgba(255, 51, 51, 0.5), 0 0 20px rgba(255, 51, 51, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--color-bg);
+    font-family: var(--font-sci-fi);
+    color: var(--color-white);
+}
+
+/* Fullscreen Canvas container */
+#game-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Menu Overlays */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(5,12,24,0.7) 0%, rgba(2,4,8,0.95) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 0.5s ease, visibility 0.5s;
+    backdrop-filter: blur(4px);
+}
+
+.overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.menu-content {
+    background: rgba(4, 8, 15, 0.85);
+    border: 2px solid var(--color-panel-border);
+    padding: 40px 60px;
+    text-align: center;
+    max-width: 650px;
+    width: 90%;
+    box-shadow: 0 0 30px rgba(10, 74, 110, 0.3), inset 0 0 15px rgba(10, 74, 110, 0.2);
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+.menu-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+}
+
+/* Titles and Text */
+h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 0.5rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    color: var(--color-cyan);
+    text-shadow: var(--glow-cyan);
+}
+
+h2 {
+    font-size: 2.5rem;
+    letter-spacing: 0.3rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    letter-spacing: 0.4rem;
+    color: var(--color-teal);
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    text-shadow: var(--glow-teal);
+}
+
+.font-mono {
+    font-family: var(--font-mono);
+}
+
+.highlight-text {
+    color: var(--color-cyan);
+    font-family: var(--font-mono);
+    font-weight: bold;
+}
+
+.alert-text {
+    color: var(--color-magenta);
+    text-shadow: var(--glow-magenta);
+}
+
+.alert-border {
+    border-color: var(--color-magenta) !important;
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.2) !important;
+}
+
+.alert-border:hover {
+    background: rgba(255, 0, 85, 0.15) !important;
+    box-shadow: var(--glow-magenta) !important;
+}
+
+/* Flight Guide Box */
+.controls-guide {
+    background: rgba(2, 4, 8, 0.6);
+    border: 1px solid rgba(10, 74, 110, 0.4);
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.controls-guide h3 {
+    font-size: 0.9rem;
+    letter-spacing: 0.2rem;
+    color: var(--color-orange);
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(10, 74, 110, 0.4);
+    padding-bottom: 5px;
+}
+
+.controls-guide ul {
+    list-style: none;
+}
+
+.controls-guide li {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.key {
+    color: var(--color-cyan);
+    font-weight: bold;
+}
+
+/* Futuristic Tech Button */
+.tech-btn {
+    background: transparent;
+    border: 1.5px solid var(--color-cyan);
+    color: var(--color-white);
+    padding: 15px 30px;
+    font-family: var(--font-sci-fi);
+    font-size: 0.95rem;
+    font-weight: bold;
+    letter-spacing: 0.25rem;
+    cursor: pointer;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
+}
+
+.tech-btn:hover {
+    background: rgba(0, 243, 255, 0.12);
+    box-shadow: var(--glow-cyan);
+    transform: scale(1.02);
+}
+
+.tech-btn:active {
+    transform: scale(0.98);
+}
+
+/* Stats Summary */
+.stats-summary {
+    background: rgba(2, 4, 8, 0.6);
+    border: 1px solid rgba(255, 0, 85, 0.2);
+    padding: 15px;
+    margin: 20px 0 30px 0;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* Walking HUD Prompts overlay styling */
+.walk-hud-prompt {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    pointer-events: none;
+    z-index: 8;
+    background: rgba(4, 8, 15, 0.85);
+    border: 1.5px solid var(--color-panel-border);
+    padding: 15px 30px;
+    font-family: var(--font-sci-fi);
+    font-size: 0.8rem;
+    letter-spacing: 0.15rem;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+#walk-instructions {
+    top: 25px;
+}
+
+#walk-action-prompt {
+    bottom: 110px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border-color: var(--color-orange);
+    color: var(--color-white);
+    box-shadow: 0 0 15px rgba(255, 119, 0, 0.25);
+}
+
+.walk-hud-prompt.hidden {
+    display: none !important;
+}
+
+.walk-hud-prompt p {
+    margin-bottom: 6px;
+}
+
+.walk-hud-prompt p:last-child {
+    margin-bottom: 0;
+}
+

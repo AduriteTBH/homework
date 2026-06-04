@@ -1,0 +1,316 @@
+/* H&H Invaders - HUD Styling Overlay (Placeholder)
+ * This stylesheet will be fully updated in Phase 2 by Gemini 3.1 Pro 
+ * to implement angular panels, sci-fi clipping paths, and glowing indicators.
+ */
+
+.hud-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none; /* Let clicks pass through to canvas */
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    grid-template-rows: 100px 1fr 140px;
+    grid-template-areas: 
+        "top-left . top-right"
+        ". . ."
+        "bottom-left bottom-center bottom-right";
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.hud-container.hidden {
+    display: none !important;
+}
+
+/* Basic HUD Panels layout */
+.hud-panel {
+    background: var(--color-panel);
+    border: 1px solid var(--color-panel-border);
+    padding: 15px;
+    pointer-events: auto; /* Enable interaction for buttons/radar inside panels */
+    box-shadow: 0 0 10px rgba(10, 74, 110, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--color-white);
+}
+
+/* Areas */
+#hud-top-left {
+    grid-area: top-left;
+}
+
+#hud-top-right {
+    grid-area: top-right;
+    align-items: flex-end;
+}
+
+#hud-bottom-left {
+    grid-area: bottom-left;
+    justify-content: space-around;
+}
+
+#hud-bottom-center {
+    grid-area: bottom-center;
+    justify-self: center;
+    align-self: end;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    align-items: center;
+    padding-bottom: 5px;
+}
+
+#hud-bottom-right {
+    grid-area: bottom-right;
+    justify-content: space-around;
+}
+
+/* Simple labels and value layouts */
+.hud-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.15rem;
+    color: var(--color-cyan);
+}
+
+.hud-value {
+    font-size: 1.8rem;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    color: var(--color-white);
+}
+
+.hud-sub-label {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--color-teal);
+    letter-spacing: 0.05rem;
+}
+
+/* Basic status bars and gauges */
+.status-gauge {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.status-gauge:last-child {
+    margin-bottom: 0;
+}
+
+.gauge-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    letter-spacing: 0.1rem;
+    margin-bottom: 4px;
+    font-family: var(--font-mono);
+}
+
+.gauge-bar-outer {
+    width: 100%;
+    height: 8px;
+    background: rgba(10, 74, 110, 0.3);
+    border: 1px solid var(--color-panel-border);
+}
+
+.gauge-bar-inner {
+    height: 100%;
+    transition: width 0.2s ease-out;
+}
+
+.shield-color { background-color: var(--color-cyan); box-shadow: 0 0 5px var(--color-cyan); }
+.hull-color { background-color: var(--color-orange); box-shadow: 0 0 5px var(--color-orange); }
+.energy-color { background-color: var(--color-magenta); box-shadow: 0 0 5px var(--color-magenta); }
+
+/* Boost segment gauges */
+.boost-segments-container {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+    height: 10px;
+}
+
+.boost-segment {
+    flex: 1;
+    background: rgba(10, 74, 110, 0.3);
+    border: 1px solid var(--color-panel-border);
+    transition: background-color 0.1s ease;
+}
+
+.boost-segment.active {
+    background-color: var(--color-teal);
+    box-shadow: 0 0 5px var(--color-teal);
+}
+
+/* Weapon status widgets */
+.weapon-widget {
+    margin-bottom: 8px;
+}
+
+.weapon-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--color-orange);
+    letter-spacing: 0.08rem;
+}
+
+.weapon-status-bar {
+    display: flex;
+    font-size: 0.6rem;
+    margin-top: 2px;
+}
+
+.status-indicator {
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    background: rgba(0, 255, 170, 0.15);
+    border: 1px solid var(--color-teal);
+    color: var(--color-teal);
+}
+
+.weapon-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.weapon-key {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    padding: 3px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.4);
+}
+
+.weapon-key.active {
+    border-color: var(--color-cyan);
+    color: var(--color-cyan);
+    box-shadow: 0 0 5px var(--color-cyan);
+}
+
+/* Radar Container positioning */
+.radar-container {
+    width: 120px;
+    height: 120px;
+    border: 1px solid var(--color-panel-border);
+    background: rgba(2, 8, 16, 0.6);
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.radar-title {
+    font-size: 0.6rem;
+    letter-spacing: 0.1rem;
+    color: var(--color-teal);
+    margin-top: 4px;
+    text-align: center;
+    font-family: var(--font-mono);
+}
+
+/* Warning Overlays alert screen */
+.hud-alert-overlay {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 6;
+}
+
+.alert-message {
+    color: var(--color-magenta);
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.3rem;
+    text-shadow: var(--glow-magenta);
+}
+
+/* Wave announcement banner */
+.wave-announce {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+    z-index: 6;
+    color: var(--color-white);
+}
+
+.wave-announce h2 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 0.8rem;
+    color: var(--color-cyan);
+    text-shadow: var(--glow-cyan);
+    margin-bottom: 10px;
+}
+
+.wave-announce p {
+    font-size: 0.95rem;
+    letter-spacing: 0.4rem;
+    color: var(--color-teal);
+    text-shadow: var(--glow-teal);
+}
+
+/* Target reticle styling */
+#crosshair {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 8;
+}
+
+.reticle-ring {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border: 1.5px solid var(--color-cyan);
+    border-radius: 50%;
+    box-shadow: var(--glow-cyan);
+    opacity: 0.65;
+}
+
+.reticle-dot {
+    position: absolute;
+    top: 14px; left: 14px; width: 4px; height: 4px;
+    background-color: var(--color-teal);
+    border-radius: 50%;
+    box-shadow: var(--glow-teal);
+}
+
+.reticle-brackets {
+    position: absolute;
+    top: -4px; left: -4px; width: 40px; height: 40px;
+}
+
+.reticle-brackets::before,
+.reticle-brackets::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-color: var(--color-orange);
+    border-style: solid;
+    opacity: 0.8;
+}
+
+/* Top-Left Bracket */
+.reticle-brackets::before {
+    top: 0; left: 0;
+    border-width: 1.5px 0 0 1.5px;
+}
+/* Bottom-Right Bracket */
+.reticle-brackets::after {
+    bottom: 0; right: 0;
+    border-width: 0 1.5px 1.5px 0;
+}

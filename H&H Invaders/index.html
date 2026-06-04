@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H&H Invaders - 3D Sci-Fi Space Shooter</title>
+    <!-- Google Font for futuristic style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Game Styling sheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/hud.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Game canvas container -->
+    <div id="game-container"></div>
+
+    <!-- MAIN MENU OVERLAY -->
+    <div id="main-menu" class="overlay active">
+        <div class="menu-content">
+            <h1 class="glitch-title" data-text="H&H INVADERS">H&H INVADERS</h1>
+            <p class="subtitle">3D FIRST-PERSON COCKPIT SPACE SHOOTER</p>
+            <div class="controls-guide">
+                <h3>PILOT FLIGHT GUIDE</h3>
+                <ul>
+                    <li><span class="key">MOUSE</span> - Aim Targeting Reticle</li>
+                    <li><span class="key">W / S</span> - Climb / Descend</li>
+                    <li><span class="key">A / D</span> - Strafe Left / Right</li>
+                    <li><span class="key">SPACE</span> - Engine Thruster Boost</li>
+                    <li><span class="key">L-SHIFT</span> - Space Brake</li>
+                    <li><span class="key">LEFT CLICK</span> - Fire Selected Weapon</li>
+                    <li><span class="key">1 - 5</span> - Select Weapon System</li>
+                </ul>
+            </div>
+            <button id="start-btn" class="tech-btn">INITIALIZE SHIP SYSTEMS</button>
+        </div>
+    </div>
+
+    <!-- HUD OVERLAY (Active Game HUD) -->
+    <div id="game-hud" class="hud-container hidden">
+        <!-- Top Left: Wave Info -->
+        <div id="hud-top-left" class="hud-panel angular-panel-top-left">
+            <div class="hud-label">WAVE</div>
+            <div id="hud-wave" class="hud-value">01</div>
+            <div class="hud-sub-label">ENEMIES REMAINING: <span id="hud-enemies-count">0</span></div>
+        </div>
+
+        <!-- Top Right: Score & Multiplier -->
+        <div id="hud-top-right" class="hud-panel angular-panel-top-right">
+            <div class="hud-label">SCORE</div>
+            <div id="hud-score" class="hud-value">000000</div>
+            <div class="hud-sub-label">MULTIPLIER: <span id="hud-multiplier">x1.0</span></div>
+        </div>
+
+        <!-- Bottom Left: Shield & Hull & Boost status -->
+        <div id="hud-bottom-left" class="hud-panel angular-panel-bottom-left">
+            <div class="status-gauge">
+                <div class="gauge-header">
+                    <span>SHIELD</span>
+                    <span id="hud-shield-pct">100%</span>
+                </div>
+                <div class="gauge-bar-outer">
+                    <div id="hud-shield-fill" class="gauge-bar-inner shield-color" style="width: 100%;"></div>
+                </div>
+            </div>
+            <div class="status-gauge">
+                <div class="gauge-header">
+                    <span>HULL</span>
+                    <span id="hud-hull-pct">100%</span>
+                </div>
+                <div class="gauge-bar-outer">
+                    <div id="hud-hull-fill" class="gauge-bar-inner hull-color" style="width: 100%;"></div>
+                </div>
+            </div>
+            <div class="status-gauge">
+                <div class="gauge-header">
+                    <span>BOOST THRUSTER</span>
+                </div>
+                <div id="hud-boost-segments" class="boost-segments-container">
+                    <div class="boost-segment active"></div>
+                    <div class="boost-segment active"></div>
+                    <div class="boost-segment active"></div>
+                    <div class="boost-segment active"></div>
+                    <div class="boost-segment active"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Center: Holographic Radar Bounds -->
+        <div id="hud-bottom-center" class="hud-panel angular-panel-bottom-center">
+            <div class="radar-container">
+                <canvas id="radar-canvas"></canvas>
+            </div>
+            <div class="radar-title">TACTICAL RADAR</div>
+        </div>
+
+        <!-- Bottom Right: Weapon status, energy, and warning indicator -->
+        <div id="hud-bottom-right" class="hud-panel angular-panel-bottom-right">
+            <div class="weapon-widget">
+                <div class="hud-label">WEAPON SYSTEM</div>
+                <div id="hud-weapon-name" class="weapon-title">PRIMARY LASER</div>
+                <div class="weapon-status-bar">
+                    <div class="status-indicator ready" id="hud-weapon-ready">READY</div>
+                </div>
+            </div>
+            <div class="status-gauge">
+                <div class="gauge-header">
+                    <span>WEAPON HEAT / ENERGY</span>
+                </div>
+                <div class="gauge-bar-outer">
+                    <div id="hud-energy-fill" class="gauge-bar-inner energy-color" style="width: 0%;"></div>
+                </div>
+            </div>
+            <div id="hud-weapon-list" class="weapon-list">
+                <span class="weapon-key active" id="wk-1">1: LASER</span>
+                <span class="weapon-key" id="wk-2">2: RAPID</span>
+                <span class="weapon-key" id="wk-3">3: PLASMA</span>
+                <span class="weapon-key" id="wk-4">4: MISSILE</span>
+                <span class="weapon-key" id="wk-5">5: BEAM</span>
+            </div>
+        </div>
+
+        <!-- Warning HUD Display -->
+        <div id="hud-warning" class="hud-alert-overlay hidden">
+            <div class="alert-message">WARNING: SHIELD DEPLT</div>
+        </div>
+
+        <!-- Wave Announcement Text -->
+        <div id="wave-announcement" class="wave-announce hidden">
+            <h2 id="wave-announce-title">WAVE 01</h2>
+            <p>PREPARE FOR ENGAGEMENT</p>
+        </div>
+        
+        <!-- Exit Seat Button -->
+        <div id="exit-seat-container" class="hidden" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100;">
+            <button id="btn-exit-seat" style="background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; color: #00ffff; padding: 8px 16px; font-family: 'Orbitron', sans-serif; font-size: 14px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; box-shadow: 0 0 10px rgba(0,255,255,0.3);">[F] Leave Seat</button>
+        </div>
+
+        <!-- Targeting Crosshair -->
+        <div id="crosshair">
+            <div class="reticle-ring"></div>
+            <div class="reticle-dot"></div>
+            <div class="reticle-brackets"></div>
+        </div>
+    </div>
+
+    <!-- GAME OVER OVERLAY -->
+    <div id="game-over" class="overlay hidden">
+        <div class="menu-content">
+            <h2 class="alert-text">SHIP DESTROYED</h2>
+            <p class="subtitle font-mono">CONNECTION TO TACTICAL LINK LOST</p>
+            <div class="stats-summary">
+                <p>FINAL SCORE: <span id="final-score" class="highlight-text">0</span></p>
+                <p>WAVES SURVIVED: <span id="final-wave" class="highlight-text">0</span></p>
+            </div>
+            <button id="restart-btn" class="tech-btn alert-border">RE-ESTABLISH CONNECTION</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- WALKING INTERIOR HUD PROMPTS -->
+    <div id="walk-instructions" class="walk-hud-prompt hidden">
+        <p>USE <span class="key">W / A / S / D</span> TO WALK INSIDE SPACESHIP</p>
+        <p>CLICK SCREEN TO ENGAGE VIEW LOCK</p>
+    </div>
+    <div id="walk-action-prompt" class="walk-hud-prompt action-alert hidden">
+        APPROACH COCKPIT CHAIR ➔ PRESS <span class="key">E</span> TO PILOT VESSEL
+    </div>
+
+    <!-- IMPORT MAP TO RESOLVE THREE.JS AD-HOC DEPS IN CDN MODULES -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- THREE.JS ENGINE & GLTF LOADER FROM CDN (ES MODULES MOUNTED GLOBALLY) -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        window.THREE = THREE;
+        window.GLTFLoader = GLTFLoader;
+    </script>
+
+    <!-- GAME FILES (LOADED NATIVELY AS MODULES TO RUN IN ORDER AFTER THREE.JS MOUNTS) -->
+    <script type="module" src="js/audio.js"></script>
+    <script type="module" src="js/gravity.js"></script>
+    <script type="module" src="js/effects.js"></script>
+    <script type="module" src="js/scene.js"></script>
+    <script type="module" src="js/planets.js"></script>
+    <script type="module" src="js/asteroids.js"></script>
+    <script type="module" src="js/projectiles.js"></script>
+    <script type="module" src="js/player.js"></script>
+    <script type="module" src="js/enemies.js"></script>
+    <script type="module" src="js/interior.js"></script>
+    <script type="module" src="js/ui.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

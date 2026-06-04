@@ -12,8 +12,8 @@
     z-index: 5;
     pointer-events: none; /* Let clicks pass through to canvas */
     display: grid;
-    grid-template-columns: 280px 1fr 280px;
-    grid-template-rows: 100px 1fr 140px;
+    grid-template-columns: 340px 1fr 340px;
+    grid-template-rows: 100px 1fr 160px;
     grid-template-areas: 
         "top-left . top-right"
         ". . ."
@@ -28,46 +28,102 @@
 
 /* Basic HUD Panels layout */
 .hud-panel {
-    background: var(--color-panel);
-    border: 1px solid var(--color-panel-border);
-    padding: 15px;
+    background: rgba(4, 10, 20, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 243, 255, 0.25);
+    padding: 18px;
     pointer-events: auto; /* Enable interaction for buttons/radar inside panels */
-    box-shadow: 0 0 10px rgba(10, 74, 110, 0.2);
+    box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.05), 0 0 15px rgba(0, 8, 16, 0.6);
     display: flex;
     flex-direction: column;
     justify-content: center;
     color: var(--color-white);
+    position: relative;
+    transition: all 0.3s ease;
 }
 
-/* Areas */
-#hud-top-left {
+/* Sci-fi bracket accents on panels */
+.hud-panel::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 8px;
+    height: 8px;
+    border-top: 2.5px solid var(--color-cyan);
+    border-left: 2.5px solid var(--color-cyan);
+    pointer-events: none;
+}
+
+.hud-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    border-bottom: 2.5px solid var(--color-cyan);
+    border-right: 2.5px solid var(--color-cyan);
+    pointer-events: none;
+}
+
+/* Angular sci-fi clip paths */
+.angular-panel-top-left {
     grid-area: top-left;
+    clip-path: polygon(0 0, 100% 0, 100% 65%, 85% 100%, 0 100%);
+    border-right-width: 2px !important;
+    border-bottom-color: rgba(0, 243, 255, 0.45) !important;
 }
 
-#hud-top-right {
+.angular-panel-top-right {
     grid-area: top-right;
     align-items: flex-end;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 15% 100%, 0 65%);
+    border-left-width: 2px !important;
+    border-bottom-color: rgba(0, 243, 255, 0.45) !important;
 }
 
-#hud-bottom-left {
+.angular-panel-bottom-left {
     grid-area: bottom-left;
     justify-content: space-around;
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 0 100%);
+    border-right-width: 2px !important;
+    border-top-color: rgba(0, 243, 255, 0.45) !important;
+    padding-right: 18px !important;
 }
 
-#hud-bottom-center {
+.angular-panel-bottom-center {
     grid-area: bottom-center;
     justify-self: center;
     align-self: end;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     align-items: center;
     padding-bottom: 5px;
 }
+.angular-panel-bottom-center::before,
+.angular-panel-bottom-center::after {
+    display: none !important;
+}
 
-#hud-bottom-right {
+.angular-panel-bottom-right {
     grid-area: bottom-right;
     justify-content: space-around;
+    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%);
+    border-left-width: 2px !important;
+    border-top-color: rgba(0, 243, 255, 0.45) !important;
+    padding-left: 18px !important;
+}
+
+/* Position exit seat button container higher up to avoid radar overlay */
+#exit-seat-container {
+    position: absolute;
+    bottom: 175px !important;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
 }
 
 /* Simple labels and value layouts */
@@ -82,6 +138,7 @@
     font-family: var(--font-mono);
     font-weight: bold;
     color: var(--color-white);
+    text-shadow: var(--glow-cyan);
 }
 
 .hud-sub-label {
@@ -112,19 +169,23 @@
 
 .gauge-bar-outer {
     width: 100%;
-    height: 8px;
-    background: rgba(10, 74, 110, 0.3);
-    border: 1px solid var(--color-panel-border);
+    height: 10px;
+    background: rgba(2, 6, 23, 0.8);
+    border: 1px solid rgba(0, 243, 255, 0.25);
+    border-radius: 2px;
+    overflow: hidden;
+    padding: 1px;
 }
 
 .gauge-bar-inner {
     height: 100%;
-    transition: width 0.2s ease-out;
+    border-radius: 1px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.shield-color { background-color: var(--color-cyan); box-shadow: 0 0 5px var(--color-cyan); }
-.hull-color { background-color: var(--color-orange); box-shadow: 0 0 5px var(--color-orange); }
-.energy-color { background-color: var(--color-magenta); box-shadow: 0 0 5px var(--color-magenta); }
+.shield-color { background-color: var(--color-cyan); box-shadow: 0 0 8px var(--color-cyan); }
+.hull-color { background-color: var(--color-orange); box-shadow: 0 0 8px var(--color-orange); }
+.energy-color { background-color: var(--color-magenta); box-shadow: 0 0 8px var(--color-magenta); }
 
 /* Boost segment gauges */
 .boost-segments-container {
@@ -136,14 +197,15 @@
 
 .boost-segment {
     flex: 1;
-    background: rgba(10, 74, 110, 0.3);
-    border: 1px solid var(--color-panel-border);
+    background: rgba(2, 6, 23, 0.8);
+    border: 1px solid rgba(0, 243, 255, 0.25);
+    border-radius: 1px;
     transition: background-color 0.1s ease;
 }
 
 .boost-segment.active {
     background-color: var(--color-teal);
-    box-shadow: 0 0 5px var(--color-teal);
+    box-shadow: 0 0 8px var(--color-teal);
 }
 
 /* Weapon status widgets */
@@ -313,4 +375,78 @@
 .reticle-brackets::after {
     bottom: 0; right: 0;
     border-width: 0 1.5px 1.5px 0;
+}
+
+/* Custom Exit/Leave Seat Button */
+#exit-seat-container button {
+    background: rgba(244, 63, 94, 0.12) !important;
+    border: 1.5px solid var(--color-magenta) !important;
+    color: var(--color-white) !important;
+    font-family: var(--font-sci-fi) !important;
+    font-weight: bold;
+    letter-spacing: 0.15rem;
+    box-shadow: var(--glow-magenta) !important;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    text-shadow: var(--glow-magenta);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+#exit-seat-container button:hover {
+    background: rgba(244, 63, 94, 0.3) !important;
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.7) !important;
+    transform: scale(1.05);
+}
+
+/* Boss Encounter Health Bar */
+.boss-bar-container {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    max-width: 800px;
+    z-index: 50;
+    pointer-events: none;
+    text-align: center;
+    animation: assemble-top 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.boss-bar-container.hidden {
+    display: none !important;
+}
+
+.boss-bar-title {
+    font-family: var(--font-sci-fi);
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--color-red);
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+    letter-spacing: 0.3rem;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+#boss-health-text {
+    color: var(--color-white);
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.boss-bar-outer {
+    width: 100%;
+    height: 18px;
+    background: rgba(10, 5, 5, 0.8);
+    border: 2px solid var(--color-red);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 100%, 0 100%);
+    padding: 2px;
+}
+
+.boss-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, #991b1b, #ef4444, #ffb3b3);
+    width: 100%;
+    transition: width 0.2s ease-out;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
 }

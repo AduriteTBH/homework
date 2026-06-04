@@ -51,8 +51,29 @@ class GameApp {
         this.clock = new THREE.Clock();
         this.maxDelta = 0.1; // Cap delta to prevent physics blowout on tab sleep
 
+        // Hardware Auto-Detect for Low-End Devices (Chromebooks, mobile)
+        window.isLowEndDevice = false;
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) {
+            window.isLowEndDevice = true;
+            console.warn("Low-end hardware detected (<= 4 cores). Applying aggressive optimizations.");
+        }
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.isLowEndDevice = true;
+        }
+
+        // Apply low-end render scale
+        if (window.isLowEndDevice && this.sceneMgr && this.sceneMgr.renderer) {
+            this.sceneMgr.renderer.setPixelRatio(1.0); // Override retina screens
+        }
+
         // Start initialization pipelines
         this.bindEvents();
+
+        // Pre-warm the GPU shaders asynchronously to allow the loading screen to render first
+        setTimeout(() => {
+            this.prewarmGPU();
+        }, 100);
+
         this.animate();
     }
 
@@ -65,6 +86,11 @@ class GameApp {
             const key = e.key.toLowerCase();
             this.keys[key] = true;
 
+            // Prevent spacebar from clicking focused HTML buttons (which restarts the game)
+            if (e.key === ' ') {
+                e.preventDefault();
+            }
+
             // Weapon slots hotkeys (1-5)
             if (key >= '1' && key <= '5' && this.gameState === 'PLAYING') {
                 this.player.selectWeapon(parseInt(key));
@@ -74,6 +100,16 @@ class GameApp {
         window.addEventListener('keyup', (e) => {
             const key = e.key.toLowerCase();
             this.keys[key] = false;
+        });
+
+        // 2. Custom Game Events
+        document.addEventListener('bossDefeated', () => {
+            // Endless Mode: Do NOT trigger victory! Let the game continue.
+            // Reward the player with massive points and a repair instead.
+            this.player.score += 10000 * this.player.multiplier;
+            this.player.shield = this.player.maxShield; // Full shield recharge
+            this.player.hull = Math.min(this.player.maxHull, this.player.hull + 40); // 40% hull repair
+            this.audio.playBootUp(); // Play victory jingle as a wave-clear sound
         });
 
         // 2. Mouse Aiming coordinate tracking
@@ -128,10 +164,58 @@ class GameApp {
     }
 
     /**
+     * Silently spawns all visual effect variants far off-camera to force WebGL shader compilation,
+     * preventing mid-combat stuttering on low-end Chromebooks.
+     */
+    prewarmGPU() {
+        const offCameraPos = new THREE.Vector3(0, -9999, 0);
+        const dummyDir = new THREE.Vector3(0, 1, 0);
+
+        // 1. Fire projectiles
+        this.projectiles.spawnProjectile(offCameraPos, dummyDir, true, 'LASER');
+        this.projectiles.spawnProjectile(offCameraPos, dummyDir, true, 'PLASMA');
+        this.projectiles.spawnProjectile(offCameraPos, dummyDir, true, 'RAPID');
+        this.projectiles.spawnProjectile(offCameraPos, dummyDir, true, 'MISSILE');
+        this.projectiles.spawnProjectile(offCameraPos, dummyDir, false, 'LASER');
+
+        // 2. Fire Effects (Explosions, Shields, Sparks)
+        this.effects.createExplosion(offCameraPos, 0x00f3ff, 5, 1.0); // Boss/Plasma color
+        this.effects.createExplosion(offCameraPos, 0xff7700, 5, 1.0); // Missile color
+        this.effects.createExplosion(offCameraPos, 0xff3333, 5, 1.0); // Enemy ship color
+        this.effects.createExplosion(offCameraPos, 0x555555, 5, 1.0); // Asteroid color
+        
+        this.effects.createShieldFlash(offCameraPos, 1.0, 0x00f3ff);
+        this.effects.createSparks(offCameraPos, dummyDir, 0xff00ff, 5);
+
+        // 3. Force Renderer Compile (The game will freeze for ~100ms here as WebGL compiles shaders)
+        if (this.sceneMgr && this.sceneMgr.renderer) {
+            this.sceneMgr.renderer.compile(this.sceneMgr.scene, this.sceneMgr.camera);
+        }
+
+        // 4. Return items to object pools immediately
+        this.projectiles.clearAll();
+        this.effects.clearAll();
+
+        // 5. Hide loading screen, reveal main menu smoothly
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+            document.getElementById('loading-status').innerText = "SYSTEMS NOMINAL. READY.";
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                    loadingScreen.classList.remove('active');
+                }, 800);
+            }, 300);
+        }
+    }
+
+    /**
      * Initializes stats, unlocks browser audio context, and launches spaceship walking cabin.
      */
     startGame() {
         this.audio.init();
+
         this.gameState = 'WALKING';
         this.ui.showScreen('WALKING'); // Hides menu overlays, exposes canvas
         
@@ -181,22 +265,15 @@ class GameApp {
 
         this.gameState = 'WALKING';
         this.ui.showScreen('WALKING'); // Hides flight HUD
-        
+
         // Hide cockpit struts
         if (this.player && this.player.cockpitGroup) {
             this.player.cockpitGroup.visible = false;
             this.sceneMgr.camera.remove(this.player.cockpitGroup);
         }
-        
+
         // Reset camera and character to interior mode
-        this.interior.enter();
-        
-        // Position player slightly behind the seat so they don't get stuck clicking it instantly
-        if (this.interior.characterMesh) {
-            this.interior.playerPosition.copy(this.interior.seatPosition);
-            this.interior.playerPosition.z += 2.0; // Place 2 meters behind the seat
-            this.interior.characterMesh.position.copy(this.interior.playerPosition);
-        }
+        this.interior.enter(true); // Pass true to stand up with sit_to idle transition
     }
 
     /**
@@ -236,6 +313,32 @@ class GameApp {
         
         // Save final variables to scoreboard
         this.ui.showGameOver(this.player.score, this.player.waveNumber - 1);
+    }
+
+    /**
+     * Triggers the Victory Screen when the Boss is defeated
+     */
+    triggerVictory() {
+        this.gameState = 'MENU';
+        this.audio.playBootUp(); // Victory sound
+        
+        const rootMenu = document.getElementById('menu-root');
+        if (rootMenu) {
+            rootMenu.innerHTML = `
+                <h1 style="color: #00f3ff; font-family: 'Orbitron'; font-size: 60px; text-shadow: 0 0 20px #00f3ff; text-align: center;">MISSION ACCOMPLISHED</h1>
+                <p class="subtitle" style="text-align: center; font-size: 24px;">The Dreadnought Boss has been destroyed!</p>
+                <div class="menu-buttons" style="margin-top: 50px;">
+                    <button onclick="location.reload()" class="tech-btn primary-btn" style="width: 300px;">PLAY AGAIN</button>
+                </div>
+            `;
+            document.getElementById('main-menu').classList.remove('hidden');
+            document.getElementById('main-menu').classList.add('active');
+            document.getElementById('game-hud').classList.add('hidden');
+            
+            // Release pointer lock
+            document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+            if (document.exitPointerLock) document.exitPointerLock();
+        }
     }
 
     /**
@@ -347,7 +450,6 @@ class GameApp {
                 // Silently delete enemy from list without points
                 enemy.active = false;
                 this.sceneMgr.scene.remove(enemy.mesh);
-                enemy.geometry.dispose();
                 enemies.splice(j, 1);
                 this.enemies.enemiesCount = enemies.length;
             }
@@ -364,12 +466,33 @@ class GameApp {
         let dt = this.clock.getDelta();
         if (dt > this.maxDelta) dt = this.maxDelta;
 
+        // FPS calculation update
+        if (!this.fpsFrameCount) {
+            this.fpsFrameCount = 0;
+            this.fpsLastTime = performance.now();
+            this.fpsElement = document.getElementById('fps-counter');
+        }
+        this.fpsFrameCount++;
+        const nowTime = performance.now();
+        if (nowTime >= this.fpsLastTime + 1000) {
+            const fps = Math.round((this.fpsFrameCount * 1000) / (nowTime - this.fpsLastTime));
+            if (this.fpsElement) {
+                this.fpsElement.textContent = `FPS: ${fps}`;
+            }
+            this.fpsFrameCount = 0;
+            this.fpsLastTime = nowTime;
+        }
+
         if (this.gameState === 'WALKING') {
             // Update spaceship walking mechanics
             this.interior.update(dt, this.keys);
         } else if (this.gameState === 'PLAYING') {
             // 1. Update flight stats
-            this.player.update(dt, this.keys, this.mouseX, this.mouseY);
+            this.player.update(dt, this.keys, this.mouseX, this.mouseY, this.gravity);
+            
+            if (this.player.isBoosting) {
+                this.effects.createSpeedLines(this.sceneMgr.camera);
+            }
             
             // 2. Update entities arrays
             this.asteroids.update(dt, this.gravity);
@@ -378,6 +501,42 @@ class GameApp {
             
             // 3. Process collision checks
             this.processCollisions();
+
+            // 3.5. Process Planetary Atmospheric Death Zones
+            if (this.planets && this.planets.planets) {
+                for (const p of this.planets.planets) {
+                    if (p.userData.isLethalPlanet) {
+                        // 1. Check Player
+                        const dist = this.player.position.distanceTo(p.position);
+                        if (dist < p.userData.deathRadius) {
+                            // Massive hull damage (deadly winds)
+                            this.player.takeDamage(150 * dt);
+                        }
+
+                        // 2. Check Enemies (Planets act as massive natural hazards!)
+                        const enemiesArr = this.enemies.enemies;
+                        for (let j = enemiesArr.length - 1; j >= 0; j--) {
+                            const enemy = enemiesArr[j];
+                            if (enemy.active) {
+                                const eDist = enemy.mesh.position.distanceTo(p.position);
+                                if (eDist < p.userData.deathRadius) {
+                                    // Enemy gets shredded by the atmosphere
+                                    this.effects.createExplosion(enemy.mesh.position, 0xff5500, 20, enemy.radius * 0.6);
+                                    if (enemy.enemyType !== 'Boss') { // Bosses probably shouldn't insta-die, but let's let it happen for fun, or maybe just take damage.
+                                        enemy.active = false;
+                                        this.sceneMgr.scene.remove(enemy.mesh);
+                                        enemiesArr.splice(j, 1);
+                                        this.enemies.enemiesCount = enemiesArr.length;
+                                    } else {
+                                        // Boss just takes heavy damage
+                                        enemy.health -= 500 * dt;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             // 4. Check wave completion
             if (this.enemies.enemiesCount <= 0) {
@@ -393,6 +552,20 @@ class GameApp {
             this.ui.updateHUD(this.player, this.enemies.enemiesCount);
             this.ui.updateCrosshair(this.mouseX, this.mouseY);
             this.ui.drawRadar(this.player.position, this.enemies, this.asteroids.asteroids);
+
+            // 7. Boss HUD Sync
+            const boss = this.enemies.enemies.find(e => e.enemyType === 'Boss');
+            const bossBarContainer = document.getElementById('hud-boss-bar');
+            if (boss && boss.active) {
+                bossBarContainer.classList.remove('hidden');
+                const bossHealthFill = document.getElementById('boss-health-fill');
+                const bossHealthText = document.getElementById('boss-health-text');
+                const pct = Math.max(0, (boss.health / boss.maxHealth) * 100);
+                bossHealthFill.style.width = `${pct}%`;
+                bossHealthText.innerText = `${Math.floor(pct)}%`;
+            } else {
+                bossBarContainer.classList.add('hidden');
+            }
         }
 
         // Always render background orbital movements and visual particles

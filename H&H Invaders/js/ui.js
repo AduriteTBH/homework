@@ -42,6 +42,52 @@ class UIManager {
         this.radarSweepAngle = 0;
 
         this.initRadarCanvas();
+        this.initMenuNavigation();
+    }
+
+    /**
+     * Initializes the click event listeners for Main Menu sub-page navigation.
+     */
+    initMenuNavigation() {
+        const navButtons = {
+            'nav-controls-btn': 'menu-controls',
+            'nav-settings-btn': 'menu-settings',
+            'nav-credits-btn': 'menu-credits'
+        };
+
+        // Bind main menu navigation buttons
+        for (const [btnId, targetId] of Object.entries(navButtons)) {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.addEventListener('click', () => this.switchMenuPage(targetId));
+            }
+        }
+
+        // Bind all 'Back' buttons to return to root
+        const backBtns = document.querySelectorAll('.back-btn');
+        backBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetId = e.target.getAttribute('data-target');
+                this.switchMenuPage(targetId || 'menu-root');
+            });
+        });
+    }
+
+    /**
+     * Smoothly transitions between menu pages by toggling the active-page class.
+     */
+    switchMenuPage(targetPageId) {
+        // Find all pages and remove active class
+        const pages = document.querySelectorAll('.menu-page');
+        pages.forEach(page => {
+            page.classList.remove('active-page');
+        });
+
+        // Add active class to target page
+        const targetPage = document.getElementById(targetPageId);
+        if (targetPage) {
+            targetPage.classList.add('active-page');
+        }
     }
 
     /**
@@ -71,6 +117,12 @@ class UIManager {
             this.mainMenu.classList.remove('hidden');
         } else if (screenState === 'PLAYING') {
             this.gameHud.classList.remove('hidden');
+            
+            // Trigger HUD bootup animation sequence
+            this.gameHud.classList.remove('bootup-active');
+            void this.gameHud.offsetWidth; // Force reflow
+            this.gameHud.classList.add('bootup-active');
+
             if (exitBtn) exitBtn.classList.remove('hidden');
         } else if (screenState === 'GAMEOVER') {
             this.gameOver.classList.remove('hidden');

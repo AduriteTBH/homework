@@ -96,8 +96,8 @@ class AudioSystem {
         let targetVol = 0.06 + (speedFactor * 0.04);
 
         if (isBoosting) {
-            targetFreq += 35;
-            targetVol += 0.08;
+            targetFreq += 10; // Subtly higher pitch
+            targetVol += 0.015; // Much quieter volume increase
         }
 
         // Smoothly ramp to values
@@ -108,33 +108,47 @@ class AudioSystem {
 
     /**
      * Synthesizes Primary Laser Sound.
-     * Quick high-to-low pitch sweep.
+     * High-tech snappy dual-oscillator zap.
      */
     playLaser() {
         if (!this.ctx) return;
         this.resume();
 
         const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(880, now); // A5
-        osc.frequency.exponentialRampToValueAtTime(110, now + 0.12);
+        osc1.type = 'square';
+        osc1.frequency.setValueAtTime(1500, now);
+        osc1.frequency.exponentialRampToValueAtTime(100, now + 0.15);
 
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+        osc2.type = 'sawtooth';
+        osc2.frequency.setValueAtTime(800, now);
+        osc2.frequency.exponentialRampToValueAtTime(80, now + 0.15);
 
-        osc.connect(gain);
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(5000, now);
+        filter.frequency.exponentialRampToValueAtTime(400, now + 0.15);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
         gain.connect(this.masterVolume);
 
-        osc.start(now);
-        osc.stop(now + 0.13);
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.16);
+        osc2.stop(now + 0.16);
     }
 
     /**
      * Synthesizes Rapid Fire Sound.
-     * Higher, shorter laser burst.
+     * Chiptune-style short piercing triangle burst.
      */
     playRapidFire() {
         if (!this.ctx) return;
@@ -144,23 +158,23 @@ class AudioSystem {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(1200, now);
-        osc.frequency.exponentialRampToValueAtTime(300, now + 0.07);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1800, now);
+        osc.frequency.exponentialRampToValueAtTime(400, now + 0.08);
 
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.07);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
 
         osc.connect(gain);
         gain.connect(this.masterVolume);
 
         osc.start(now);
-        osc.stop(now + 0.08);
+        osc.stop(now + 0.09);
     }
 
     /**
      * Synthesizes Plasma Cannon.
-     * Heavy charge sweep + low frequency white noise blast.
+     * Deep charge up followed by a thunderous bass blast.
      */
     playPlasma() {
         if (!this.ctx) return;
@@ -169,57 +183,90 @@ class AudioSystem {
         const now = this.ctx.currentTime;
         
         // 1. Charge Sound
-        const osc = this.ctx.createOscillator();
-        const gainOsc = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(80, now);
-        osc.frequency.exponentialRampToValueAtTime(350, now + 0.25);
-        gainOsc.gain.setValueAtTime(0.01, now);
-        gainOsc.gain.exponentialRampToValueAtTime(0.15, now + 0.25);
-        osc.connect(gainOsc);
-        gainOsc.connect(this.masterVolume);
-        osc.start(now);
-        osc.stop(now + 0.26);
+        const chargeOsc = this.ctx.createOscillator();
+        const chargeGain = this.ctx.createGain();
+        chargeOsc.type = 'sine';
+        chargeOsc.frequency.setValueAtTime(150, now);
+        chargeOsc.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
+        
+        chargeGain.gain.setValueAtTime(0.01, now);
+        chargeGain.gain.exponentialRampToValueAtTime(0.25, now + 0.3);
+        
+        chargeOsc.connect(chargeGain);
+        chargeGain.connect(this.masterVolume);
+        chargeOsc.start(now);
+        chargeOsc.stop(now + 0.3);
 
-        // 2. Heavy explosion blast on launch
-        const bufferSize = this.ctx.sampleRate * 0.35; // 0.35 seconds
+        // 2. Blast Sound (Deep bass drop + noise)
+        const blastOsc = this.ctx.createOscillator();
+        blastOsc.type = 'square';
+        blastOsc.frequency.setValueAtTime(150, now + 0.3);
+        blastOsc.frequency.exponentialRampToValueAtTime(20, now + 0.7);
+
+        const blastGain = this.ctx.createGain();
+        blastGain.gain.setValueAtTime(0, now);
+        blastGain.gain.setValueAtTime(0.4, now + 0.3);
+        blastGain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+        // Noise overlay
+        const bufferSize = this.ctx.sampleRate * 0.4; 
         const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const data = buffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1; // White noise
+            data[i] = Math.random() * 2 - 1;
         }
-
         const noise = this.ctx.createBufferSource();
         noise.buffer = buffer;
+        const noiseFilter = this.ctx.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.setValueAtTime(800, now + 0.3);
+        noiseFilter.frequency.exponentialRampToValueAtTime(100, now + 0.7);
+        
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0, now);
+        noiseGain.gain.setValueAtTime(0.3, now + 0.3);
+        noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
 
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(180, now + 0.25);
-        filter.frequency.exponentialRampToValueAtTime(50, now + 0.6);
+        blastOsc.connect(blastGain);
+        noise.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        
+        blastGain.connect(this.masterVolume);
+        noiseGain.connect(this.masterVolume);
 
-        const gainNoise = this.ctx.createGain();
-        gainNoise.gain.setValueAtTime(0, now);
-        gainNoise.gain.setValueAtTime(0.4, now + 0.25);
-        gainNoise.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-
-        noise.connect(filter);
-        filter.connect(gainNoise);
-        gainNoise.connect(this.masterVolume);
-
-        noise.start(now + 0.25);
-        noise.stop(now + 0.65);
+        blastOsc.start(now + 0.3);
+        blastOsc.stop(now + 0.7);
+        noise.start(now + 0.3);
+        noise.stop(now + 0.7);
     }
 
     /**
      * Synthesizes Missile Launch.
-     * Sweeping white-noise exhaust sound.
+     * Hard thump followed by an explosive rocket whoosh.
      */
     playMissile() {
         if (!this.ctx) return;
         this.resume();
 
         const now = this.ctx.currentTime;
-        const bufferSize = this.ctx.sampleRate * 0.45;
+        
+        // Initial "thump"
+        const thumpOsc = this.ctx.createOscillator();
+        thumpOsc.type = 'sine';
+        thumpOsc.frequency.setValueAtTime(150, now);
+        thumpOsc.frequency.exponentialRampToValueAtTime(40, now + 0.1);
+        
+        const thumpGain = this.ctx.createGain();
+        thumpGain.gain.setValueAtTime(0.4, now);
+        thumpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        
+        thumpOsc.connect(thumpGain);
+        thumpGain.connect(this.masterVolume);
+        thumpOsc.start(now);
+        thumpOsc.stop(now + 0.15);
+
+        // Rocket thruster hiss
+        const bufferSize = this.ctx.sampleRate * 0.8;
         const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const data = buffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
@@ -230,24 +277,26 @@ class AudioSystem {
         noise.buffer = buffer;
 
         const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(800, now);
-        filter.frequency.exponentialRampToValueAtTime(200, now + 0.45);
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(400, now);
+        filter.frequency.linearRampToValueAtTime(1200, now + 0.8);
 
         const gain = this.ctx.createGain();
-        gain.gain.setValueAtTime(0.25, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.3, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
 
         noise.connect(filter);
         filter.connect(gain);
         gain.connect(this.masterVolume);
 
         noise.start(now);
-        noise.stop(now + 0.46);
+        noise.stop(now + 0.85);
     }
 
     /**
      * Controls the continuous Charged Beam sound loop.
+     * High-tech wobble phaser using an LFO on a bandpass filter.
      * @param {boolean} active - True to start looping beam sound, false to fade out.
      */
     setBeamSoundActive(active) {
@@ -257,27 +306,37 @@ class AudioSystem {
         const now = this.ctx.currentTime;
 
         if (active) {
-            if (this.beamSound) return; // Already running
+            if (this.beamSound) return;
 
             this.beamSound = {
                 osc1: this.ctx.createOscillator(),
                 osc2: this.ctx.createOscillator(),
+                lfo: this.ctx.createOscillator(),
                 gain: this.ctx.createGain()
             };
 
             this.beamSound.osc1.type = 'sawtooth';
-            this.beamSound.osc1.frequency.setValueAtTime(220, now); // A3
+            this.beamSound.osc1.frequency.setValueAtTime(110, now); // A2
             
-            this.beamSound.osc2.type = 'sine';
-            this.beamSound.osc2.frequency.setValueAtTime(221.5, now);
+            this.beamSound.osc2.type = 'square';
+            this.beamSound.osc2.frequency.setValueAtTime(111.5, now);
 
-            // High filter to represent laser friction
+            // Filter wobble
             const filter = this.ctx.createBiquadFilter();
             filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(600, now);
+            filter.frequency.setValueAtTime(800, now);
+            filter.Q.setValueAtTime(5, now);
+            
+            this.beamSound.lfo.type = 'sine';
+            this.beamSound.lfo.frequency.setValueAtTime(8, now); // 8 Hz wobble
+            const lfoGain = this.ctx.createGain();
+            lfoGain.gain.setValueAtTime(400, now);
+            
+            this.beamSound.lfo.connect(lfoGain);
+            lfoGain.connect(filter.frequency);
 
             this.beamSound.gain.gain.setValueAtTime(0.01, now);
-            this.beamSound.gain.gain.exponentialRampToValueAtTime(0.18, now + 0.15); // fade in
+            this.beamSound.gain.gain.exponentialRampToValueAtTime(0.2, now + 0.15); // fade in
 
             this.beamSound.osc1.connect(filter);
             this.beamSound.osc2.connect(filter);
@@ -286,18 +345,20 @@ class AudioSystem {
 
             this.beamSound.osc1.start(now);
             this.beamSound.osc2.start(now);
+            this.beamSound.lfo.start(now);
         } else {
             if (!this.beamSound) return;
 
             const currentBeam = this.beamSound;
-            this.beamSound = null; // Clear handle immediately
+            this.beamSound = null;
 
             currentBeam.gain.gain.cancelScheduledValues(now);
             currentBeam.gain.gain.setValueAtTime(currentBeam.gain.gain.value, now);
-            currentBeam.gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1); // fade out fast
+            currentBeam.gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
 
             currentBeam.osc1.stop(now + 0.12);
             currentBeam.osc2.stop(now + 0.12);
+            currentBeam.lfo.stop(now + 0.12);
         }
     }
 
@@ -326,11 +387,11 @@ class AudioSystem {
         // Custom filter to shape explosion boom and rumble
         const filter = this.ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(280 * intensity, now);
-        filter.frequency.exponentialRampToValueAtTime(25, now + duration);
+        filter.frequency.setValueAtTime(300 * intensity, now);
+        filter.frequency.exponentialRampToValueAtTime(30, now + duration);
 
         const gain = this.ctx.createGain();
-        gain.gain.setValueAtTime(0.45 * Math.min(1.5, intensity), now);
+        gain.gain.setValueAtTime(0.5 * Math.min(1.5, intensity), now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
 
         noise.connect(filter);
@@ -365,6 +426,68 @@ class AudioSystem {
 
         osc.start(now);
         osc.stop(now + 0.31);
+    }
+
+    /**
+     * Synthesizes HUD Boot Up Sound.
+     * High tech sweep with multiple chords turning on.
+     */
+    playBootUp() {
+        if (!this.ctx) return;
+        this.resume();
+
+        const now = this.ctx.currentTime;
+        
+        // Main ascending power-up sweep
+        const sweepOsc = this.ctx.createOscillator();
+        const sweepGain = this.ctx.createGain();
+        sweepOsc.type = 'sine';
+        sweepOsc.frequency.setValueAtTime(100, now);
+        sweepOsc.frequency.exponentialRampToValueAtTime(800, now + 1.5);
+        
+        sweepGain.gain.setValueAtTime(0, now);
+        sweepGain.gain.linearRampToValueAtTime(0.2, now + 1.0);
+        sweepGain.gain.exponentialRampToValueAtTime(0.01, now + 2.0);
+        
+        sweepOsc.connect(sweepGain);
+        sweepGain.connect(this.masterVolume);
+        sweepOsc.start(now);
+        sweepOsc.stop(now + 2.1);
+
+        // Techy interface blips
+        for (let i = 0; i < 5; i++) {
+            const blipOsc = this.ctx.createOscillator();
+            const blipGain = this.ctx.createGain();
+            blipOsc.type = 'square';
+            blipOsc.frequency.setValueAtTime(1200 + Math.random() * 800, now + i * 0.15);
+            
+            blipGain.gain.setValueAtTime(0, now);
+            blipGain.gain.setValueAtTime(0.05, now + i * 0.15);
+            blipGain.gain.setTargetAtTime(0, now + i * 0.15 + 0.05, 0.02);
+            
+            blipOsc.connect(blipGain);
+            blipGain.connect(this.masterVolume);
+            blipOsc.start(now + i * 0.15);
+            blipOsc.stop(now + i * 0.15 + 0.1);
+        }
+
+        // Final lock-in chord
+        const chordFreqs = [440, 554.37, 659.25]; // A Major
+        chordFreqs.forEach(freq => {
+            const chordOsc = this.ctx.createOscillator();
+            const chordGain = this.ctx.createGain();
+            chordOsc.type = 'triangle';
+            chordOsc.frequency.setValueAtTime(freq, now + 1.5);
+            
+            chordGain.gain.setValueAtTime(0, now);
+            chordGain.gain.setValueAtTime(0.1, now + 1.5);
+            chordGain.gain.exponentialRampToValueAtTime(0.01, now + 2.5);
+            
+            chordOsc.connect(chordGain);
+            chordGain.connect(this.masterVolume);
+            chordOsc.start(now + 1.5);
+            chordOsc.stop(now + 2.6);
+        });
     }
 }
 window.AudioSystem = AudioSystem;

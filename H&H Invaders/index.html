@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,39 +8,130 @@
     <!-- Google Font for futuristic style -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
     <!-- Game Styling sheets -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/hud.css?v=2">
+    <link rel="stylesheet" href="css/animations.css?v=2">
 </head>
+
 <body>
+    <!-- Subtle FPS Counter -->
+    <div id="fps-counter"
+        style="position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-family: 'Share Tech Mono', monospace; font-size: 11px; color: rgba(0, 243, 255, 0.45); z-index: 1000; pointer-events: none; letter-spacing: 0.15rem; text-shadow: 0 0 4px rgba(0, 243, 255, 0.35);">
+        FPS: --</div>
+
     <!-- Game canvas container -->
     <div id="game-container"></div>
 
+    <!-- LOADING SCREEN OVERLAY -->
+    <div id="loading-screen" class="overlay active"
+        style="z-index: 10000; background-color: #040814; transition: opacity 0.8s ease-in-out;">
+        <div class="menu-container"
+            style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+            <h1
+                style="color: #00f3ff; font-family: 'Orbitron'; font-size: 32px; text-shadow: 0 0 20px #00f3ff; letter-spacing: 0.3rem; margin-bottom: 20px;">
+                SYSTEM STARTUP SEQUENCE</h1>
+            <p id="loading-status" class="subtitle"
+                style="font-size: 18px; color: #ff00ff; letter-spacing: 0.2rem; animation: pulse 1.5s infinite;">
+                PRECOMPILING GPU SHADERS...</p>
+        </div>
+    </div>
+
     <!-- MAIN MENU OVERLAY -->
     <div id="main-menu" class="overlay active">
-        <div class="menu-content">
-            <h1 class="glitch-title" data-text="H&H INVADERS">H&H INVADERS</h1>
-            <p class="subtitle">3D FIRST-PERSON COCKPIT SPACE SHOOTER</p>
-            <div class="controls-guide">
-                <h3>PILOT FLIGHT GUIDE</h3>
-                <ul>
-                    <li><span class="key">MOUSE</span> - Aim Targeting Reticle</li>
-                    <li><span class="key">W / S</span> - Climb / Descend</li>
-                    <li><span class="key">A / D</span> - Strafe Left / Right</li>
-                    <li><span class="key">SPACE</span> - Engine Thruster Boost</li>
-                    <li><span class="key">L-SHIFT</span> - Space Brake</li>
-                    <li><span class="key">LEFT CLICK</span> - Fire Selected Weapon</li>
-                    <li><span class="key">1 - 5</span> - Select Weapon System</li>
-                </ul>
+        <!-- Footer / Creator credits -->
+        <div class="creator-credits">
+            <div class="creator-content">
+                <span>CREATED BY</span>
+                <img src="assets/Cha444.png" alt="H&H Inc. Logo" class="creator-logo" />
             </div>
-            <button id="start-btn" class="tech-btn">INITIALIZE SHIP SYSTEMS</button>
+        </div>
+
+        <div class="menu-container">
+            <!-- Root Main Menu -->
+            <div id="menu-root" class="menu-page active-page">
+                <img src="assets/hh_invaders_logo.svg" alt="H&H Invaders" class="game-logo" />
+                <p class="subtitle">Made By H&H Inc. (Beta 1.0a)</p>
+
+                <div class="menu-buttons">
+                    <button id="start-btn" class="tech-btn primary-btn">LAUNCH</button>
+                    <button id="nav-controls-btn" class="tech-btn">TUTORIAL</button>
+                    <button id="nav-settings-btn" class="tech-btn">SETTINGS</button>
+                    <button id="nav-credits-btn" class="tech-btn">CREDITS</button>
+                </div>
+            </div>
+
+            <!-- Controls Sub-menu -->
+            <div id="menu-controls" class="menu-page">
+                <h2 class="glitch-title" data-text="FLIGHT MANUAL">FLIGHT MANUAL</h2>
+                <div class="controls-guide">
+                    <h3>PILOT FLIGHT GUIDE</h3>
+                    <ul>
+                        <li><span class="key">MOUSE</span> - Aim Targeting Reticle</li>
+                        <li><span class="key">W / S</span> - Climb / Descend</li>
+                        <li><span class="key">A / D</span> - Strafe Left / Right</li>
+                        <li><span class="key">SPACE</span> - Engine Thruster Boost</li>
+                        <li><span class="key">L-SHIFT</span> - Space Brake</li>
+                        <li><span class="key">LEFT CLICK</span> - Fire Selected Weapon</li>
+                        <li><span class="key">1 - 5</span> - Select Weapon System</li>
+                        <li><span class="key">E</span> - Enter Pilot Seat</li>
+                        <li><span class="key">F</span> - Exit Pilot Seat</li>
+                        <li><span class="key">V</span> - Toggle Camera View</li>
+                    </ul>
+                </div>
+                <button class="tech-btn back-btn" data-target="menu-root">RETURN TO MAIN</button>
+            </div>
+
+            <!-- Settings Sub-menu -->
+            <div id="menu-settings" class="menu-page">
+                <h2 class="glitch-title" data-text="SYSTEM SETTINGS">SYSTEM SETTINGS</h2>
+                <div class="settings-content">
+                    <div class="setting-row">
+                        <label>MASTER VOLUME</label>
+                        <input type="range" id="vol-master" min="0" max="100" value="100" class="tech-slider">
+                    </div>
+                    <div class="setting-row">
+                        <label>MOUSE SENSITIVITY</label>
+                        <input type="range" id="sens-mouse" min="1" max="100" value="50" class="tech-slider">
+                    </div>
+                    <div class="setting-row">
+                        <label>GRAPHICS QUALITY</label>
+                        <div class="tech-toggle-group">
+                            <button class="tech-toggle active">HIGH</button>
+                            <button class="tech-toggle">LOW</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="tech-btn back-btn" data-target="menu-root">RETURN TO MAIN</button>
+            </div>
+
+            <!-- Credits Sub-menu -->
+            <div id="menu-credits" class="menu-page">
+                <h2 class="glitch-title" data-text="DATABASE LOGS">DATABASE LOGS</h2>
+                <div class="credits-content">
+                    <img src="assets/Cha444.png" alt="H&H Inc. Logo" class="credits-logo" />
+                    <h3>H&H INC.</h3>
+                    <p>Lead Developer & Designer - Haris</p>
+                    <br>
+                    <p>Special thanks to open-source contributors and Three.js developers.</p>
+                </div>
+                <button class="tech-btn back-btn" data-target="menu-root">RETURN TO MAIN</button>
+            </div>
         </div>
     </div>
 
     <!-- HUD OVERLAY (Active Game HUD) -->
     <div id="game-hud" class="hud-container hidden">
+        <!-- Top Center: Boss Health Bar (Hidden by default) -->
+        <div id="hud-boss-bar" class="boss-bar-container hidden">
+            <div class="boss-bar-title">DREADNOUGHT CLASS CRUISER <span id="boss-health-text">100%</span></div>
+            <div class="boss-bar-outer">
+                <div id="boss-health-fill" class="boss-bar-inner"></div>
+            </div>
+        </div>
+
         <!-- Top Left: Wave Info -->
         <div id="hud-top-left" class="hud-panel angular-panel-top-left">
             <div class="hud-label">WAVE</div>
@@ -132,10 +224,13 @@
             <h2 id="wave-announce-title">WAVE 01</h2>
             <p>PREPARE FOR ENGAGEMENT</p>
         </div>
-        
+
         <!-- Exit Seat Button -->
-        <div id="exit-seat-container" class="hidden" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100;">
-            <button id="btn-exit-seat" style="background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; color: #00ffff; padding: 8px 16px; font-family: 'Orbitron', sans-serif; font-size: 14px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; box-shadow: 0 0 10px rgba(0,255,255,0.3);">[F] Leave Seat</button>
+        <div id="exit-seat-container" class="hidden"
+            style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100;">
+            <button id="btn-exit-seat"
+                style="background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; color: #00ffff; padding: 8px 16px; font-family: 'Orbitron', sans-serif; font-size: 14px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; box-shadow: 0 0 10px rgba(0,255,255,0.3);">[F]
+                Leave Seat</button>
         </div>
 
         <!-- Targeting Crosshair -->
@@ -188,17 +283,19 @@
     </script>
 
     <!-- GAME FILES (LOADED NATIVELY AS MODULES TO RUN IN ORDER AFTER THREE.JS MOUNTS) -->
-    <script type="module" src="js/audio.js"></script>
-    <script type="module" src="js/gravity.js"></script>
-    <script type="module" src="js/effects.js"></script>
-    <script type="module" src="js/scene.js"></script>
-    <script type="module" src="js/planets.js"></script>
-    <script type="module" src="js/asteroids.js"></script>
-    <script type="module" src="js/projectiles.js"></script>
-    <script type="module" src="js/player.js"></script>
-    <script type="module" src="js/enemies.js"></script>
-    <script type="module" src="js/interior.js"></script>
-    <script type="module" src="js/ui.js"></script>
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/audio.js?v=2"></script>
+    <script type="module" src="js/gravity.js?v=2"></script>
+    <script type="module" src="js/effects.js?v=2"></script>
+    <script type="module" src="js/scene.js?v=2"></script>
+    <script type="module" src="js/planets.js?v=2"></script>
+    <script type="module" src="js/asteroids.js?v=2"></script>
+    <script type="module" src="js/projectiles.js?v=2"></script>
+    <script type="module" src="js/player.js?v=2"></script>
+    <script type="module" src="js/enemies.js?v=2"></script>
+    <script type="module" src="js/character.js?v=2"></script>
+    <script type="module" src="js/interior.js?v=2"></script>
+    <script type="module" src="js/ui.js?v=2"></script>
+    <script type="module" src="js/main.js?v=2"></script>
 </body>
+
 </html>

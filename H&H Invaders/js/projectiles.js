@@ -13,22 +13,58 @@ class ProjectileManager {
         this.projectiles = [];
 
         // Prebuilt shared geometries to avoid GC thrashing
-        this.laserGeom = new THREE.CylinderGeometry(0.08, 0.08, 2.5, 6);
+        this.laserGeom = new THREE.CylinderGeometry(0.12, 0.12, 4.0, 4);
         this.laserGeom.rotateX(Math.PI / 2); // Align cylinder along z-axis
         
-        this.rapidGeom = new THREE.CylinderGeometry(0.05, 0.05, 1.8, 6);
+        this.rapidGeom = new THREE.CylinderGeometry(0.08, 0.08, 2.5, 4);
         this.rapidGeom.rotateX(Math.PI / 2);
 
-        this.plasmaGeom = new THREE.SphereGeometry(0.7, 8, 8);
-        this.missileGeom = new THREE.CylinderGeometry(0.12, 0.12, 1.6, 6);
+        this.plasmaGeom = new THREE.IcosahedronGeometry(1.0, 0); // 12 vertices instead of 256
+        
+        this.missileGeom = new THREE.CylinderGeometry(0.15, 0.25, 2.0, 6);
         this.missileGeom.rotateX(Math.PI / 2);
 
-        // Prebuilt base materials
-        this.laserMat = new THREE.MeshBasicMaterial({ color: 0xff0033 });  // Red Player Laser
-        this.rapidMat = new THREE.MeshBasicMaterial({ color: 0x00ff88 });  // Green Rapid Laser
-        this.plasmaMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff }); // Cyan Plasma
-        this.missileMat = new THREE.MeshBasicMaterial({ color: 0xff7700 });// Orange Missile
-        this.enemyMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });  // Magenta Enemy Laser
+        // PBR removed to solve lag on iGPUs; MeshBasicMaterial relies purely on Bloom post-processing
+        this.laserMat = new THREE.MeshBasicMaterial({ 
+            color: 0xff0033, transparent: true, opacity: 0.9 
+        });  // Red Player Laser
+        
+        this.rapidMat = new THREE.MeshBasicMaterial({ 
+            color: 0x00ff88, transparent: true, opacity: 0.9 
+        });  // Green Rapid Laser
+        
+        this.plasmaMat = new THREE.MeshBasicMaterial({ 
+            color: 0x00f3ff, transparent: true, opacity: 0.85, wireframe: true 
+        }); // Cyan Plasma
+        
+        this.missileMat = new THREE.MeshBasicMaterial({ 
+            color: 0xff7700 
+        }); // Orange Missile Tracker
+        
+        this.enemyMat = new THREE.MeshBasicMaterial({ 
+            color: 0xff00ff, transparent: true, opacity: 0.9 
+        });  // Magenta Enemy Laser
+        
+        // Pre-allocated object pool to prevent GC mid-combat
+        this.meshPool = [];
+    }
+
+    /**
+     * Retrieves an inactive mesh from the pool or allocates a new one.
+     */
+    getMeshFromPool(geom, mat) {
+        for (let i = 0; i < this.meshPool.length; i++) {
+            const m = this.meshPool[i];
+            if (!m.visible && m.geometry === geom && m.material === mat) {
+                m.visible = true;
+                return m;
+            }
+        }
+        
+        const mesh = new THREE.Mesh(geom, mat);
+        this.scene.add(mesh); // Add to scene exactly once
+        this.meshPool.push(mesh);
+        return mesh;
     }
 
     /**
@@ -74,15 +110,15 @@ class ProjectileManager {
             }
         }
 
-        const mesh = new THREE.Mesh(geom, mat);
+        const mesh = this.getMeshFromPool(geom, mat);
         mesh.position.copy(position);
         
         // Face travel direction
         mesh.lookAt(new THREE.Vector3().copy(position).add(normalizedDir));
 
-        const velocity = new THREE.Vector3().copy(normalizedDir).multiplyScalar(speed);
+        // Note: Dynamic PointLights removed here to eliminate severe shader recompilation lag on low-end CPUs!
 
-        this.scene.add(mesh);
+        const velocity = new THREE.Vector3().copy(normalizedDir).multiplyScalar(speed);
 
         this.projectiles.push({
             mesh: mesh,
@@ -183,9 +219,8 @@ class ProjectileManager {
     destroyProjectile(index) {
         const p = this.projectiles[index];
         if (p) {
-            this.scene.remove(p.mesh);
-            // Reusable geometries are disposed only during full app shutdowns,
-            // but we can remove meshes from scene safely here.
+            // Return to object pool instead of deleting
+            p.mesh.visible = false;
             this.projectiles.splice(index, 1);
         }
     }
@@ -216,7 +251,7 @@ class ProjectileManager {
      * Clean all bullets from space.
      */
     clearAll() {
-        this.projectiles.forEach(p => this.scene.remove(p.mesh));
+        this.projectiles.forEach(p => p.mesh.visible = false);
         this.projectiles = [];
     }
 }

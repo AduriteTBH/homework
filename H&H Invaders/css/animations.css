@@ -146,3 +146,67 @@
     0% { transform: translateY(0); opacity: 1; }
     100% { transform: translateY(-80px); opacity: 0; }
 }
+
+/* UI Boot Up Sequence - 3D Sci-Fi Assembly */
+@keyframes assemble-top-left { 
+    0% { transform: perspective(1000px) translate3d(30vw, 30vh, 600px) rotateX(80deg) rotateY(-60deg) scale(0.2); opacity: 0; filter: hue-rotate(180deg) blur(15px); } 
+    70% { transform: perspective(1000px) translate3d(-10px, -10px, 50px) rotateX(-10deg) rotateY(10deg) scale(1.05); opacity: 0.9; filter: hue-rotate(0deg) blur(2px); }
+    100% { transform: perspective(1000px) translate3d(0, 0, 0) rotateX(0) rotateY(0) scale(1); opacity: 1; filter: blur(0); } 
+}
+@keyframes assemble-top-right { 
+    0% { transform: perspective(1000px) translate3d(-30vw, 30vh, 600px) rotateX(80deg) rotateY(60deg) scale(0.2); opacity: 0; filter: hue-rotate(-180deg) blur(15px); } 
+    70% { transform: perspective(1000px) translate3d(10px, -10px, 50px) rotateX(-10deg) rotateY(-10deg) scale(1.05); opacity: 0.9; filter: hue-rotate(0deg) blur(2px); }
+    100% { transform: perspective(1000px) translate3d(0, 0, 0) rotateX(0) rotateY(0) scale(1); opacity: 1; filter: blur(0); } 
+}
+@keyframes assemble-bottom-left { 
+    0% { transform: perspective(1000px) translate3d(30vw, -30vh, 600px) rotateX(-80deg) rotateY(-60deg) scale(0.2); opacity: 0; filter: hue-rotate(90deg) blur(15px); } 
+    70% { transform: perspective(1000px) translate3d(-10px, 10px, 50px) rotateX(10deg) rotateY(10deg) scale(1.05); opacity: 0.9; filter: hue-rotate(0deg) blur(2px); }
+    100% { transform: perspective(1000px) translate3d(0, 0, 0) rotateX(0) rotateY(0) scale(1); opacity: 1; filter: blur(0); } 
+}
+@keyframes assemble-bottom-right { 
+    0% { transform: perspective(1000px) translate3d(-30vw, -30vh, 600px) rotateX(-80deg) rotateY(60deg) scale(0.2); opacity: 0; filter: hue-rotate(-90deg) blur(15px); } 
+    70% { transform: perspective(1000px) translate3d(10px, 10px, 50px) rotateX(10deg) rotateY(-10deg) scale(1.05); opacity: 0.9; filter: hue-rotate(0deg) blur(2px); }
+    100% { transform: perspective(1000px) translate3d(0, 0, 0) rotateX(0) rotateY(0) scale(1); opacity: 1; filter: blur(0); } 
+}
+@keyframes assemble-bottom-center { 
+    0% { transform: perspective(1000px) translate3d(0, -40vh, 800px) rotateX(-90deg) scale(0.1); opacity: 0; filter: brightness(3) blur(20px); } 
+    60% { transform: perspective(1000px) translate3d(0, 20px, 100px) rotateX(20deg) scale(1.1); opacity: 0.8; filter: brightness(1.5) blur(4px); }
+    100% { transform: perspective(1000px) translate3d(0, 0, 0) rotateX(0) scale(1); opacity: 1; filter: brightness(1) blur(0); } 
+}
+
+@keyframes hud-container-boot {
+    0% { opacity: 0; background-color: rgba(0, 243, 255, 0.2); }
+    30% { opacity: 1; background-color: rgba(0, 243, 255, 0.05); }
+    100% { opacity: 1; background-color: transparent; }
+}
+
+.bootup-active {
+    animation: hud-container-boot 2.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+.bootup-active #hud-top-left { 
+    animation: assemble-top-left 2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; 
+    animation-fill-mode: both; 
+    animation-delay: 0.1s;
+}
+.bootup-active #hud-top-right { 
+    animation: assemble-top-right 2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; 
+    animation-fill-mode: both; 
+    animation-delay: 0.2s; 
+}
+.bootup-active #hud-bottom-left { 
+    animation: assemble-bottom-left 2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; 
+    animation-fill-mode: both; 
+    animation-delay: 0.3s; 
+}
+.bootup-active #hud-bottom-right { 
+    animation: assemble-bottom-right 2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; 
+    animation-fill-mode: both; 
+    animation-delay: 0.4s; 
+}
+.bootup-active #hud-bottom-center { 
+    animation: assemble-bottom-center 2.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; 
+    animation-fill-mode: both; 
+    animation-delay: 0.5s; 
+}
+

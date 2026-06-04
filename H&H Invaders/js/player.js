@@ -68,40 +68,146 @@ class PlayerShip {
      * Pro will expand this in Phase 2 into a high-fidelity panel assembly.
      */
     initCockpitPlaceholder() {
-        const frameMat = new THREE.MeshStandardMaterial({
-            color: 0x1e293b, // Dark grey metal
-            metalness: 0.9,
-            roughness: 0.2,
-            flatShading: true
+        const frameMat = new THREE.MeshPhongMaterial({ color: 0x0f172a, shininess: 60 });
+        const trimMat = new THREE.MeshPhongMaterial({ color: 0x334155, shininess: 100 });
+
+        // Glowing pipeline/button materials
+        const cyanGlow = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
+        const greenGlow = new THREE.MeshBasicMaterial({ color: 0x00ffaa });
+        const orangeGlow = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+        const redGlow = new THREE.MeshBasicMaterial({ color: 0xff0055 });
+
+        // Left & Right tilted consoles
+        const leftConsole = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.0, 1.5), frameMat);
+        leftConsole.position.set(-2.4, -2.0, -2.2);
+        leftConsole.rotation.set(0.2, 0.5, -0.15);
+        this.cockpitGroup.add(leftConsole);
+
+        const rightConsole = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.0, 1.5), frameMat);
+        rightConsole.position.set(2.4, -2.0, -2.2);
+        rightConsole.rotation.set(0.2, -0.5, 0.15);
+        this.cockpitGroup.add(rightConsole);
+
+        // Center console main desk
+        const centerConsole = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.9, 1.2), frameMat);
+        centerConsole.position.set(0, -2.2, -2.4);
+        centerConsole.rotation.x = 0.15;
+        this.cockpitGroup.add(centerConsole);
+
+        // Tilted holographic/glass screen meshes
+        const glassMaterial = new THREE.MeshBasicMaterial({
+            color: 0x00f3ff,
+            transparent: true,
+            opacity: 0.1,
+            side: THREE.DoubleSide
         });
 
-        const lightMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff }); // Cyan light pipelines
+        const screenLeft = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.9), glassMaterial);
+        screenLeft.position.set(-2.0, -1.3, -2.0);
+        screenLeft.rotation.set(0.15, 0.55, -0.1);
+        this.cockpitGroup.add(screenLeft);
 
-        // Create basic left, right, and bottom boundary struts for visual containment
-        const leftStrut = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 0.3), frameMat);
-        leftStrut.position.set(-3.2, -1, -3);
-        leftStrut.rotation.z = -0.3;
-        this.cockpitGroup.add(leftStrut);
+        const screenRight = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.9), glassMaterial);
+        screenRight.position.set(2.0, -1.3, -2.0);
+        screenRight.rotation.set(0.15, -0.55, 0.1);
+        this.cockpitGroup.add(screenRight);
 
-        const rightStrut = leftStrut.clone();
-        rightStrut.position.x = 3.2;
-        rightStrut.rotation.z = 0.3;
-        this.cockpitGroup.add(rightStrut);
+        // Tilted HUD screen border frames
+        const borderGeo = new THREE.EdgesGeometry(new THREE.PlaneGeometry(1.6, 0.9));
+        const borderMat = new THREE.LineBasicMaterial({ color: 0x00f3ff });
+        const leftScreenBorder = new THREE.LineSegments(borderGeo, borderMat);
+        leftScreenBorder.position.copy(screenLeft.position);
+        leftScreenBorder.rotation.copy(screenLeft.rotation);
+        this.cockpitGroup.add(leftScreenBorder);
 
-        const bottomConsole = new THREE.Mesh(new THREE.BoxGeometry(7, 1.2, 1.0), frameMat);
-        bottomConsole.position.set(0, -2.4, -2.5);
-        this.cockpitGroup.add(bottomConsole);
+        const rightScreenBorder = new THREE.LineSegments(borderGeo, borderMat);
+        rightScreenBorder.position.copy(screenRight.position);
+        rightScreenBorder.rotation.copy(screenRight.rotation);
+        this.cockpitGroup.add(rightScreenBorder);
 
-        // Neon border strip placeholders
-        const neonStrip = new THREE.Mesh(new THREE.BoxGeometry(6, 0.05, 0.05), lightMat);
-        neonStrip.position.set(0, -1.78, -2.48);
-        this.cockpitGroup.add(neonStrip);
+        // Add 3D control buttons on the left console
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 2; j++) {
+                const btnGeo = new THREE.BoxGeometry(0.1, 0.05, 0.1);
+                const colors = [greenGlow, orangeGlow, cyanGlow, redGlow];
+                const btnMat = colors[(i + j) % colors.length];
+                const btn = new THREE.Mesh(btnGeo, btnMat);
+                btn.position.set(-2.9 + i * 0.25, -1.5, -2.3 + j * 0.25);
+                btn.rotation.set(0.2, 0.5, -0.15);
+                this.cockpitGroup.add(btn);
+            }
+        }
+
+        // Add 3D rotary dials on the right console
+        for (let i = 0; i < 3; i++) {
+            const dialGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.05, 8);
+            const dial = new THREE.Mesh(dialGeo, trimMat);
+            dial.position.set(2.2 + i * 0.35, -1.5, -2.2);
+            dial.rotation.set(0.5, -0.5, 0.15);
+            
+            const dialPointerGeo = new THREE.BoxGeometry(0.02, 0.06, 0.06);
+            const dialPointer = new THREE.Mesh(dialPointerGeo, cyanGlow);
+            dialPointer.position.set(0, 0.03, 0);
+            dial.add(dialPointer);
+            
+            this.cockpitGroup.add(dial);
+        }
+
+        // Add Flight Yoke / Steering columns
+        const yokeColumnGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.8, 8);
+        const yokeColumn = new THREE.Mesh(yokeColumnGeo, trimMat);
+        yokeColumn.position.set(0, -1.9, -1.9);
+        yokeColumn.rotation.x = -0.5; // Angled towards player
+        this.cockpitGroup.add(yokeColumn);
+
+        const yokeHandleGeo = new THREE.TorusGeometry(0.25, 0.04, 8, 24, Math.PI); // Half-wheel yoke
+        const yokeHandle = new THREE.Mesh(yokeHandleGeo, trimMat);
+        yokeHandle.position.set(0, -1.5, -1.7);
+        yokeHandle.rotation.set(0.5, 0, Math.PI / 2);
+        this.cockpitGroup.add(yokeHandle);
+
+        const yokeGripL = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.15, 8), frameMat);
+        yokeGripL.position.set(0.25, 0.0, 0.0);
+        yokeHandle.add(yokeGripL);
+
+        const yokeGripR = yokeGripL.clone();
+        yokeGripR.position.x = -0.25;
+        yokeHandle.add(yokeGripR);
+
+        // Canopy Framework (windshield metal struts)
+        // Left main canopy frame strut
+        const leftFrame = new THREE.Mesh(new THREE.BoxGeometry(0.2, 5.0, 0.2), trimMat);
+        leftFrame.position.set(-3.2, 0.2, -2.8);
+        leftFrame.rotation.set(0.15, 0, -0.28);
+        this.cockpitGroup.add(leftFrame);
+
+        // Right main canopy frame strut
+        const rightFrame = leftFrame.clone();
+        rightFrame.position.x = 3.2;
+        rightFrame.rotation.z = 0.28;
+        this.cockpitGroup.add(rightFrame);
+
+        // Lower dash trim line (neon glowing pipeline running across)
+        const trimBar = new THREE.Mesh(new THREE.BoxGeometry(4.0, 0.04, 0.04), cyanGlow);
+        trimBar.position.set(0, -1.7, -2.35);
+        this.cockpitGroup.add(trimBar);
+
+        // Top windshield frame bar
+        const topFrameBar = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.2, 0.2), trimMat);
+        topFrameBar.position.set(0, 2.3, -2.6);
+        this.cockpitGroup.add(topFrameBar);
+
+        // Center strut running up the center window
+        const centerStrut = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.2, 0.1), trimMat);
+        centerStrut.position.set(0, -1.1, -2.4);
+        centerStrut.rotation.x = -0.2;
+        this.cockpitGroup.add(centerStrut);
     }
 
     /**
      * Switches the active weapon system slot.
      */
-    selectWeapon(index) {
+    selectWeapon(index, playSound = true) {
         if (index < 1 || index > 5) return;
         
         // Turn off continuous beam if switching away
@@ -117,7 +223,9 @@ class PlayerShip {
         if (activeKey) activeKey.classList.add('active');
 
         // Play weapon switch tick sound
-        this.audioSystem.playWarningAlarm();
+        if (playSound) {
+            this.audioSystem.playWarningAlarm();
+        }
     }
 
     /**
@@ -208,7 +316,7 @@ class PlayerShip {
     /**
      * Process flight inputs, boundaries, status regenerations, and aim sway.
      */
-    update(deltaTime, keys, mouseX, mouseY) {
+    update(deltaTime, keys, mouseX, mouseY, gravitySystem) {
         const now = deltaTime;
 
         // 1. Cooldown / Energy Cooling
@@ -252,13 +360,20 @@ class PlayerShip {
 
         moveVector.normalize().multiplyScalar(speed);
         
-        // Lerp current ship velocity to target inputs
+        // Apply Gravitational Pull from Planets!
+        if (gravitySystem) {
+            const gravForce = gravitySystem.calculateForce(this.position, 1.0);
+            // Multiply the gravitational force to overcome engine drag if close enough
+            this.velocity.addScaledVector(gravForce, now * 25.0); 
+        }
+
+        // Lerp current ship velocity to target inputs (simulating engine thrust fighting gravity)
         this.velocity.lerp(moveVector, 8 * now);
         this.position.addScaledVector(this.velocity, now);
 
-        // Clamp positions to combat sector boundaries
-        this.position.x = Math.max(this.minBounds.x, Math.min(this.maxBounds.x, this.position.x));
-        this.position.y = Math.max(this.minBounds.y, Math.min(this.maxBounds.y, this.position.y));
+        // Movement boundaries REMOVED to allow infinite flight to dodge planets!
+        // this.position.x = Math.max(this.minBounds.x, Math.min(this.maxBounds.x, this.position.x));
+        // this.position.y = Math.max(this.minBounds.y, Math.min(this.maxBounds.y, this.position.y));
 
         // Align camera coordinates to player coordinate
         this.camera.position.x = this.position.x;
@@ -309,7 +424,7 @@ class PlayerShip {
         this.multiplier = 1.0;
         this.position.set(0, 0, 0);
         this.velocity.set(0, 0, 0);
-        this.selectWeapon(1);
+        this.selectWeapon(1, false);
         this.cockpitGroup.visible = true; // Show cockpit in flight mode
     }
 }

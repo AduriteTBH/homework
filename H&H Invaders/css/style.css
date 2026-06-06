@@ -204,6 +204,7 @@ body, html {
 
 .tech-slider {
     -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     height: 4px;
     background: rgba(10, 74, 110, 0.6);
@@ -348,29 +349,30 @@ h2 {
 
 /* Futuristic Tech Button */
 .tech-btn {
-    background: transparent;
+    background: linear-gradient(90deg, rgba(0, 243, 255, 0.08) 0%, transparent 100%);
     border: 1.5px solid var(--color-cyan);
     color: var(--color-white);
-    padding: 15px 30px;
+    padding: 18px 35px;
     font-family: var(--font-sci-fi);
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     font-weight: bold;
-    letter-spacing: 0.25rem;
+    letter-spacing: 0.3rem;
     cursor: pointer;
     position: relative;
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-    transition: all 0.3s ease;
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+    transition: all 0.3s cubic-bezier(0.25, 1.25, 0.5, 1); /* Bouncy hover */
     box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
+    text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
 }
 
 .tech-btn:hover {
-    background: rgba(0, 243, 255, 0.12);
-    box-shadow: var(--glow-cyan);
-    transform: scale(1.02);
+    background: linear-gradient(90deg, rgba(0, 243, 255, 0.3) 0%, rgba(0, 243, 255, 0.05) 100%);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.5), inset 0 0 15px rgba(0, 243, 255, 0.2);
+    transform: scale(1.04);
 }
 
 .tech-btn:active {
-    transform: scale(0.98);
+    transform: scale(0.96);
 }
 
 /* Stats Summary */

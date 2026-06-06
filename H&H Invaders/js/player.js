@@ -313,8 +313,10 @@ class PlayerShip {
         this.shakeTime = 0.5;
         this.shakeIntensity = Math.min(amount * 0.05, 2.0); // Cap max shake intensity
 
-        // Spawn some sparks or warning effect
-        this.scene.effects.createExplosion(this.position, 0xff0000, 10, 2.0);
+        // Spawn some sparks or warning effect (Throttled to prevent lag from continuous damage)
+        if (amount > 5.0 || Math.random() < 0.1) {
+            this.scene.effects.createExplosion(this.position, 0xff0000, 10, 2.0);
+        }
         
         // Apply screen shake css classes
         const hud = document.getElementById('game-hud');
@@ -374,17 +376,16 @@ class PlayerShip {
         // Apply Gravitational Pull from Planets!
         if (gravitySystem) {
             const gravForce = gravitySystem.calculateForce(this.position, 1.0);
+            gravForce.z = 0; // CRITICAL: Prevent Z-axis movement so player doesn't drift ahead of enemies
             // Multiply the gravitational force to overcome engine drag if close enough
             this.velocity.addScaledVector(gravForce, now * 25.0); 
         }
 
         // Lerp current ship velocity to target inputs (simulating engine thrust fighting gravity)
         this.velocity.lerp(moveVector, 8 * now);
+        this.velocity.z = 0; // Clamp velocity Z
         this.position.addScaledVector(this.velocity, now);
-
-        // Movement boundaries REMOVED to allow infinite flight to dodge planets!
-        // this.position.x = Math.max(this.minBounds.x, Math.min(this.maxBounds.x, this.position.x));
-        // this.position.y = Math.max(this.minBounds.y, Math.min(this.maxBounds.y, this.position.y));
+        this.position.z = 0; // Hard lock Z to prevent breaking collision planes
 
         // Align camera coordinates to player coordinate
         this.camera.position.x = this.position.x;

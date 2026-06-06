@@ -53,7 +53,7 @@
             <!-- Root Main Menu -->
             <div id="menu-root" class="menu-page active-page">
                 <img src="assets/hh_invaders_logo.svg" alt="H&H Invaders" class="game-logo" />
-                <p class="subtitle">Made By H&H Inc. (Beta 1.0b)</p>
+                <p class="subtitle">Made By H&H Inc. (Beta 1.1a)</p>
 
                 <div class="menu-buttons">
                     <button id="start-btn" class="tech-btn primary-btn">LAUNCH</button>
@@ -65,9 +65,9 @@
 
             <!-- Controls Sub-menu -->
             <div id="menu-controls" class="menu-page">
-                <h2 class="glitch-title" data-text="FLIGHT MANUAL">FLIGHT MANUAL</h2>
+                <h2 class="glitch-title" data-text="TUTORIAL">TUTORIAL</h2>
                 <div class="controls-guide">
-                    <h3>PILOT FLIGHT GUIDE</h3>
+                    <h3>HOW TO PLAY</h3>
                     <ul>
                         <li><span class="key">MOUSE</span> - Aim Targeting Reticle</li>
                         <li><span class="key">W / S</span> - Climb / Descend</li>
@@ -86,7 +86,7 @@
 
             <!-- Settings Sub-menu -->
             <div id="menu-settings" class="menu-page">
-                <h2 class="glitch-title" data-text="SYSTEM SETTINGS">SYSTEM SETTINGS</h2>
+                <h2 class="glitch-title" data-text="SETTINGS">SETTINGS</h2>
                 <div class="settings-content">
                     <div class="setting-row">
                         <label>MASTER VOLUME</label>
@@ -109,7 +109,7 @@
 
             <!-- Credits Sub-menu -->
             <div id="menu-credits" class="menu-page">
-                <h2 class="glitch-title" data-text="DATABASE LOGS">DATABASE LOGS</h2>
+                <h2 class="glitch-title" data-text="CREDITS">CREDITS</h2>
                 <div class="credits-content">
                     <img src="assets/Cha444.png" alt="H&H Inc. Logo" class="credits-logo" />
                     <h3>H&H INC.</h3>
@@ -244,8 +244,8 @@
     <!-- PAUSE MENU OVERLAY -->
     <div id="pause-menu" class="overlay hidden">
         <div class="menu-content">
-            <h2 class="title-text">SYSTEM PAUSED</h2>
-            <p class="subtitle font-mono">TACTICAL LINK SUSPENDED</p>
+            <h2 class="title-text">GAME PAUSED</h2>
+            <p class="subtitle font-mono">Press RESUME to continue</p>
 
             <div class="controls-guide"
                 style="text-align: left; margin: 25px 0; padding: 15px 25px; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 4px;">
@@ -328,8 +328,10 @@
     <script type="module">
         import * as THREE from 'three';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
         window.THREE = THREE;
         window.GLTFLoader = GLTFLoader;
+        window.FBXLoader = FBXLoader;
     </script>
 
     <!-- GAME FILES (LOADED NATIVELY AS MODULES TO RUN IN ORDER AFTER THREE.JS MOUNTS) -->
@@ -342,6 +344,12 @@
     <script type="module" src="js/projectiles.js?v=2"></script>
     <script type="module" src="js/player.js?v=2"></script>
     <script type="module" src="js/enemies.js?v=2"></script>
+    
+    <!-- Character Kit Engine Files -->
+    <script type="module" src="js/config.js?v=2"></script>
+    <script type="module" src="js/loader.js?v=2"></script>
+    <script type="module" src="js/controller.js?v=2"></script>
+    
     <script type="module" src="js/character.js?v=2"></script>
     <script type="module" src="js/interior.js?v=2"></script>
     <script type="module" src="js/ui.js?v=2"></script>

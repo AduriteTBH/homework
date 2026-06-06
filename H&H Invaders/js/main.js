@@ -627,7 +627,7 @@ class GameApp {
                                 const eDist = enemy.mesh.position.distanceTo(p.position);
                                 if (eDist < p.userData.deathRadius) {
                                     // Enemy gets shredded by the atmosphere
-                                    this.effects.createExplosion(enemy.mesh.position, 0xff5500, 20, enemy.radius * 0.6);
+                                    this.effects.createExplosion(enemy.mesh.position, 0xff5500, 5, enemy.radius * 0.6);
                                     if (enemy.enemyType !== 'Boss') { // Bosses probably shouldn't insta-die, but let's let it happen for fun, or maybe just take damage.
                                         enemy.active = false;
                                         this.sceneMgr.scene.remove(enemy.mesh);

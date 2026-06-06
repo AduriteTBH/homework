@@ -48,6 +48,9 @@ class EffectsManager {
      * @param {number} [scale=1.0] - Scaling factor for explosion size
      */
     createExplosion(position, colorHex, count = 25, scale = 1.0) {
+        // Protect low-end hardware (like AMD A4) by strictly capping max active particles
+        if (this.particles.length > 60) return;
+        
         // 1. Shockwave Ripple
         const swMat = new THREE.MeshBasicMaterial({
             color: colorHex,

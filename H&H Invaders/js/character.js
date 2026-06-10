@@ -197,7 +197,7 @@ export class InteriorPlayer {
                     this.position.copy(endPos);
                     if (this.kitController) {
                         this.kitController.position.copy(this.position);
-                        this.kitController.cameraYaw = Math.PI; // Face down the corridor
+                        this.kitController.cameraYaw = 0; // Face down the corridor
                     }
                     this.isTransitioning = false;
                 }
@@ -276,7 +276,7 @@ export class InteriorPlayer {
                 
                 // Force sync position
                 this.kitController.position.copy(this.position);
-                this.kitController.cameraYaw = Math.PI; // Face corridor
+                this.kitController.cameraYaw = 0; // Face corridor
 
                 // Apply head visibility AFTER animations are loaded and kit is mounted
                 this.setHeadVisibility(this.viewMode === 'thirdperson');

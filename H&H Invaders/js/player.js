@@ -386,6 +386,8 @@ class PlayerShip {
         this.velocity.z = 0; // Clamp velocity Z
         this.position.addScaledVector(this.velocity, now);
         this.position.z = 0; // Hard lock Z to prevent breaking collision planes
+        this.position.x = THREE.MathUtils.clamp(this.position.x, this.minBounds.x, this.maxBounds.x);
+        this.position.y = THREE.MathUtils.clamp(this.position.y, this.minBounds.y, this.maxBounds.y);
 
         // Align camera coordinates to player coordinate
         this.camera.position.x = this.position.x;

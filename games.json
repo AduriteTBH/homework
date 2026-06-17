@@ -1,5 +1,18 @@
 [
   { "name": "Minecraft 1.8", "file": "mc1_8.html", "icon": "⛏️" },
+  { "name": "Basket Random", "file": "basketrandom.html","icon": "🏀" },
+  { "name": "Geometry Dash", "file": "geometrydash.html","icon": "♟️" },
+  { "name": "Parking Fury 2", "file": "parkingfury2.html","icon": "🚗" },
+  { "name": "Drift Boss", "file": "driftboss.html","icon": "🚗" },
+  { "name": "1v1 LOL", "file": "1v1.lol (1).html","icon": "🔫" },
+  { "name": "Ages Of Conflict", "file": "agesofconflict.html","icon": "⚔️" },
+  { "name": "Minecraft 1.12", "file": "1.12.html","icon": "🪓" },
+  { "name": "Madalin Stunt Cars 2", "file": "madalinstuntcars2.html","icon": "🚘" },
+  { "name": "The Backrooms", "file": "backrooms.html","icon": "⚠️" },
+  { "name": "Five Nights at Freddy's", "file": "fnaf.html","icon": "🐻" },
+  { "name": "Granny", "file": "granny.html","icon": "👵" },
+  { "name": "The Escape", "file": "the-escape.html", "icon": "💥"}
+  { "name": "Grand Theft Auto 1", "file": "gta1.html","icon": "👵" }
   { "name": "Basket Random", "file": "basketrandom.html", "icon": "🏀" },
   { "name": "Geometry Dash", "file": "geometrydash.html", "icon": "♟️" },
   { "name": "Parking Fury 2", "file": "parkingfury2.html", "icon": "🚗" },
@@ -20,6 +33,7 @@
   { "name": "Donkey Kong Country 2", "file": "dkcountry2.html", "icon": "🦍" },
   { "name": "Donkey Kong Country 3", "file": "dkcountry3.html", "icon": "🦍" },
   { "name": "Doom", "file": "doom.html", "icon": "👹" },
+  { "name": "The Escape", "file": "the-escape.html", "icon": "🏃‍♀️‍➡️"},
   { "name": "FIFA 7", "file": "fifa7.html", "icon": "⚽" },
   { "name": "GTA Advance", "file": "GTAA.html", "icon": "🚗" },
   { "name": "Chinese Fortnite", "file": "chinesefortnite.html", "icon": "🔫" },

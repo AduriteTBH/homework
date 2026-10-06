@@ -3,50 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H&H Launcher | Discover</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>H&amp;H Launcher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ========================================
-        I. DESIGN SYSTEM & THEME VARIABLES
-        ======================================== */
         :root {
-            --bg-deep: #030712;
-            --bg-surface: rgba(17, 24, 39, 0.45);
-            --bg-card: rgba(255, 255, 255, 0.01);
+            --bg-deep: #08090d;
+            --bg-surface: #10121a;
+            --bg-surface-elevated: #161924;
+            --bg-card: #12141d;
+            --bg-card-hover: #181b27;
+            --bg-visual: #0c0e15;
+            --bg-glass: rgba(16, 18, 26, 0.85);
             
-            --accent: #00e5ff;
-            --accent-glow: rgba(0, 229, 255, 0.25);
-            --accent-gradient: linear-gradient(135deg, #00e5ff 0%, #6366f1 50%, #d946ef 100%);
-            --danger: #ff4757;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-subtle: rgba(255, 255, 255, 0.04);
+            --border-hover: rgba(255, 255, 255, 0.22);
+            --border-active: rgba(255, 255, 255, 0.4);
+            
+            --accent: #f1f5f9;
+            --accent-muted: #94a3b8;
+            --accent-dim: rgba(255, 255, 255, 0.07);
+            --accent-subtle: rgba(255, 255, 255, 0.035);
+            
+            --cat-action: #f43f5e;
+            --cat-action-bg: rgba(244, 63, 94, 0.12);
+            --cat-racing: #f59e0b;
+            --cat-racing-bg: rgba(245, 158, 11, 0.12);
+            --cat-sports: #10b981;
+            --cat-sports-bg: rgba(16, 185, 129, 0.12);
+            --cat-arcade: #6366f1;
+            --cat-arcade-bg: rgba(99, 102, 241, 0.12);
+            --cat-puzzle: #06b6d4;
+            --cat-puzzle-bg: rgba(6, 182, 212, 0.12);
+            --cat-survival: #ea580c;
+            --cat-survival-bg: rgba(234, 88, 12, 0.12);
+            
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --danger-bg: rgba(239, 68, 68, 0.12);
             --success: #10b981;
+            --warning: #f59e0b;
             
-            --text-main: #f9fafb;
-            --text-dim: #9ca3af;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --text-muted: #64748b;
             
-            --border: rgba(255, 255, 255, 0.05);
-            --border-hover: rgba(0, 229, 255, 0.4);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --radius-pill: 9999px;
             
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --radius-sm: 10px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
             
-            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            --modal-bg: linear-gradient(135deg, rgba(31, 41, 55, 0.75) 0%, rgba(17, 24, 39, 0.95) 100%);
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-spring: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            
+            --modal-bg: #12141d;
         }
 
-        /* Light Theme Overrides */
         [data-theme="light"] {
-            --bg-deep: #f3f4f6;
-            --bg-surface: rgba(255, 255, 255, 0.6);
-            --bg-card: rgba(0, 0, 0, 0.02);
+            --bg-deep: #e8ecf2;
+            --bg-surface: #ffffff;
+            --bg-surface-elevated: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-card-hover: #ffffff;
+            --bg-visual: #edf1f7;
+            --bg-glass: rgba(255, 255, 255, 0.92);
+            
+            --border: #cbd5e1;
+            --border-subtle: #d8e2ec;
+            --border-hover: #94a3b8;
+            --border-active: #64748b;
+            
+            --accent: #0f172a;
+            --accent-muted: #334155;
+            --accent-dim: rgba(15, 23, 42, 0.08);
+            --accent-subtle: rgba(15, 23, 42, 0.04);
+            
+            --cat-action: #e11d48;
+            --cat-action-bg: rgba(225, 29, 72, 0.12);
+            --cat-racing: #d97706;
+            --cat-racing-bg: rgba(217, 119, 6, 0.12);
+            --cat-sports: #059669;
+            --cat-sports-bg: rgba(5, 150, 105, 0.12);
+            --cat-arcade: #4f46e5;
+            --cat-arcade-bg: rgba(79, 70, 229, 0.12);
+            --cat-puzzle: #0891b2;
+            --cat-puzzle-bg: rgba(8, 145, 178, 0.12);
+            --cat-survival: #c2410c;
+            --cat-survival-bg: rgba(194, 65, 12, 0.12);
+            
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --danger-bg: rgba(220, 38, 38, 0.08);
+            --success: #059669;
+            --warning: #d97706;
+            
             --text-main: #0f172a;
-            --text-dim: #475569;
-            --border: rgba(0, 0, 0, 0.08);
-            --border-hover: rgba(99, 102, 241, 0.5);
-            --modal-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(243, 244, 246, 0.95) 100%);
-            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --text-dim: #334155;
+            --text-muted: #64748b;
+            
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.09), 0 2px 4px rgba(15, 23, 42, 0.04);
+            --shadow-lg: 0 14px 32px rgba(15, 23, 42, 0.14), 0 4px 8px rgba(15, 23, 42, 0.06);
+            
+            --modal-bg: #ffffff;
         }
 
         * {
@@ -62,41 +129,23 @@
             height: 100%;
             background: var(--bg-deep);
             color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             overflow: hidden;
-            transition: background 0.5s ease, color 0.5s ease;
+            transition: background var(--transition-normal), color var(--transition-normal);
         }
 
         .ambient-bg {
             position: fixed;
             inset: 0;
             z-index: -1;
-            background: radial-gradient(circle at 50% -20%, #1e1b4b 0%, var(--bg-deep) 65%);
-            transition: background 0.5s ease;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.025) 0%, transparent 65%);
+            pointer-events: none;
         }
 
         [data-theme="light"] .ambient-bg {
-            background: radial-gradient(circle at 50% -20%, #e0e7ff 0%, var(--bg-deep) 70%);
+            background: radial-gradient(circle at 50% 0%, rgba(15, 23, 42, 0.035) 0%, transparent 65%);
         }
 
-        .blob {
-            position: absolute;
-            width: 60vw;
-            height: 60vw;
-            background: var(--accent-glow);
-            filter: blur(150px);
-            border-radius: 50%;
-            z-index: -1;
-            opacity: 0.15;
-            animation: moveBlob 25s infinite alternate ease-in-out;
-        }
-
-        @keyframes moveBlob {
-            from { transform: translate(-10%, -10%) scale(1); }
-            to { transform: translate(30%, 20%) scale(1.2); }
-        }
-
-        /* ─── CLICK RIPPLE ANIMATION ─── */
         .ripple-target {
             position: relative;
             overflow: hidden;
@@ -104,12 +153,16 @@
 
         .click-ripple {
             position: absolute;
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.18);
             border-radius: 50%;
             transform: translate(-50%, -50%) scale(0);
             pointer-events: none;
             z-index: 99;
-            animation: rippleEffect 0.6s cubic-bezier(0.1, 0.8, 0.3, 1);
+            animation: rippleEffect 0.5s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        [data-theme="light"] .click-ripple {
+            background: rgba(15, 23, 42, 0.12);
         }
 
         @keyframes rippleEffect {
@@ -119,163 +172,719 @@
             }
         }
 
-        /* ========================================
-        II. NAVIGATION BAR
-        ======================================== */
         nav {
-            height: 80px;
+            height: 70px;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
-            background: rgba(3, 7, 18, 0.4);
-            backdrop-filter: blur(24px);
+            padding: 0 32px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 1000;
-            transition: background 0.3s, border-color 0.3s;
+            transition: background var(--transition-normal), border-color var(--transition-normal);
         }
 
-        [data-theme="light"] nav { background: rgba(255, 255, 255, 0.5); }
-
-        .logo-group { display: flex; align-items: center; gap: 12px; }
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
 
         .logo-box {
-            width: 40px; height: 40px;
-            background: var(--accent-gradient);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 20px var(--accent-glow);
+            width: 36px;
+            height: 36px;
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo-box svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--bg-deep);
         }
 
         .brand-name {
-            font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
-            background: linear-gradient(to bottom, var(--text-main), var(--text-dim));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
         }
 
         .nav-links {
-            display: flex; background: rgba(255, 255, 255, 0.05);
-            padding: 6px; border-radius: 14px; border: 1px solid var(--border);
+            display: flex;
+            background: var(--accent-subtle);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
         }
 
         .nav-link {
-            padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 600;
-            color: var(--text-dim); cursor: pointer; transition: var(--transition);
-            display: flex; align-items: center; gap: 8px; user-select: none;
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
         }
 
-        .nav-link:hover { color: var(--text-main); }
+        .nav-link:hover {
+            color: var(--text-main);
+        }
+
         .nav-link.active {
-            background: rgba(255, 255, 255, 0.1); color: var(--text-main);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: var(--bg-surface-elevated);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
-        [data-theme="light"] .nav-link.active { background: #fff; box-shadow: var(--shadow-xl); }
 
-        .status-cluster { display: flex; align-items: center; gap: 15px; }
+        [data-theme="light"] .nav-link.active {
+            background: #ffffff;
+        }
+
+        .status-cluster {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
         .nav-action-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--accent-subtle);
             border: 1px solid var(--border);
             color: var(--text-dim);
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
         }
+
         .nav-action-btn:hover {
-            color: var(--text-main); border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border-color: var(--border-hover);
+            background: var(--accent-dim);
         }
 
-        [data-theme="dark"] .sun-icon, [data-theme="light"] .moon-icon { display: block; }
-        [data-theme="dark"] .moon-icon, [data-theme="light"] .sun-icon { display: none; }
-        
+        [data-theme="dark"] .sun-icon, [data-theme="light"] .moon-icon {
+            display: block;
+        }
+        [data-theme="dark"] .moon-icon, [data-theme="light"] .sun-icon {
+            display: none;
+        }
+
         .version-tag {
-            font-family: 'JetBrains Mono', monospace; font-size: 11px;
-            color: var(--text-dim); padding-right: 15px; border-right: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            border-radius: 6px;
         }
 
-        /* ========================================
-        III. VIEW CONTAINER & ANIMATIONS
-        ======================================== */
+        .status-indicator-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-left: 6px;
+            border-left: 1px solid var(--border);
+        }
+
+        #status-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        #status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: var(--transition-fast);
+        }
+
         #app-viewport {
-            height: calc(100vh - 80px); width: 100%; overflow-y: auto;
-            padding: 40px; scroll-behavior: smooth;
+            height: calc(100vh - 70px);
+            width: 100%;
+            overflow-y: auto;
+            padding: 32px 36px 80px 36px;
+            scroll-behavior: smooth;
         }
 
-        #app-viewport::-webkit-scrollbar { width: 6px; }
-        #app-viewport::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-        #app-viewport::-webkit-scrollbar-track { background: transparent; }
+        #app-viewport::-webkit-scrollbar {
+            width: 8px;
+        }
+        #app-viewport::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #app-viewport::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-pill);
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        #app-viewport::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        [data-theme="light"] #app-viewport::-webkit-scrollbar-thumb {
+            background: rgba(15, 23, 42, 0.18);
+        }
+        [data-theme="light"] #app-viewport::-webkit-scrollbar-thumb:hover {
+            background: rgba(15, 23, 42, 0.32);
+        }
 
         .view {
-            display: none; max-width: 1400px; margin: 0 auto;
-            animation: viewEnter 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: viewEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .view.active { display: block; }
+        .view.active {
+            display: block;
+        }
 
         @keyframes viewEnter {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* ========================================
-        IV. HERO BANNER
-        ======================================== */
         .hero-banner {
-            width: 100%; height: 480px; background: var(--bg-surface);
-            border-radius: var(--radius-lg); margin-bottom: 50px; position: relative;
-            overflow: hidden; border: 1px solid var(--border);
-            display: flex; align-items: center; padding: 60px; transition: var(--transition);
-            box-shadow: var(--shadow-xl);
+            width: 100%;
+            min-height: 360px;
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 44px;
+            transition: border-color var(--transition-normal);
+            box-shadow: var(--shadow-md);
         }
 
-        .hero-banner:hover { border-color: var(--border-hover); }
+        .hero-banner:hover {
+            border-color: var(--border-hover);
+        }
 
         .hero-video-bg {
-            position: absolute; inset: 0; z-index: 0;
-            background: linear-gradient(-45deg, #030712, #0f172a, #1e1b4b, rgba(0, 229, 255, 0.1));
-            background-size: 400% 400%; animation: gradientPulse 15s ease infinite;
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.035) 0%, transparent 60%);
+            pointer-events: none;
         }
 
-        [data-theme="light"] .hero-video-bg {
-            background: linear-gradient(-45deg, #f3f4f6, #e2e8f0, #dbeafe, rgba(0, 229, 255, 0.05));
+        .hero-grid-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: radial-gradient(ellipse at 80% 50%, black 20%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at 80% 50%, black 20%, transparent 75%);
+            pointer-events: none;
         }
 
-        .hero-video-bg::after {
-            content: ''; position: absolute; inset: 0;
-            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 30px 30px; mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
-            -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+        [data-theme="light"] .hero-grid-pattern {
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
         }
 
-        @keyframes gradientPulse {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 620px;
         }
-
-        .hero-content { position: relative; z-index: 2; max-width: 600px; }
 
         .badge {
-            display: inline-block; padding: 6px 14px; background: var(--accent-gradient);
-            color: #fff; font-weight: 800; font-size: 11px; text-transform: uppercase;
-            border-radius: 20px; margin-bottom: 16px; letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: var(--accent-dim);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            border-radius: var(--radius-pill);
+            margin-bottom: 16px;
+            letter-spacing: 0.06em;
         }
 
         .hero-title {
-            font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5); color: var(--text-main);
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 12px;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
+        }
+
+        .hero-desc {
+            color: var(--text-dim);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .hero-meta-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .hero-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            background: var(--text-main);
+            color: var(--bg-deep);
+            font-weight: 700;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            transition: var(--transition-fast);
+            user-select: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            opacity: 0.92;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--accent-subtle);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            transition: var(--transition-fast);
+            user-select: none;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-dim);
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .section-header h2 {
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-meta {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .view-all-btn {
+            color: var(--text-dim);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            transition: var(--transition-fast);
+            background: var(--accent-subtle);
+            user-select: none;
+        }
+
+        .view-all-btn:hover {
+            background: var(--accent-dim);
+            color: var(--text-main);
+            border-color: var(--border-hover);
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 44px;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            padding: 16px;
+            transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            content-visibility: auto;
+            contain-intrinsic-size: 260px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .game-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-visual {
+            width: 100%;
+            height: 148px;
+            background: var(--bg-visual);
+            border-radius: var(--radius-sm);
+            margin-bottom: 14px;
+            position: relative;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color var(--transition-fast);
+        }
+
+        .card-visual-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--cat-color);
+            opacity: 0.85;
+            z-index: 2;
+        }
+
+        .card-visual-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 25%, var(--cat-bg) 0%, transparent 75%);
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity var(--transition-normal);
+        }
+
+        .game-card:hover .card-visual-glow {
+            opacity: 1;
+        }
+
+        .card-visual-header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .card-category-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 5px;
+            background: var(--cat-bg);
+            border: 1px solid var(--cat-color);
+            color: var(--cat-color);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            pointer-events: auto;
+        }
+
+        .card-visual-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            pointer-events: auto;
+        }
+
+        .new-badge {
+            background: var(--text-main);
+            color: var(--bg-deep);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 5px;
+            letter-spacing: 0.06em;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-fav-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        [data-theme="light"] .card-fav-btn {
+            background: #ffffff;
+            border-color: var(--border);
+        }
+
+        .card-fav-btn:hover {
+            color: var(--text-main);
+            border-color: var(--border-hover);
+            transform: scale(1.08);
+        }
+
+        .card-fav-btn.active {
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .card-fav-btn.active svg {
+            fill: var(--warning);
+        }
+
+        .card-emblem {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform var(--transition-normal);
+        }
+
+        .game-card:hover .card-emblem {
+            transform: scale(1.06);
+        }
+
+        .emblem-token {
+            width: 52px;
+            height: 52px;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        }
+
+        [data-theme="light"] .emblem-token {
+            background: #ffffff;
+            border-color: var(--border);
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+            border-radius: var(--radius-sm);
+            z-index: 6;
+        }
+
+        .game-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-btn-mini {
+            width: 44px;
+            height: 44px;
+            background: var(--text-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateY(6px);
+            transition: transform var(--transition-normal);
+            box-shadow: var(--shadow-md);
+            padding-left: 2px;
+        }
+
+        .play-btn-mini svg {
+            width: 18px;
+            height: 18px;
+            color: var(--bg-deep);
+        }
+
+        .game-card:hover .play-btn-mini {
+            transform: translateY(0);
+        }
+
+        .play-btn-mini:hover {
+            transform: scale(1.08);
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-info h3 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-main);
+        }
+
+        .card-info-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .card-engine {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        .card-skeleton {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .card-skeleton .skel-visual {
+            width: 100%;
+            height: 148px;
+            border-radius: var(--radius-sm);
+        }
+        .card-skeleton .skel-title {
+            height: 18px;
+            width: 65%;
+            border-radius: 4px;
+        }
+        .card-skeleton .skel-sub {
+            height: 12px;
+            width: 40%;
+            border-radius: 4px;
         }
 
         .skeleton {
-            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
-            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.07) 50%, rgba(255, 255, 255, 0.03) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
         }
         [data-theme="light"] .skeleton {
-            background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 75%);
+            background: linear-gradient(90deg, rgba(15, 23, 42, 0.04) 25%, rgba(15, 23, 42, 0.09) 50%, rgba(15, 23, 42, 0.04) 75%);
             background-size: 200% 100%;
         }
 
@@ -285,473 +894,989 @@
         }
 
         .hero-title.loading {
-            height: 60px; width: 280px; -webkit-text-fill-color: transparent; color: transparent;
+            height: 48px;
+            width: 320px;
+            border-radius: 8px;
         }
 
-        .hero-desc { color: var(--text-dim); font-size: 16px; line-height: 1.6; margin-bottom: 30px; }
-
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 12px; padding: 16px 36px;
-            background: var(--text-main); color: var(--bg-deep); font-weight: 700; border-radius: 14px;
-            cursor: pointer; border: none; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px;
-            transition: var(--transition);
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: stretch;
         }
-
-        .btn-primary:hover {
-            transform: scale(1.05); background: var(--accent); box-shadow: 0 0 30px var(--accent-glow);
-        }
-        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        /* ========================================
-        V. DISCOVERY GRIDS & CARDS
-        ======================================== */
-        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-        .section-header h2 { font-size: 24px; font-weight: 700; color: var(--text-main); }
-        .section-meta { color: var(--text-dim); font-size: 13px; }
-
-        .game-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-bottom: 60px;
-        }
-
-        .game-card {
-            background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border);
-            padding: 24px; transition: var(--transition); cursor: pointer; position: relative;
-            display: flex; flex-direction: column; backdrop-filter: blur(10px);
-        }
-
-        .game-card:hover {
-            border-color: var(--border-hover); transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.04); box-shadow: var(--shadow-xl);
-        }
-        [data-theme="light"] .game-card:hover { background: #fff; }
-
-        .card-skeleton {
-            background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border);
-            padding: 24px; display: flex; flex-direction: column; gap: 12px;
-        }
-        .card-skeleton .skel-visual { width: 100%; height: 160px; border-radius: var(--radius-sm); }
-        .card-skeleton .skel-title { height: 22px; width: 70%; border-radius: 6px; }
-        .card-skeleton .skel-sub { height: 14px; width: 50%; border-radius: 6px; }
-
-        .new-badge {
-            position: absolute; top: 15px; right: 15px; background: var(--success); color: #fff;
-            font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 10px;
-            letter-spacing: 1px; z-index: 10; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-        }
-
-        .card-visual {
-            width: 100%; height: 160px; background: var(--bg-card); border-radius: var(--radius-sm);
-            margin-bottom: 20px; display: flex; align-items: center; justify-content: center;
-            position: relative; border: 1px solid var(--border); transition: var(--transition);
-        }
-
-        .game-card:hover .card-visual { background: rgba(0, 229, 255, 0.05); border-color: rgba(0, 229, 255, 0.2); }
-
-        /* FIX: Prevents solid white hover bug on inner SVG */
-        .card-visual > svg {
-            width: 50px; height: 50px; color: var(--text-dim); opacity: 0.7; transition: var(--transition);
-        }
-        .game-card:hover .card-visual > svg {
-            transform: scale(1.15) rotate(-5deg); opacity: 0.3; color: var(--accent); filter: drop-shadow(0 0 12px var(--accent-glow));
-        }
-
-        .play-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex;
-            align-items: center; justify-content: center; opacity: 0; transition: var(--transition);
-            border-radius: var(--radius-sm);
-        }
-        .game-card:hover .play-overlay { opacity: 1; }
-        
-        .play-btn-mini {
-            width: 48px; height: 48px; background: var(--text-main); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; transform: translateY(10px);
-            transition: var(--transition); box-shadow: 0 5px 20px rgba(0,0,0,0.3); padding-left: 2px;
-        }
-        .play-btn-mini svg { width: 20px; height: 20px; color: var(--bg-deep); transition: var(--transition); }
-        .game-card:hover .play-btn-mini { transform: translateY(0); }
-        .play-btn-mini:hover { transform: scale(1.1); background: var(--accent); }
-
-        .card-info h3 { font-size: 17px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
-        .card-info p { font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .view-all-btn {
-            color: var(--text-main); font-size: 13px; font-weight: 700; cursor: pointer;
-            padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
-            transition: var(--transition); background: rgba(255,255,255,0.05);
-        }
-        .view-all-btn:hover { background: var(--text-main); color: var(--bg-deep); }
-
-        /* ========================================
-        VI. SEARCH & FILTER (CUSTOM DROPDOWN)
-        ======================================== */
-        .filter-bar { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; align-items: stretch; }
 
         .search-box {
-            flex: 1; min-width: 300px; background: var(--bg-surface); border: 1px solid var(--border);
-            border-radius: var(--radius-sm); padding: 0 20px; display: flex; align-items: center; gap: 12px;
-            transition: var(--transition);
+            flex: 1;
+            min-width: 280px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: border-color var(--transition-fast);
         }
-        .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-        .search-box input { background: transparent; border: none; color: var(--text-main); height: 50px; width: 100%; font-size: 15px; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .search-box input::placeholder { color: var(--text-dim); }
+
+        .search-box:focus-within {
+            border-color: var(--border-active);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            height: 44px;
+            width: 100%;
+            font-size: 14px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-kbd-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            padding: 2px 6px;
+            border-radius: 4px;
+            user-select: none;
+            pointer-events: none;
+        }
 
         .search-clear {
-            background: none; border: none; color: var(--text-dim); cursor: pointer;
-            padding: 4px; border-radius: 4px; display: none; align-items: center; transition: color 0.2s;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: none;
+            align-items: center;
+            transition: color var(--transition-fast);
         }
-        .search-clear:hover { color: var(--text-main); }
-        .search-clear.visible { display: flex; }
+        .search-clear:hover {
+            color: var(--text-main);
+        }
+        .search-clear.visible {
+            display: flex;
+        }
 
-        /* Custom Dropdown UI */
-        .custom-dropdown { position: relative; min-width: 220px; user-select: none; }
+        .random-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: border-color var(--transition-fast), background var(--transition-fast);
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .random-btn:hover {
+            border-color: var(--border-hover);
+            background: var(--accent-subtle);
+        }
+
+        .custom-dropdown {
+            position: relative;
+            min-width: 190px;
+            user-select: none;
+        }
         
         .dropdown-trigger {
-            background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-main);
-            padding: 0 20px; border-radius: var(--radius-sm); font-weight: 600; font-size: 14px;
-            height: 50px; display: flex; align-items: center; justify-content: space-between;
-            cursor: pointer; transition: var(--transition);
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: border-color var(--transition-fast);
         }
-        .custom-dropdown:hover .dropdown-trigger { border-color: var(--accent); }
-        .dropdown-trigger svg { transition: transform 0.3s ease; }
-        .custom-dropdown.open .dropdown-trigger svg { transform: rotate(180deg); }
+
+        .dropdown-trigger:hover {
+            border-color: var(--border-hover);
+        }
+
+        .dropdown-trigger svg {
+            transition: transform 0.22s ease;
+        }
+        .custom-dropdown.open .dropdown-trigger svg {
+            transform: rotate(180deg);
+        }
 
         .dropdown-menu {
-            position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-            background: var(--bg-deep); border: 1px solid var(--border); border-radius: var(--radius-md);
-            padding: 6px; box-shadow: var(--shadow-xl); z-index: 1100; opacity: 0;
-            transform: translateY(-10px); pointer-events: none; transition: all 0.3s ease;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: var(--modal-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1100;
+            opacity: 0;
+            transform: translateY(-6px);
+            pointer-events: none;
+            transition: all 0.2s ease;
         }
-        .custom-dropdown.open .dropdown-menu { opacity: 1; transform: translateY(0); pointer-events: all; }
+
+        .custom-dropdown.open .dropdown-menu {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
 
         .dropdown-item {
-            padding: 10px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
-            color: var(--text-dim); cursor: pointer; transition: all 0.2s ease;
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: background var(--transition-fast), color var(--transition-fast);
         }
-        .dropdown-item:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
-        [data-theme="light"] .dropdown-item:hover { background: rgba(0,0,0,0.05); }
-        .dropdown-item.active { background: rgba(255,255,255,0.1); color: var(--accent); }
-        [data-theme="light"] .dropdown-item.active { background: rgba(0,0,0,0.1); }
 
-        .library-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+        .dropdown-item:hover {
+            background: var(--accent-dim);
+            color: var(--text-main);
+        }
+
+        .dropdown-item.active {
+            background: var(--accent-subtle);
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .category-pills-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .category-pill {
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-pill:hover {
+            color: var(--text-main);
+            border-color: var(--border-hover);
+        }
+
+        .category-pill.active {
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border-color: var(--text-main);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .library-header {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin-bottom: 6px;
+        }
+
         .library-count {
-            font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-main); font-weight: 700;
-            background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-dim);
+            font-weight: 600;
+            background: var(--accent-dim);
+            border: 1px solid var(--border);
+            padding: 3px 10px;
+            border-radius: var(--radius-pill);
         }
 
         .empty-state {
-            grid-column: 1 / -1; color: var(--text-dim); text-align: center; padding: 60px 40px;
-            border: 1px dashed var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px;
+            grid-column: 1 / -1;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 60px 40px;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
-        .empty-state svg { opacity: 0.3; }
-        .empty-state strong { font-size: 16px; color: var(--text-main); }
+        .empty-state svg {
+            opacity: 0.35;
+        }
+        .empty-state strong {
+            font-size: 15px;
+            color: var(--text-main);
+        }
+        .empty-state span {
+            font-size: 13px;
+        }
 
         #error-banner {
-            display: none; background: rgba(255, 71, 87, 0.1); border: 1px solid rgba(255, 71, 87, 0.3);
-            border-radius: 12px; padding: 16px 24px; color: var(--danger); font-size: 14px; font-weight: 600;
-            margin-bottom: 24px; align-items: center; gap: 12px;
+            display: none;
+            background: var(--danger-bg);
+            border: 1px solid var(--danger);
+            border-radius: var(--radius-sm);
+            padding: 14px 20px;
+            color: var(--danger);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            align-items: center;
+            gap: 12px;
         }
-        #error-banner.visible { display: flex; }
+        #error-banner.visible {
+            display: flex;
+        }
 
-        /* ========================================
-        VII. HUD & GAME LAUNCHER
-        ======================================== */
-        #launcher-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        #game-frame { width: 100%; height: 100%; border: none; }
+        #launcher-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 2000;
+            display: none;
+            animation: fadeIn 0.22s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        #game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
 
-        .hud-container { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2001; display: flex; flex-direction: column; align-items: center; }
+        .hud-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2001;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .hud-grip {
-            width: 100px; height: 24px; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.1); border-top: none; border-radius: 0 0 12px 12px;
-            display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; transition: var(--transition); opacity: 0.5;
+            width: 90px;
+            height: 22px;
+            background: rgba(18, 20, 29, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            opacity: 0.65;
         }
+
         .hud-menu {
-            display: flex; gap: 10px; margin-top: 10px; opacity: 0; transform: translateY(-20px);
-            pointer-events: none; transition: var(--transition); background: rgba(0,0,0,0.8); padding: 10px;
-            border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            opacity: 0;
+            transform: translateY(-16px);
+            pointer-events: none;
+            transition: var(--transition-spring);
+            background: rgba(18, 20, 29, 0.94);
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-lg);
         }
-        .hud-container:hover .hud-grip { background: var(--text-main); color: var(--bg-deep); opacity: 1; height: 30px; }
-        .hud-container:hover .hud-menu { opacity: 1; transform: translateY(0); pointer-events: all; }
+
+        .hud-container:hover .hud-grip {
+            background: var(--bg-surface-elevated);
+            color: var(--text-main);
+            opacity: 1;
+            height: 26px;
+        }
+
+        .hud-container:hover .hud-menu {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
         .hud-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;
-            padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 11px; transition: var(--transition);
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
         }
-        .hud-btn:hover { background: var(--danger); border-color: var(--danger); }
-		
-		/* Volume Control UI */
-.hud-volume {
-    display: flex; align-items: center; gap: 10px;
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-    padding: 0 15px; border-radius: 10px;
-}
-.hud-volume svg { width: 15px; height: 15px; color: rgba(255,255,255,0.8); }
-.hud-volume input[type="range"] {
-    -webkit-appearance: none; width: 80px; background: transparent; cursor: pointer;
-}
-.hud-volume input[type="range"]:focus { outline: none; }
-.hud-volume input[type="range"]::-webkit-slider-runnable-track {
-    width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;
-}
-.hud-volume input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
-    background: #fff; margin-top: -4px; transition: var(--transition);
-}
-.hud-volume input[type="range"]:hover::-webkit-slider-thumb {
-    background: var(--accent); transform: scale(1.2); box-shadow: 0 0 10px var(--accent-glow);
-}
 
-        /* ========================================
-        VIII. MODALS (EXIT & SETTINGS)
-        ======================================== */
-        .modal-wrapper { position: fixed; inset: 0; z-index: 3000; display: none; align-items: center; justify-content: center; }
-        .modal-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); }
+        .hud-btn:hover {
+            background: var(--accent-dim);
+            border-color: var(--border-hover);
+        }
+
+        .hud-btn.danger-action:hover {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .hud-icon-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            justify-content: center;
+        }
+
+        .hud-btn.fav-action.active {
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+        .hud-btn.fav-action.active svg {
+            fill: var(--warning);
+        }
+
+        .hud-volume {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            padding: 0 12px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+        }
+
+        .hud-volume svg {
+            width: 14px;
+            height: 14px;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+        .hud-volume svg:hover {
+            color: var(--text-main);
+        }
+
+        .hud-volume input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 76px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .hud-volume input[type="range"]:focus {
+            outline: none;
+        }
+
+        .hud-volume input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+        }
+
+        .hud-volume input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background: var(--text-main);
+            margin-top: -4px;
+            transition: transform var(--transition-fast);
+        }
+
+        .hud-volume input[type="range"]:hover::-webkit-slider-thumb {
+            transform: scale(1.15);
+        }
+
+        .modal-wrapper {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
         .modal-content {
-            position: relative; background: var(--modal-bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
-            padding: 40px; width: 100%; max-width: 440px; text-align: center; box-shadow: var(--shadow-xl);
-            animation: viewEnter 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            background: var(--modal-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: viewEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .modal-content h3 { font-size: 24px; margin-bottom: 15px; color: var(--text-main); }
-        .modal-content p { color: var(--text-dim); font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
+
+        .modal-content h3 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .modal-content p {
+            color: var(--text-dim);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
         
-        .modal-actions { display: flex; gap: 15px; }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
         .modal-actions button {
-            flex: 1; padding: 14px 0; border-radius: 12px; font-weight: 700; cursor: pointer; transition: var(--transition); border: none; font-family: 'Plus Jakarta Sans', sans-serif;
+            flex: 1;
+            padding: 12px 0;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
         }
 
-        .btn-cancel { background: rgba(128, 128, 128, 0.1); color: var(--text-main); border: 1px solid var(--border); }
-        .btn-cancel:hover { background: rgba(128, 128, 128, 0.2); }
-        .btn-danger { background: var(--danger); color: #fff; }
-        .btn-danger:hover { background: #ff6b81; box-shadow: 0 0 20px rgba(255, 71, 87, 0.4); }
+        .btn-cancel {
+            background: var(--accent-dim);
+            color: var(--text-main);
+            border: 1px solid var(--border) !important;
+        }
+        .btn-cancel:hover {
+            background: var(--accent-subtle);
+            border-color: var(--border-hover) !important;
+        }
 
-        /* Settings UI specifics */
-        .settings-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; text-align: left; }
+        .btn-danger {
+            background: var(--danger);
+            color: #ffffff;
+        }
+        .btn-danger:hover {
+            background: var(--danger-hover);
+        }
+
+        .settings-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
         .setting-row {
-            display: flex; align-items: center; justify-content: space-between; padding: 14px 20px;
-            background: rgba(128, 128, 128, 0.05); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
         }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .setting-subtext {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
         .slider {
-            position: absolute; cursor: pointer; inset: 0; background-color: rgba(128,128,128,0.3);
-            transition: .3s ease; border-radius: 24px; border: 1px solid var(--border);
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: var(--accent-dim);
+            transition: var(--transition-fast);
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border);
         }
+
         .slider:before {
-            position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
-            background-color: #fff; transition: .3s ease; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-dim);
+            transition: var(--transition-fast);
+            border-radius: 50%;
         }
-        input:checked + .slider { background-color: var(--accent); border-color: var(--accent); }
-        input:checked + .slider:before { transform: translateX(20px); }
-		
-		/* ========================================
-        IX. FUNCTIONAL SETTINGS CLASSES
-        ======================================== */
-        /* Reduce Animations */
-        body.reduce-animations .blob, 
-        body.reduce-animations .hero-video-bg,
-        body.reduce-animations .ambient-bg {
-            animation: none !important;
+
+        input:checked + .slider {
+            background-color: var(--text-main);
+            border-color: var(--text-main);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+            background-color: var(--bg-deep);
+        }
+
+        .settings-action-btn {
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+        .settings-action-btn:hover {
+            color: var(--text-main);
+            border-color: var(--border-hover);
+        }
+        .settings-action-btn.danger:hover {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        body.reduce-animations * {
+            animation-duration: 0.001s !important;
+            transition-duration: 0.001s !important;
         }
         body.reduce-animations .click-ripple {
             display: none !important;
         }
         
-        /* Compact Grid */
         .game-grid.compact-mode {
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
         }
         .game-grid.compact-mode .card-visual {
             height: 110px;
         }
-        .game-grid.compact-mode .card-visual > svg {
-            width: 36px; height: 36px;
+        .game-grid.compact-mode .emblem-token {
+            width: 40px;
+            height: 40px;
+            font-size: 14px;
         }
         .game-grid.compact-mode .card-info h3 {
-            font-size: 15px;
+            font-size: 14px;
         }
         
-        /* Hide Badges */
         body.hide-badges .new-badge {
             display: none !important;
         }
-
     </style>
 </head>
 <body>
 
     <div class="ambient-bg"></div>
-    <div class="blob"></div>
 
     <nav>
-        <div class="logo-group">
+        <div class="logo-group" onclick="switchView('discovery', document.getElementById('nav-discover'))">
             <div class="logo-box">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="6" width="20" height="12" rx="3"/>
+                    <path d="M6 12h4m-2-2v4m7-2h.01m3 0h.01"/>
+                </svg>
             </div>
-            <div class="brand-name">H&H LAUNCHER</div>
+            <div class="brand-name">H&amp;H LAUNCHER</div>
         </div>
 
         <div class="nav-links">
             <div class="nav-link ripple-target active" id="nav-discover" onclick="switchView('discovery', this)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="m16 8-8 8"/><path d="m17 11-1-1"/><path d="m11 17-1-1"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                </svg>
                 Discover
             </div>
             <div class="nav-link ripple-target" id="nav-library" onclick="switchView('library', this)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="7" height="7" x="3" y="3" rx="1.5"/>
+                    <rect width="7" height="7" x="14" y="3" rx="1.5"/>
+                    <rect width="7" height="7" x="14" y="14" rx="1.5"/>
+                    <rect width="7" height="7" x="3" y="14" rx="1.5"/>
+                </svg>
                 Library
             </div>
         </div>
 
         <div class="status-cluster">
-            <!-- Theme Toggle Icon -->
             <button class="nav-action-btn ripple-target" id="theme-toggle-btn" title="Toggle Theme">
-                <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-                <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                </svg>
+                <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                </svg>
             </button>
             
-            <!-- Settings Icon -->
-            <button class="nav-action-btn ripple-target" onclick="toggleSettings(true)" title="Settings">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <button class="nav-action-btn ripple-target" onclick="toggleSettings(true)" title="Launcher Settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
             </button>
             
-            <div class="version-tag">v0.7.0</div>
-            <div id="status-label" style="font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); font-weight: 700;">SYNCING...</div>
-            <div id="status-dot" style="width: 8px; height: 8px; background: var(--text-dim); border-radius: 50%;"></div>
+            <div class="version-tag">v0.8.3</div>
+
+            <div class="status-indicator-wrap">
+                <div id="status-dot"></div>
+                <div id="status-label">SYNCING</div>
+            </div>
         </div>
     </nav>
 
     <div id="app-viewport">
-        <!-- Error Banner -->
-        <div id="error-banner" style="max-width:1400px; margin: 0 auto 0 auto;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span id="error-message">Failed to load games.json. Make sure the file exists in your repository.</span>
+        <div id="error-banner" style="max-width: 1400px; margin: 0 auto 24px auto;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span id="error-message">Failed to load games.json. Verify the file exists in your repository.</span>
         </div>
 
-        <!-- DISCOVER VIEW -->
         <div id="discovery" class="view active">
             <div class="hero-banner" id="hero-spotlight">
                 <div class="hero-video-bg"></div>
+                <div class="hero-grid-pattern"></div>
                 <div class="hero-content">
-                    <span class="badge" id="hero-badge">Latest Game</span>
+                    <span class="badge" id="hero-badge">Featured Release</span>
                     <h1 class="hero-title loading" id="featured-title">&nbsp;</h1>
-                    <p class="hero-desc">Discover the newest games added to the H&H Launcher. Click below to launch the latest game.</p>
-                    <button class="btn-primary ripple-target" id="hero-btn" disabled>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="m7 4 12 8-12 8V4z"/></svg>
-                        Launch
-                    </button>
+                    <div class="hero-meta-bar" id="hero-meta-container">
+                        <span class="hero-tag" id="hero-category-tag">FEATURED</span>
+                        <span class="hero-tag" id="hero-engine-tag">STANDALONE</span>
+                    </div>
+                    <p class="hero-desc">Discover the newest games added to the repository. Instant execution with persistent sessions.</p>
+                    <div class="hero-actions">
+                        <button class="btn-primary ripple-target" id="hero-btn" disabled>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="m7 4 12 8-12 8V4z"/>
+                            </svg>
+                            Launch Game
+                        </button>
+                        <button class="btn-secondary ripple-target" onclick="launchRandomGame()" title="Launch a random title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                                <path d="M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/>
+                            </svg>
+                            Surprise Me
+                        </button>
+                    </div>
                 </div>
             </div>
 
+            <div id="recent-section" style="display: none; margin-bottom: 40px;">
+                <div class="section-header">
+                    <h2>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        Recently Played
+                    </h2>
+                    <span class="section-meta" id="recent-games-meta"></span>
+                </div>
+                <div class="game-grid" id="recent-grid"></div>
+            </div>
+
+            <div id="favorites-section" style="display: none; margin-bottom: 40px;">
+                <div class="section-header">
+                    <h2>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        Pinned Favorites
+                    </h2>
+                    <span class="section-meta" id="favorites-meta"></span>
+                </div>
+                <div class="game-grid" id="favorites-grid"></div>
+            </div>
+
             <div class="section-header">
-                <h2>New Games</h2>
+                <h2>New Additions</h2>
                 <span class="section-meta" id="new-games-meta"></span>
             </div>
             <div class="game-grid" id="new-grid"></div>
 
             <div class="section-header" style="margin-top: 10px;">
                 <h2>All Games</h2>
-                <span class="view-all-btn ripple-target" onclick="goToLibrary()">Browse Library &rarr;</span>
+                <span class="view-all-btn ripple-target" onclick="goToLibrary()">Browse Full Library &rarr;</span>
             </div>
             <div class="game-grid" id="featured-grid"></div>
         </div>
 
-        <!-- LIBRARY VIEW -->
         <div id="library" class="view">
             <div class="library-header">
-                <h1 style="font-size: 32px; font-weight: 800; color: var(--text-main);">Library</h1>
+                <h1 style="font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-main);">Library</h1>
                 <span class="library-count" id="lib-count">0 games</span>
             </div>
-            <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 28px;">All available modules in the H&H repository.</p>
+            <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 22px;">Complete directory of all playable games.</p>
 
             <div class="filter-bar">
                 <div class="search-box">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <input type="text" id="lib-search" placeholder="Search games..." oninput="handleSearch(this.value)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                    <input type="text" id="lib-search" placeholder="Search by game title or filename..." oninput="handleSearch(this.value)">
+                    <span class="search-kbd-hint">/</span>
                     <button class="search-clear" id="search-clear-btn" onclick="clearSearch()" title="Clear search">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
                     </button>
                 </div>
+
+                <button class="random-btn ripple-target" onclick="launchRandomGame()" title="Launch a random game from current view">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2"/>
+                        <path d="M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/>
+                    </svg>
+                    Random
+                </button>
                 
-                <!-- CUSTOM DROPDOWN UI -->
                 <div class="custom-dropdown" id="sort-dropdown">
                     <div class="dropdown-trigger ripple-target" id="dropdown-trigger-btn">
                         <span id="dropdown-label">Sort: Default</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
                     </div>
                     <div class="dropdown-menu">
                         <div class="dropdown-item ripple-target active" data-value="default">Sort: Default</div>
                         <div class="dropdown-item ripple-target" data-value="newest">Sort: Newest First</div>
-                        <div class="dropdown-item ripple-target" data-value="az">Sort: A → Z</div>
-                        <div class="dropdown-item ripple-target" data-value="za">Sort: Z → A</div>
+                        <div class="dropdown-item ripple-target" data-value="az">Sort: Title (A to Z)</div>
+                        <div class="dropdown-item ripple-target" data-value="za">Sort: Title (Z to A)</div>
                     </div>
                 </div>
+            </div>
+
+            <div class="category-pills-bar" id="category-pills">
+                <div class="category-pill active ripple-target" data-category="all" onclick="setCategoryFilter('all')">
+                    All Games
+                </div>
+                <div class="category-pill ripple-target" data-category="favorites" onclick="setCategoryFilter('favorites')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    Favorites
+                </div>
+                <div class="category-pill ripple-target" data-category="action" onclick="setCategoryFilter('action')">Action</div>
+                <div class="category-pill ripple-target" data-category="racing" onclick="setCategoryFilter('racing')">Driving</div>
+                <div class="category-pill ripple-target" data-category="sports" onclick="setCategoryFilter('sports')">Sports</div>
+                <div class="category-pill ripple-target" data-category="arcade" onclick="setCategoryFilter('arcade')">Arcade</div>
+                <div class="category-pill ripple-target" data-category="puzzle" onclick="setCategoryFilter('puzzle')">Puzzle</div>
+                <div class="category-pill ripple-target" data-category="survival" onclick="setCategoryFilter('survival')">Survival</div>
             </div>
 
             <div class="game-grid" id="full-library-list"></div>
         </div>
     </div>
 
-        <!-- Game Overlay -->
     <div id="launcher-overlay">
         <div class="hud-container">
-            <div class="hud-grip" title="Hover for menu">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="hud-grip" title="Hover for game controls">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
             </div>
             <div class="hud-menu">
-                <div id="hud-name" class="hud-btn" style="pointer-events: none; border-color: transparent; background: transparent; color: var(--accent);">GAME_NAME</div>
+                <div id="hud-name" class="hud-btn" style="pointer-events: none; border-color: transparent; background: transparent; color: var(--text-main); font-weight: 700;">GAME SESSION</div>
                 
-                <!-- VOLUME SLIDER -->
-                <div class="hud-volume" title="Game Volume">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                <button class="hud-btn hud-icon-btn fav-action ripple-target" id="hud-fav-btn" onclick="toggleHudFavorite()" title="Pin to Favorites">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                </button>
+
+                <button class="hud-btn hud-icon-btn ripple-target" onclick="reloadGameSession()" title="Restart Game">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+                        <path d="M21 3v5h-5"/>
+                        <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                        <path d="M3 21v-5h5"/>
+                    </svg>
+                </button>
+
+                <button class="hud-btn hud-icon-btn ripple-target" id="hud-fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                </button>
+
+                <div class="hud-volume" title="Volume Control">
+                    <svg id="volume-icon" onclick="toggleMute()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    </svg>
                     <input type="range" id="game-volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateGameVolume(this.value)">
                 </div>
 
-                <button class="hud-btn ripple-target" onclick="requestExit()">Exit Game</button>
+                <button class="hud-btn danger-action ripple-target" onclick="requestExit()">Exit Game</button>
             </div>
         </div>
-        <iframe id="game-frame" src="about:blank"></iframe>
+        <iframe id="game-frame" src="about:blank" allow="autoplay; fullscreen; gamepad; focus-without-user-activation *"></iframe>
     </div>
 
-    <!-- Exit Confirmation Modal -->
     <div id="exit-modal" class="modal-wrapper">
         <div class="modal-backdrop" onclick="cancelExit()"></div>
         <div class="modal-content">
-            <h3>Exit Game?</h3>
-            <p>Are you sure you want to close this Game Session? Any unsaved progress will be permanently lost.</p>
+            <h3>Exit Game Session?</h3>
+            <p>Closing the session will unload the active game window. Any unsaved in-game progress will be lost.</p>
             <div class="modal-actions">
-                <button class="btn-cancel ripple-target" onclick="cancelExit()">Cancel</button>
-                <button class="btn-danger ripple-target" onclick="confirmExit()">Confirm</button>
+                <button class="btn-cancel ripple-target" onclick="cancelExit()">Continue Playing</button>
+                <button class="btn-danger ripple-target" onclick="confirmExit()">Exit Session</button>
             </div>
         </div>
     </div>
 
-    <!-- Settings Panel Modal -->
     <div id="settings-modal" class="modal-wrapper">
         <div class="modal-backdrop" onclick="toggleSettings(false)"></div>
         <div class="modal-content">
             <h3>Launcher Settings</h3>
-            <p>Customize your launcher experience.</p>
+            <p>Configure performance and display preferences.</p>
             
             <div class="settings-group">
                 <div class="setting-row">
-                    <span>Reduce Animations</span>
+                    <div>
+                        <div>Reduce Motion</div>
+                        <div class="setting-subtext">Disables animated transitions and decorative effects</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="setting-animations">
                         <span class="slider"></span>
                     </label>
                 </div>
+
                 <div class="setting-row">
-                    <span>Compact Game Grid</span>
+                    <div>
+                        <div>Compact Grid</div>
+                        <div class="setting-subtext">Higher density display for larger game libraries</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="setting-compact">
                         <span class="slider"></span>
                     </label>
                 </div>
+
                 <div class="setting-row">
-                    <span>Show "New" Badges</span>
+                    <div>
+                        <div>Show "New" Badges</div>
+                        <div class="setting-subtext">Displays indicators on recently added titles</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="setting-badges" checked>
                         <span class="slider"></span>
                     </label>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div>Auto-Fullscreen</div>
+                        <div class="setting-subtext">Expands browser window upon launching any game</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="setting-autofullscreen">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div>Clear Recent History</div>
+                        <div class="setting-subtext">Clears the jump-back-in shelf on discover</div>
+                    </div>
+                    <button class="settings-action-btn ripple-target" onclick="clearRecentHistory()">Clear</button>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div>Reset Pinned Favorites</div>
+                        <div class="setting-subtext">Unpins all saved favorite titles</div>
+                    </div>
+                    <button class="settings-action-btn danger ripple-target" onclick="clearFavorites()">Reset</button>
                 </div>
             </div>
 
@@ -764,17 +1889,8 @@
     <script>
         "use strict";
 
-        // ─── Constants & State ───────────────────────────────────────────────
-        
-        /**
-         * FIX: Derive the base URL correctly for GitHub Pages and any host.
-         * window.location.href.replace(/\/[^\/]*$/, '/') breaks when the URL
-         * already ends with '/' (strips a path segment). Instead, use pathname
-         * manipulation which is reliable in all cases.
-         */
         function getBaseUrl() {
             const loc = window.location;
-            // Strip trailing filename if present (index.html, index__3_.html, etc.)
             const path = loc.pathname.replace(/\/[^\/]*\.html?$/i, '/');
             return loc.origin + path;
         }
@@ -783,199 +1899,320 @@
         let GAMES_DB = [];
         let currentSearchQuery = "";
         let currentSortMethod = "default";
+        let currentCategoryFilter = "all";
+        let activeGameFile = null;
+        let activeGameName = null;
+        let globalGameVolume = 0.5;
+        let previousVolume = 0.5;
+        let volumeEnforcerInterval = null;
+        let searchDebounceTimer = null;
 
-        // Dynamic Icon Pool
-        const ICON_POOL = [
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-9 5 18 2-9h5"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
-        ];
+        function loadFavorites() {
+            try {
+                const raw = localStorage.getItem("hh-favorites");
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
 
-        // ─── Bootstrap ───────────────────────────────────────────────────────
+        function saveFavorites(favs) {
+            localStorage.setItem("hh-favorites", JSON.stringify(favs));
+        }
+
+        function isFavorite(file) {
+            return loadFavorites().includes(file);
+        }
+
+        function toggleFavorite(file, event) {
+            if (event) event.stopPropagation();
+            const favs = loadFavorites();
+            const idx = favs.indexOf(file);
+            if (idx >= 0) {
+                favs.splice(idx, 1);
+            } else {
+                favs.push(file);
+            }
+            saveFavorites(favs);
+            updateFavoriteButtons(file);
+            populateDiscovery();
+            updateLibraryView();
+        }
+
+        function updateFavoriteButtons(file) {
+            const active = isFavorite(file);
+            document.querySelectorAll(`[data-fav-file="${file}"]`).forEach(btn => {
+                btn.classList.toggle("active", active);
+            });
+            if (activeGameFile === file) {
+                const hudFav = document.getElementById("hud-fav-btn");
+                if (hudFav) hudFav.classList.toggle("active", active);
+            }
+        }
+
+        function toggleHudFavorite() {
+            if (activeGameFile) {
+                toggleFavorite(activeGameFile, null);
+            }
+        }
+
+        function loadRecent() {
+            try {
+                const raw = localStorage.getItem("hh-recent");
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function recordRecent(file, name) {
+            let list = loadRecent().filter(item => item.file !== file);
+            list.unshift({ file, name, timestamp: Date.now() });
+            if (list.length > 8) list = list.slice(0, 8);
+            localStorage.setItem("hh-recent", JSON.stringify(list));
+        }
+
+        function clearRecentHistory() {
+            localStorage.removeItem("hh-recent");
+            populateDiscovery();
+        }
+
+        function clearFavorites() {
+            localStorage.removeItem("hh-favorites");
+            populateDiscovery();
+            updateLibraryView();
+        }
+
+        function getGameCategory(name, file) {
+            const str = (name + " " + file).toLowerCase();
+            if (/shoot|gun|snip|1v1|war|tank|doom|fortnite|brawl|punch|combat|hit|strike|laser|epstein|knife/.test(str)) return "action";
+            if (/car|drift|race|speed|moto|bike|kart|drive|traffic|park|crash|wheelie|truck/.test(str)) return "racing";
+            if (/basket|soccer|football|baseball|volley|box|fifa|golf|hero|derby/.test(str)) return "sports";
+            if (/mario|pacman|tetris|sonic|dkcountry|retro|spaceinvaders|breakout|asteroid|dino|snake|flappy|crossy|run/.test(str)) return "arcade";
+            if (/2048|chess|mine|quiz|bloxorz|solitaire|wordle|puzzle|escape|room|draw|cut|trimps|idle|click/.test(str)) return "puzzle";
+            if (/minec|mc1|1\.12|backroom|granny|fnaf|baldi|paper|hole|slither|agar|snow|zombie|subway|slope|vex|hook/.test(str)) return "survival";
+            return "arcade";
+        }
+
+        function getGameInitials(name) {
+            const cleaned = name.replace(/[^\w\s]/g, "").trim();
+            const words = cleaned.split(/\s+/).filter(Boolean);
+            if (words.length >= 2) {
+                return (words[0][0] + words[1][0]).toUpperCase();
+            }
+            if (words.length === 1) {
+                return words[0].slice(0, 2).toUpperCase();
+            }
+            return "HH";
+        }
 
         async function bootstrap() {
             showLoadingSkeletons();
 
             try {
-                // Cache-bust so GitHub Pages always serves fresh JSON
-                const url = BASE_URL + 'games.json?_=' + Date.now();
-                const response = await fetch(url, { cache: 'no-store' });
+                const url = BASE_URL + "games.json?_=" + Date.now();
+                const response = await fetch(url, { cache: "no-store" });
 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
-
-                // Validate: must be a non-empty array
                 if (!Array.isArray(data)) {
-                    throw new Error('games.json must export a JSON array.');
+                    throw new Error("games.json must export a JSON array.");
                 }
 
                 GAMES_DB = data;
-
                 setStatus(true);
                 setupSpotlight();
                 populateDiscovery();
                 updateLibraryView();
 
             } catch (err) {
-                console.error('[H&H Launcher] Load error:', err);
+                console.error("[H&H Launcher] Load error:", err);
                 setStatus(false);
-                showError(`Could not load games.json — ${err.message}`);
+                showError(`Could not load games.json. Details: ${err.message}`);
                 showEmptyGrids();
             }
         }
 
-        // ─── Status Helpers ──────────────────────────────────────────────────
-
         function setStatus(online) {
-            const label = document.getElementById('status-label');
-            const dot = document.getElementById('status-dot');
+            const label = document.getElementById("status-label");
+            const dot = document.getElementById("status-dot");
             if (online) {
-                label.style.color = 'var(--accent)';
-                label.textContent = 'SERVERS ONLINE';
-                dot.style.background = '#00ff88';
-                dot.style.boxShadow = '0 0 10px #00ff88';
-                dot.style.animation = 'pulseBadge 2s infinite';
+                label.style.color = "var(--text-main)";
+                label.textContent = "ONLINE";
+                dot.style.background = "var(--success)";
+                dot.style.boxShadow = "0 0 8px rgba(16, 185, 129, 0.6)";
             } else {
-                label.style.color = 'var(--danger)';
-                label.textContent = 'OFFLINE';
-                dot.style.background = 'var(--danger)';
-                dot.style.boxShadow = 'none';
-                dot.style.animation = 'none';
+                label.style.color = "var(--danger)";
+                label.textContent = "OFFLINE";
+                dot.style.background = "var(--danger)";
+                dot.style.boxShadow = "none";
             }
         }
 
         function showError(msg) {
-            const banner = document.getElementById('error-banner');
-            document.getElementById('error-message').textContent = msg;
-            banner.classList.add('visible');
+            const banner = document.getElementById("error-banner");
+            document.getElementById("error-message").textContent = msg;
+            banner.classList.add("visible");
         }
 
-        // ─── Loading Skeletons ───────────────────────────────────────────────
-
         function skeletonCard() {
-            return `<div class="card-skeleton">
-                <div class="skel-visual skeleton"></div>
-                <div class="skel-title skeleton"></div>
-                <div class="skel-sub skeleton"></div>
-            </div>`;
+            return `
+                <div class="card-skeleton">
+                    <div class="skel-visual skeleton"></div>
+                    <div class="skel-title skeleton"></div>
+                    <div class="skel-sub skeleton"></div>
+                </div>
+            `;
         }
 
         function showLoadingSkeletons() {
-            const skels = Array(4).fill(skeletonCard()).join('');
-            document.getElementById('new-grid').innerHTML = skels;
-            document.getElementById('featured-grid').innerHTML = skels;
-            document.getElementById('full-library-list').innerHTML = skels;
+            const skels = Array(4).fill(skeletonCard()).join("");
+            document.getElementById("new-grid").innerHTML = skels;
+            document.getElementById("featured-grid").innerHTML = skels;
+            document.getElementById("full-library-list").innerHTML = skels;
         }
 
         function showEmptyGrids() {
-            const empty = emptyState('No games found', 'Make sure games.json exists and is a valid JSON array.');
-            document.getElementById('new-grid').innerHTML = empty;
-            document.getElementById('featured-grid').innerHTML = empty;
-            document.getElementById('full-library-list').innerHTML = empty;
-            document.getElementById('featured-title').textContent = 'OFFLINE MODE';
-            document.getElementById('featured-title').classList.remove('loading');
+            const empty = emptyState("No games found", "Make sure games.json exists and is a valid JSON array.");
+            document.getElementById("new-grid").innerHTML = empty;
+            document.getElementById("featured-grid").innerHTML = empty;
+            document.getElementById("full-library-list").innerHTML = empty;
+            const ft = document.getElementById("featured-title");
+            ft.textContent = "OFFLINE MODE";
+            ft.classList.remove("loading");
         }
 
-        // ─── Spotlight ───────────────────────────────────────────────────────
-
-        /**
-         * Hero always shows the last item in games.json (newest addition).
-         * Supports optional `spotlight: true` flag on any game entry to pin it.
-         */
         function setupSpotlight() {
             if (GAMES_DB.length === 0) return;
 
-            // Prefer a game explicitly marked as spotlight, else pick the last one
             const spotlightGame = GAMES_DB.find(g => g.spotlight) || GAMES_DB[GAMES_DB.length - 1];
-
-            const titleEl = document.getElementById('featured-title');
+            const titleEl = document.getElementById("featured-title");
             titleEl.textContent = spotlightGame.name;
-            titleEl.classList.remove('loading');
+            titleEl.classList.remove("loading");
 
-            const heroBtn = document.getElementById('hero-btn');
+            const cat = getGameCategory(spotlightGame.name, spotlightGame.file);
+            document.getElementById("hero-category-tag").textContent = cat.toUpperCase();
+            document.getElementById("hero-engine-tag").textContent = isFolder(spotlightGame.file) ? "ENGINE" : "HTML5";
+
+            const heroBtn = document.getElementById("hero-btn");
             heroBtn.disabled = false;
-            heroBtn.onclick = () => launchModule(spotlightGame.file, spotlightGame.name);
+            heroBtn.onclick = () => launchGame(spotlightGame.file, spotlightGame.name);
         }
 
-        // ─── Discovery View ──────────────────────────────────────────────────
-
-        /**
-         * FIX: "New Games" now shows the last N items (newest additions).
-         * "All Games" shows every game, most-classic first — so no game is
-         * ever hidden on the Discover tab.
-         * N scales with library size so there's always a useful split.
-         */
         function populateDiscovery() {
+            if (GAMES_DB.length === 0) return;
+
+            const recentList = loadRecent();
+            const recentSec = document.getElementById("recent-section");
+            const recentGrid = document.getElementById("recent-grid");
+            if (recentList.length > 0) {
+                const matchedRecent = recentList
+                    .map(item => GAMES_DB.find(g => g.file === item.file))
+                    .filter(Boolean);
+                if (matchedRecent.length > 0) {
+                    recentSec.style.display = "block";
+                    document.getElementById("recent-games-meta").textContent = `${matchedRecent.length} played`;
+                    recentGrid.innerHTML = matchedRecent.map(g => createCard(g, false)).join("");
+                } else {
+                    recentSec.style.display = "none";
+                }
+            } else {
+                recentSec.style.display = "none";
+            }
+
+            const favList = loadFavorites();
+            const favSec = document.getElementById("favorites-section");
+            const favGrid = document.getElementById("favorites-grid");
+            if (favList.length > 0) {
+                const matchedFavs = favList
+                    .map(f => GAMES_DB.find(g => g.file === f))
+                    .filter(Boolean);
+                if (matchedFavs.length > 0) {
+                    favSec.style.display = "block";
+                    document.getElementById("favorites-meta").textContent = `${matchedFavs.length} pinned`;
+                    favGrid.innerHTML = matchedFavs.map(g => createCard(g, false)).join("");
+                } else {
+                    favSec.style.display = "none";
+                }
+            } else {
+                favSec.style.display = "none";
+            }
+
             const newCount = Math.min(4, Math.ceil(GAMES_DB.length / 3));
-            const newGames = GAMES_DB.slice(-newCount).reverse();   // Newest first
-            const allGames = [...GAMES_DB].reverse();               // All, newest first
+            const newGames = GAMES_DB.slice(-newCount).reverse();
+            const allGames = [...GAMES_DB].reverse();
 
-            document.getElementById('new-games-meta').textContent =
-                `${newCount} recently added`;
-
-            document.getElementById('new-grid').innerHTML =
-                newGames.map(g => createCard(g, true)).join('');
-
-            document.getElementById('featured-grid').innerHTML =
-                allGames.map(g => createCard(g, false)).join('');
-        }
-
-        // ─── Card Builder ────────────────────────────────────────────────────
-
-        function getIconForGame(name) {
-            // Use char-code sum for stable, varied icon assignment
-            const sum = [...name].reduce((a, c) => a + c.charCodeAt(0), 0);
-            return ICON_POOL[sum % ICON_POOL.length];
+            document.getElementById("new-games-meta").textContent = `${newCount} recently added`;
+            document.getElementById("new-grid").innerHTML = newGames.map(g => createCard(g, true)).join("");
+            document.getElementById("featured-grid").innerHTML = allGames.map(g => createCard(g, false)).join("");
         }
 
         function createCard(game, isNew = false) {
-            const badgeHTML = isNew ? `<div class="new-badge">NEW</div>` : '';
-            const iconSVG = getIconForGame(game.name);
-            // Show a clean display name for the subtitle.
-            // Folder entries have no .html extension — strip only if present.
+            const badgeHTML = isNew ? `<span class="new-badge">NEW</span>` : "";
+            const cat = getGameCategory(game.name, game.file);
+            const initials = getGameInitials(game.name);
+            const favActive = isFavorite(game.file) ? "active" : "";
+
             const subtitle = game.file
-                .replace(/\.html?$/i, '')
-                .replace(/[-_]/g, ' ');
+                .replace(/\.html?$/i, "")
+                .replace(/[-_]/g, " ");
 
             return `
-                <div class="game-card" onclick="launchModule('${esc(game.file)}', '${esc(game.name)}')">
-                    ${badgeHTML}
+                <div class="game-card ripple-target" style="--cat-color: var(--cat-${cat}); --cat-bg: var(--cat-${cat}-bg);" onclick="launchGame('${esc(game.file)}', '${esc(game.name)}')">
                     <div class="card-visual">
-                        ${iconSVG}
+                        <div class="card-visual-accent"></div>
+                        <div class="card-visual-glow"></div>
+                        <div class="card-visual-header">
+                            <span class="card-category-tag">${cat}</span>
+                            <div class="card-visual-actions">
+                                ${badgeHTML}
+                                <button class="card-fav-btn ${favActive}" data-fav-file="${esc(game.file)}" onclick="toggleFavorite('${esc(game.file)}', event)" title="Pin Favorite">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-emblem">
+                            <div class="emblem-token">${esc(initials)}</div>
+                        </div>
                         <div class="play-overlay">
                             <div class="play-btn-mini">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="m7 4 12 8-12 8V4z"/></svg>
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="m7 4 12 8-12 8V4z"/>
+                                </svg>
                             </div>
                         </div>
                     </div>
                     <div class="card-info">
                         <h3>${esc(game.name)}</h3>
-                        <p>${esc(subtitle)}</p>
+                        <div class="card-info-bottom">
+                            <span class="card-engine">${esc(subtitle)}</span>
+                            <span style="color: var(--cat-${cat}); font-weight: 700;">${cat.toUpperCase()}</span>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
-        // ─── Library Logic ───────────────────────────────────────────────────
-
         function handleSearch(query) {
             currentSearchQuery = query;
-            // Show/hide clear button
-            const clearBtn = document.getElementById('search-clear-btn');
-            clearBtn.classList.toggle('visible', query.length > 0);
-            updateLibraryView();
+            const clearBtn = document.getElementById("search-clear-btn");
+            if (clearBtn) clearBtn.classList.toggle("visible", query.length > 0);
+
+            if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                requestAnimationFrame(() => updateLibraryView());
+            }, 60);
         }
 
         function clearSearch() {
-            const input = document.getElementById('lib-search');
-            input.value = '';
-            handleSearch('');
+            const input = document.getElementById("lib-search");
+            input.value = "";
+            handleSearch("");
             input.focus();
         }
 
@@ -984,343 +2221,391 @@
             updateLibraryView();
         }
 
-        /**
-         * FIX: Library now correctly reflects ALL games from GAMES_DB,
-         * including any newly added ones. The previous bug was that
-         * GAMES_DB was never being properly fetched from the right URL,
-         * so new games added to games.json would never appear.
-         */
-        function updateLibraryView() {
-            // 1. Filter
-            const q = currentSearchQuery.toLowerCase();
-            let list = GAMES_DB.filter(g =>
-                g.name.toLowerCase().includes(q) ||
-                g.file.toLowerCase().includes(q)
-            );
+        function setCategoryFilter(cat) {
+            currentCategoryFilter = cat;
+            document.querySelectorAll("#category-pills .category-pill").forEach(p => {
+                p.classList.toggle("active", p.getAttribute("data-category") === cat);
+            });
+            updateLibraryView();
+        }
 
-            // 2. Sort
+        function launchRandomGame() {
+            if (GAMES_DB.length === 0) return;
+            const favs = loadFavorites();
+            let pool = GAMES_DB;
+
+            if (currentCategoryFilter === "favorites") {
+                pool = GAMES_DB.filter(g => favs.includes(g.file));
+            } else if (currentCategoryFilter !== "all") {
+                pool = GAMES_DB.filter(g => getGameCategory(g.name, g.file) === currentCategoryFilter);
+            }
+
+            if (pool.length === 0) pool = GAMES_DB;
+            const pick = pool[Math.floor(Math.random() * pool.length)];
+            launchGame(pick.file, pick.name);
+        }
+
+        function updateLibraryView() {
+            const q = currentSearchQuery.toLowerCase();
+            const favs = loadFavorites();
+
+            let list = GAMES_DB.filter(g => {
+                const matchesQuery = !q || g.name.toLowerCase().includes(q) || g.file.toLowerCase().includes(q);
+                if (!matchesQuery) return false;
+
+                if (currentCategoryFilter === "all") return true;
+                if (currentCategoryFilter === "favorites") return favs.includes(g.file);
+
+                const cat = getGameCategory(g.name, g.file);
+                return cat === currentCategoryFilter;
+            });
+
             switch (currentSortMethod) {
-                case 'az':
+                case "az":
                     list.sort((a, b) => a.name.localeCompare(b.name));
                     break;
-                case 'za':
+                case "za":
                     list.sort((a, b) => b.name.localeCompare(a.name));
                     break;
-                case 'newest':
-                    list = [...list].reverse();  // Assumes JSON order = oldest first
+                case "newest":
+                    list = [...list].reverse();
                     break;
-                // 'default' = original JSON order
             }
 
-            // 3. Update count badge
             const total = GAMES_DB.length;
             const shown = list.length;
-            const countEl = document.getElementById('lib-count');
-            if (currentSearchQuery) {
+            const countEl = document.getElementById("lib-count");
+            if (currentSearchQuery || currentCategoryFilter !== "all") {
                 countEl.textContent = `${shown} of ${total} games`;
             } else {
-                countEl.textContent = `${total} game${total !== 1 ? 's' : ''}`;
+                countEl.textContent = `${total} game${total !== 1 ? "s" : ""}`;
             }
 
-            // 4. Render
-            const container = document.getElementById('full-library-list');
+            const container = document.getElementById("full-library-list");
             if (list.length === 0) {
                 container.innerHTML = emptyState(
-                    currentSearchQuery ? 'No results' : 'No games yet',
+                    currentSearchQuery ? "No matches found" : "No games in this category",
                     currentSearchQuery
-                        ? `Nothing matched "${esc(currentSearchQuery)}". Try a different search.`
-                        : 'Add entries to games.json to see them here.'
+                        ? `Nothing matched "${esc(currentSearchQuery)}". Try adjusting keywords.`
+                        : "No titles match the selected category filter."
                 );
             } else {
-                container.innerHTML = list.map(g => createCard(g, false)).join('');
+                container.innerHTML = list.map(g => createCard(g, false)).join("");
             }
         }
 
         function emptyState(title, subtitle) {
-            return `<div class="empty-state">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                <strong>${esc(title)}</strong>
-                <span>${esc(subtitle)}</span>
-            </div>`;
+            return `
+                <div class="empty-state">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                    <strong>${esc(title)}</strong>
+                    <span>${esc(subtitle)}</span>
+                </div>
+            `;
         }
 
-        // ─── View Switching ──────────────────────────────────────────────────
-
         function switchView(viewId, element) {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            element.classList.add('active');
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            document.getElementById('app-viewport').scrollTop = 0;
+            document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+            if (element) element.classList.add("active");
+            document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+            document.getElementById(viewId).classList.add("active");
+            document.getElementById("app-viewport").scrollTop = 0;
         }
 
         function goToLibrary() {
-            switchView('library', document.getElementById('nav-library'));
+            switchView("library", document.getElementById("nav-library"));
         }
-
-        // ─── Game Launcher ───────────────────────────────────────────────────
 
         function isFolder(file) {
             return !/\.html?$/i.test(file);
         }
 
-        // Auto-detects the exact HTML file inside your uploaded repo folders
         async function resolveGameUrl(file) {
             if (!isFolder(file)) {
                 return BASE_URL + file;
             }
 
-            const cleanFile = file.replace(/\/$/, '');
-            const folderName = cleanFile.split('/').pop();
+            const cleanFile = file.replace(/\/$/, "");
+            const folderName = cleanFile.split("/").pop();
 
-            // The locations the launcher will rapidly check in your repo
             const pathsToScan = [
-                `${BASE_URL}${cleanFile}/index.html`,                 // 1. Normal expected spot
-                `${BASE_URL}${cleanFile}/${folderName}/index.html`,   // 2. The double-folder setup (like your 1v1.lol screenshot)
-                `${BASE_URL}${cleanFile}/index.htm`,                  // 3. Alternate extension
-                `${BASE_URL}${cleanFile}/${folderName}/index.htm`     // 4. Alternate extension in double-folder
+                `${BASE_URL}${cleanFile}/index.html`,
+                `${BASE_URL}${cleanFile}/${folderName}/index.html`,
+                `${BASE_URL}${cleanFile}/index.htm`,
+                `${BASE_URL}${cleanFile}/${folderName}/index.htm`
             ];
 
             for (const path of pathsToScan) {
                 try {
-                    // Ping the repo to check if the file is sitting right there
-                    const response = await fetch(path, { method: 'HEAD', cache: 'no-store' });
+                    const response = await fetch(path, { method: "HEAD", cache: "no-store" });
                     if (response.ok) {
-                        return path; // Found the hidden file!
+                        return path;
                     }
-                } catch (err) {
-                    // Ignore and keep scanning
-                }
+                } catch (err) {}
             }
 
-            // Fallback just in case
             return `${BASE_URL}${cleanFile}/index.html`;
         }
 
-        async function launchModule(file, name) {
-            const overlay = document.getElementById('launcher-overlay');
-            const frame = document.getElementById('game-frame');
-            const hudName = document.getElementById('hud-name');
+        async function launchGame(file, name) {
+            activeGameFile = file;
+            activeGameName = name;
 
-            // Show "Scanning" UI while it finds the file
-            hudName.textContent = "SCANNING FOLDERS...";
-            overlay.style.display = 'block';
-            
-            // Wait for it to detect the exact path
+            recordRecent(file, name);
+
+            const overlay = document.getElementById("launcher-overlay");
+            const frame = document.getElementById("game-frame");
+            const hudName = document.getElementById("hud-name");
+
+            hudName.textContent = "LAUNCHING...";
+            overlay.style.display = "block";
+
+            const hudFav = document.getElementById("hud-fav-btn");
+            if (hudFav) hudFav.classList.toggle("active", isFavorite(file));
+
+            if (localStorage.getItem("hh-auto-fullscreen") === "true") {
+                try {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(() => {});
+                    }
+                } catch (e) {}
+            }
+
             const finalUrl = await resolveGameUrl(file);
-            
-            // Load it up
             hudName.textContent = name.toUpperCase();
             frame.src = finalUrl;
-            
-            setTimeout(() => frame.focus(), 100);
+
+            setTimeout(() => frame.focus(), 120);
         }
 
-        // ─── Exit Modal ──────────────────────────────────────────────────────
+        const launchModule = launchGame;
+
+        function reloadGameSession() {
+            const frame = document.getElementById("game-frame");
+            if (frame && frame.src && frame.src !== "about:blank") {
+                const current = frame.src;
+                frame.src = "about:blank";
+                setTimeout(() => {
+                    frame.src = current;
+                    frame.focus();
+                }, 80);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                }
+            }
+        }
 
         function requestExit() {
-            document.getElementById('exit-modal').style.display = 'flex';
+            document.getElementById("exit-modal").style.display = "flex";
         }
 
         function cancelExit() {
-            document.getElementById('exit-modal').style.display = 'none';
+            document.getElementById("exit-modal").style.display = "none";
         }
 
         function confirmExit() {
-            document.getElementById('game-frame').src = 'about:blank';
-            document.getElementById('launcher-overlay').style.display = 'none';
-            document.getElementById('exit-modal').style.display = 'none';
+            const frame = document.getElementById("game-frame");
+            frame.src = "about:blank";
+            document.getElementById("launcher-overlay").style.display = "none";
+            document.getElementById("exit-modal").style.display = "none";
+            activeGameFile = null;
+            activeGameName = null;
+            populateDiscovery();
         }
 
-        // Also allow Escape key to trigger exit prompt from game
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && document.getElementById('launcher-overlay').style.display === 'block') {
-                requestExit();
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                if (document.getElementById("launcher-overlay").style.display === "block") {
+                    requestExit();
+                } else if (document.activeElement === document.getElementById("lib-search")) {
+                    clearSearch();
+                    document.getElementById("lib-search").blur();
+                }
+            } else if (e.key === "/" && document.activeElement !== document.getElementById("lib-search")) {
+                const overlay = document.getElementById("launcher-overlay");
+                if (!overlay || overlay.style.display !== "block") {
+                    e.preventDefault();
+                    goToLibrary();
+                    const input = document.getElementById("lib-search");
+                    if (input) {
+                        input.focus();
+                        input.select();
+                    }
+                }
             }
         });
 
-        // ─── Utility ─────────────────────────────────────────────────────────
-
         function esc(s) {
             return String(s).replace(/[&<>"']/g, c => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
             }[c]));
         }
-		
-		// ─── INTERACTIVITY EVENTS (THEME, DROPDOWN, RIPPLE) ───────────────────
-        document.addEventListener('DOMContentLoaded', () => {
-            // Theme Toggle
-            const themeBtn = document.getElementById('theme-toggle-btn');
-            const currentTheme = localStorage.getItem('hh-theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', currentTheme);
 
-            themeBtn.addEventListener('click', () => {
-                const active = document.documentElement.getAttribute('data-theme');
-                const target = active === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', target);
-                localStorage.setItem('hh-theme', target);
+        function updateGameVolume(value) {
+            globalGameVolume = parseFloat(value);
+            const frame = document.getElementById("game-frame");
+            const slider = document.getElementById("game-volume-slider");
+            if (slider && slider.value !== value) slider.value = value;
+            
+            try {
+                if (frame && frame.contentWindow) {
+                    const mediaElements = frame.contentWindow.document.querySelectorAll("audio, video");
+                    mediaElements.forEach(media => { media.volume = globalGameVolume; });
+                    frame.contentWindow.postMessage({ type: "SET_VOLUME", volume: globalGameVolume }, "*");
+                }
+            } catch (err) {}
+        }
+
+        function toggleMute() {
+            if (globalGameVolume > 0) {
+                previousVolume = globalGameVolume;
+                updateGameVolume(0);
+            } else {
+                updateGameVolume(previousVolume || 0.5);
+            }
+        }
+
+        document.getElementById("game-frame").addEventListener("load", () => {
+            const frame = document.getElementById("game-frame");
+            updateGameVolume(document.getElementById("game-volume-slider").value);
+
+            if (volumeEnforcerInterval) clearInterval(volumeEnforcerInterval);
+
+            volumeEnforcerInterval = setInterval(() => {
+                try {
+                    if (frame && frame.contentWindow) {
+                        const mediaElements = frame.contentWindow.document.querySelectorAll("audio, video");
+                        mediaElements.forEach(media => {
+                            if (Math.abs(media.volume - globalGameVolume) > 0.01) {
+                                media.volume = globalGameVolume;
+                            }
+                        });
+                    }
+                } catch (err) {
+                    clearInterval(volumeEnforcerInterval);
+                }
+            }, 1000);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const themeBtn = document.getElementById("theme-toggle-btn");
+            const currentTheme = localStorage.getItem("hh-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", currentTheme);
+
+            themeBtn.addEventListener("click", () => {
+                const active = document.documentElement.getAttribute("data-theme");
+                const target = active === "dark" ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", target);
+                localStorage.setItem("hh-theme", target);
             });
 
-            // Custom Dropdown
-            const dropdown = document.getElementById('sort-dropdown');
-            const trigger = document.getElementById('dropdown-trigger-btn');
-            const label = document.getElementById('dropdown-label');
-            const items = dropdown.querySelectorAll('.dropdown-item');
+            const dropdown = document.getElementById("sort-dropdown");
+            const trigger = document.getElementById("dropdown-trigger-btn");
+            const label = document.getElementById("dropdown-label");
+            const items = dropdown.querySelectorAll(".dropdown-item");
 
-            trigger.addEventListener('click', (e) => {
-                dropdown.classList.toggle('open');
+            trigger.addEventListener("click", e => {
+                dropdown.classList.toggle("open");
                 e.stopPropagation();
             });
 
             items.forEach(item => {
-                item.addEventListener('click', () => {
-                    items.forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
+                item.addEventListener("click", () => {
+                    items.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
                     label.textContent = item.textContent;
-                    dropdown.classList.remove('open');
-                    handleSort(item.getAttribute('data-value'));
+                    dropdown.classList.remove("open");
+                    handleSort(item.getAttribute("data-value"));
                 });
             });
 
-            document.addEventListener('click', () => dropdown.classList.remove('open'));
+            document.addEventListener("click", () => dropdown.classList.remove("open"));
 
-            // Ripple Effect Engine
-            document.addEventListener('click', (e) => {
-                const target = e.target.closest('.ripple-target');
+            document.addEventListener("click", e => {
+                const target = e.target.closest(".ripple-target");
                 if (!target) return;
 
                 const rect = target.getBoundingClientRect();
-                const ripple = document.createElement('span');
-                ripple.classList.add('click-ripple');
+                const ripple = document.createElement("span");
+                ripple.classList.add("click-ripple");
 
-                const maxDimension = Math.max(rect.width, rect.height) * 2.5;
-                ripple.style.width = ripple.style.height = `${maxDimension}px`;
-
+                const maxDim = Math.max(rect.width, rect.height) * 2.2;
+                ripple.style.width = ripple.style.height = `${maxDim}px`;
                 ripple.style.left = `${e.clientX - rect.left}px`;
                 ripple.style.top = `${e.clientY - rect.top}px`;
 
-                // Adjust ripple visibility for light mode or white buttons
-                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-                const isPrimary = target.classList.contains('btn-primary');
-                if (isLight && !target.classList.contains('nav-link')) {
-                    ripple.style.background = 'rgba(0, 0, 0, 0.1)';
-                } else if (isPrimary) {
-                    ripple.style.background = 'rgba(0, 0, 0, 0.15)';
-                }
-
                 target.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 600);
+                setTimeout(() => ripple.remove(), 500);
             });
         });
-		
-		// Default volume state (50%)
-let globalGameVolume = 0.5;
-let volumeEnforcerInterval = null;
 
-function updateGameVolume(value) {
-    globalGameVolume = parseFloat(value);
-    const frame = document.getElementById('game-frame');
-    
-    try {
-        if (frame.contentWindow) {
-            // 1. Immediately apply to existing tags
-            const mediaElements = frame.contentWindow.document.querySelectorAll('audio, video');
-            mediaElements.forEach(media => { media.volume = globalGameVolume; });
-            
-            // 2. Broadcast volume to the iframe for games that listen for it
-            frame.contentWindow.postMessage({ type: 'SET_VOLUME', volume: globalGameVolume }, '*');
-        }
-    } catch (err) {
-        // Fails quietly if the game is on a different domain
-        console.warn("[H&H Launcher] Could not adjust volume directly (CORS).");
-    }
-}
+        const animToggle = document.getElementById("setting-animations");
+        const compactToggle = document.getElementById("setting-compact");
+        const badgesToggle = document.getElementById("setting-badges");
+        const autoFsToggle = document.getElementById("setting-autofullscreen");
 
-// Automatically enforce the volume slider's value whenever a new game finishes loading
-document.getElementById('game-frame').addEventListener('load', () => {
-    const frame = document.getElementById('game-frame');
-    
-    // Apply immediately on load
-    updateGameVolume(document.getElementById('game-volume-slider').value);
+        const savedAnims = localStorage.getItem("hh-reduce-anim") === "true";
+        const savedCompact = localStorage.getItem("hh-compact-grid") === "true";
+        const savedBadges = localStorage.getItem("hh-hide-badges") === "true";
+        const savedAutoFs = localStorage.getItem("hh-auto-fullscreen") === "true";
 
-    // Clear previous interval to prevent duplicates
-    if (volumeEnforcerInterval) clearInterval(volumeEnforcerInterval);
-
-    // Continuously poll to catch audio elements created AFTER the load event
-    volumeEnforcerInterval = setInterval(() => {
-        try {
-            if (frame.contentWindow) {
-                const mediaElements = frame.contentWindow.document.querySelectorAll('audio, video');
-                mediaElements.forEach(media => {
-                    // Only update if it doesn't match to prevent stuttering
-                    if (Math.abs(media.volume - globalGameVolume) > 0.01) {
-                        media.volume = globalGameVolume;
-                    }
-                });
-            }
-        } catch (err) {
-            // If CORS blocks us, stop the interval to save memory
-            clearInterval(volumeEnforcerInterval);
-        }
-    }, 1000); // Enforce every 1 second
-});
-		
-		// ─── FUNCTIONAL SETTINGS LOGIC ───────────────────────────────────────
-        const animToggle = document.getElementById('setting-animations');
-        const compactToggle = document.getElementById('setting-compact');
-        const badgesToggle = document.getElementById('setting-badges');
-
-        // Load saved user preferences from local storage
-        const savedAnims = localStorage.getItem('hh-reduce-anim') === 'true';
-        const savedCompact = localStorage.getItem('hh-compact-grid') === 'true';
-        const savedBadges = localStorage.getItem('hh-hide-badges') === 'true';
-
-        // Set initial toggle switch states
         if (animToggle) animToggle.checked = savedAnims;
         if (compactToggle) compactToggle.checked = savedCompact;
-        if (badgesToggle) badgesToggle.checked = !savedBadges; // Inverted: switch says "Show"
+        if (badgesToggle) badgesToggle.checked = !savedBadges;
+        if (autoFsToggle) autoFsToggle.checked = savedAutoFs;
 
-        // Function to apply the classes based on toggles
         function applySettings() {
-            document.body.classList.toggle('reduce-animations', animToggle.checked);
-            document.body.classList.toggle('hide-badges', !badgesToggle.checked);
+            document.body.classList.toggle("reduce-animations", animToggle.checked);
+            document.body.classList.toggle("hide-badges", !badgesToggle.checked);
             
-            const grids = document.querySelectorAll('.game-grid');
-            grids.forEach(grid => grid.classList.toggle('compact-mode', compactToggle.checked));
+            const grids = document.querySelectorAll(".game-grid");
+            grids.forEach(grid => grid.classList.toggle("compact-mode", compactToggle.checked));
         }
 
-        // Apply settings immediately on page load
         applySettings();
 
-        // Listeners to apply and save changes when the user clicks a toggle
         if (animToggle) {
-            animToggle.addEventListener('change', (e) => {
-                localStorage.setItem('hh-reduce-anim', e.target.checked);
+            animToggle.addEventListener("change", e => {
+                localStorage.setItem("hh-reduce-anim", e.target.checked);
                 applySettings();
             });
         }
 
         if (compactToggle) {
-            compactToggle.addEventListener('change', (e) => {
-                localStorage.setItem('hh-compact-grid', e.target.checked);
+            compactToggle.addEventListener("change", e => {
+                localStorage.setItem("hh-compact-grid", e.target.checked);
                 applySettings();
             });
         }
 
         if (badgesToggle) {
-            badgesToggle.addEventListener('change', (e) => {
-                localStorage.setItem('hh-hide-badges', !e.target.checked);
+            badgesToggle.addEventListener("change", e => {
+                localStorage.setItem("hh-hide-badges", !e.target.checked);
                 applySettings();
             });
         }
 
-        function toggleSettings(visible) { 
-            document.getElementById('settings-modal').style.display = visible ? 'flex' : 'none'; 
+        if (autoFsToggle) {
+            autoFsToggle.addEventListener("change", e => {
+                localStorage.setItem("hh-auto-fullscreen", e.target.checked);
+            });
         }
 
-        // ─── Start ───────────────────────────────────────────────────────────
-        bootstrap();
+        function toggleSettings(visible) { 
+            document.getElementById("settings-modal").style.display = visible ? "flex" : "none"; 
+        }
 
+        bootstrap();
     </script>
 </body>
 </html>

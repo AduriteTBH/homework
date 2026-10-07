@@ -1191,17 +1191,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            pointer-events: none;
         }
 
         .hud-grip {
-            width: 90px;
-            height: 22px;
+            position: relative;
+            width: 80px;
+            height: 18px;
             background: rgba(18, 20, 29, 0.75);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border);
             border-top: none;
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 8px 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1209,17 +1211,28 @@
             cursor: pointer;
             transition: var(--transition-fast);
             opacity: 0.65;
+            pointer-events: auto;
+        }
+
+        .hud-grip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            height: 10px;
+            pointer-events: auto;
         }
 
         .hud-menu {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 8px;
+            margin-top: 6px;
             opacity: 0;
-            transform: translateY(-16px);
+            transform: translateY(-12px);
             pointer-events: none;
-            transition: var(--transition-spring);
+            transition: opacity 0.16s ease, transform 0.16s ease;
             background: rgba(18, 20, 29, 0.94);
             padding: 8px 12px;
             border-radius: var(--radius-md);
@@ -1233,13 +1246,14 @@
             background: var(--bg-surface-elevated);
             color: var(--text-main);
             opacity: 1;
-            height: 26px;
+            height: 22px;
         }
 
-        .hud-container:hover .hud-menu {
+        .hud-container:hover .hud-menu,
+        .hud-container:focus-within .hud-menu {
             opacity: 1;
             transform: translateY(0);
-            pointer-events: all;
+            pointer-events: auto;
         }
 
         .hud-btn {
@@ -1516,6 +1530,55 @@
             border-color: var(--danger);
         }
 
+        .settings-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+        .settings-status-badge.warning {
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.25);
+        }
+        .hud-btn.save-action.saved {
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        .hud-toast {
+            position: absolute;
+            top: 72px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hover);
+            color: var(--text-main);
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+        .hud-toast.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
         body.reduce-animations * {
             animation-duration: 0.001s !important;
             transition-duration: 0.001s !important;
@@ -1771,6 +1834,14 @@
                     </svg>
                 </button>
 
+                <button class="hud-btn hud-icon-btn ripple-target" id="hud-save-btn" onclick="triggerManualGameSave()" title="Save Progress Now">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                        <polyline points="17 21 17 13 7 13 7 21"/>
+                        <polyline points="7 3 7 8 15 8"/>
+                    </svg>
+                </button>
+
                 <button class="hud-btn hud-icon-btn ripple-target" onclick="reloadGameSession()" title="Restart Game">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
@@ -1797,7 +1868,13 @@
                 <button class="hud-btn danger-action ripple-target" onclick="requestExit()">Exit Game</button>
             </div>
         </div>
-        <iframe id="game-frame" src="about:blank" allow="autoplay; fullscreen; gamepad; focus-without-user-activation *"></iframe>
+        <div id="hud-save-toast" class="hud-toast">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span id="hud-toast-text">Progress Saved Safely</span>
+        </div>
+        <iframe id="game-frame" src="about:blank" allow="autoplay; fullscreen; gamepad; focus-without-user-activation *; keyboard-map; clipboard-read; clipboard-write"></iframe>
     </div>
 
     <div id="exit-modal" class="modal-wrapper">
@@ -1877,6 +1954,41 @@
                         <div class="setting-subtext">Unpins all saved favorite titles</div>
                     </div>
                     <button class="settings-action-btn danger ripple-target" onclick="clearFavorites()">Reset</button>
+                </div>
+
+                <div class="setting-row" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
+                    <div>
+                        <div style="font-weight: 700; color: var(--text-main);">Storage Protection Status</div>
+                        <div class="setting-subtext" id="setting-storage-status-text">Checking browser persistence...</div>
+                    </div>
+                    <span id="setting-storage-badge" class="settings-status-badge">PROTECTED</span>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div>Backup All Game Saves</div>
+                        <div class="setting-subtext">Exports complete LocalStorage and IndexedDB saves to a JSON file</div>
+                    </div>
+                    <button class="settings-action-btn ripple-target" onclick="exportAllGameSaves()">Export Saves</button>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div>Restore Game Saves</div>
+                        <div class="setting-subtext">Restores game saves and progress from a backup JSON file</div>
+                    </div>
+                    <label class="settings-action-btn ripple-target" style="display: inline-flex; align-items: center; justify-content: center; margin: 0; cursor: pointer;">
+                        Restore
+                        <input type="file" id="restore-saves-input" accept=".json" style="display: none;" onchange="handleRestoreFile(this)">
+                    </label>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div>Restore from Vault Snapshot</div>
+                        <div class="setting-subtext">Recovers latest automated IndexedDB redundancy snapshot</div>
+                    </div>
+                    <button class="settings-action-btn ripple-target" onclick="restoreFromInternalVault()">Recover</button>
                 </div>
             </div>
 
@@ -2006,8 +2118,496 @@
             return "HH";
         }
 
+        let storageVaultDb = null;
+        let storagePersistedState = false;
+        let autoSaveInterval = null;
+        let storageDaemonInterval = null;
+
+        function initStorageVault() {
+            return new Promise(resolve => {
+                if (!window.indexedDB) {
+                    resolve(null);
+                    return;
+                }
+                const req = indexedDB.open("HH_StorageVault", 1);
+                req.onupgradeneeded = e => {
+                    const db = req.result;
+                    if (!db.objectStoreNames.contains("snapshots")) {
+                        db.createObjectStore("snapshots", { keyPath: "id" });
+                    }
+                    if (!db.objectStoreNames.contains("history")) {
+                        db.createObjectStore("history", { keyPath: "timestamp" });
+                    }
+                };
+                req.onsuccess = () => {
+                    storageVaultDb = req.result;
+                    resolve(storageVaultDb);
+                };
+                req.onerror = () => {
+                    resolve(null);
+                };
+            });
+        }
+
+        async function initStoragePersistence() {
+            if (navigator.storage && navigator.storage.persist) {
+                try {
+                    const isPersisted = await navigator.storage.persisted();
+                    if (isPersisted) {
+                        storagePersistedState = true;
+                    } else {
+                        storagePersistedState = await navigator.storage.persist();
+                    }
+                } catch (e) {
+                    storagePersistedState = false;
+                }
+            }
+        }
+
+        function attemptAutoRestoreFromVault() {
+            return new Promise(resolve => {
+                if (!storageVaultDb) return resolve(false);
+                try {
+                    const tx = storageVaultDb.transaction(["snapshots"], "readonly");
+                    const store = tx.objectStore("snapshots");
+                    const req = store.get("latest");
+                    req.onsuccess = () => {
+                        const snapshot = req.result;
+                        if (snapshot && snapshot.data && Object.keys(snapshot.data).length > 0) {
+                            for (const [key, val] of Object.entries(snapshot.data)) {
+                                if (typeof val === "string") {
+                                    localStorage.setItem(key, val);
+                                }
+                            }
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+                    };
+                    req.onerror = () => resolve(false);
+                } catch (e) {
+                    resolve(false);
+                }
+            });
+        }
+
+        async function migrateAndSnapshotLocalStorage() {
+            if (!storageVaultDb) {
+                await initStorageVault();
+            }
+
+            if (localStorage.length === 0 && storageVaultDb) {
+                const restored = await attemptAutoRestoreFromVault();
+                if (restored) return;
+            }
+
+            const currentEntries = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                currentEntries[k] = localStorage.getItem(k);
+            }
+
+            const snapshot = {
+                id: "latest",
+                timestamp: Date.now(),
+                dateIso: new Date().toISOString(),
+                itemCount: Object.keys(currentEntries).length,
+                data: currentEntries
+            };
+
+            if (storageVaultDb) {
+                try {
+                    const tx = storageVaultDb.transaction(["snapshots", "history"], "readwrite");
+                    const snapStore = tx.objectStore("snapshots");
+                    snapStore.put(snapshot);
+
+                    const histStore = tx.objectStore("history");
+                    histStore.put({
+                        timestamp: snapshot.timestamp,
+                        dateIso: snapshot.dateIso,
+                        itemCount: snapshot.itemCount,
+                        data: snapshot.data
+                    });
+                } catch (e) {}
+            }
+        }
+
+        async function updateStorageStatusUI() {
+            const badge = document.getElementById("setting-storage-badge");
+            const text = document.getElementById("setting-storage-status-text");
+            if (!badge || !text) return;
+
+            let estimateText = "";
+            if (navigator.storage && navigator.storage.estimate) {
+                try {
+                    const est = await navigator.storage.estimate();
+                    if (est && est.usage !== undefined) {
+                        const mb = (est.usage / (1024 * 1024)).toFixed(1);
+                        if (est.usage > 1024 * 1024 * 1024) {
+                            const gb = (est.usage / (1024 * 1024 * 1024)).toFixed(2);
+                            estimateText = ` (${gb} GB preserved)`;
+                        } else {
+                            estimateText = ` (${mb} MB preserved)`;
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            const keyCount = localStorage.length;
+
+            if (storagePersistedState) {
+                badge.textContent = "PROTECTED";
+                badge.className = "settings-status-badge";
+                text.textContent = `Protocol active: Storage locked persistent - ${keyCount} keys${estimateText}`;
+            } else {
+                badge.textContent = "ACTIVE";
+                badge.className = "settings-status-badge";
+                text.textContent = `Protocol active: Vault synchronized - ${keyCount} keys${estimateText}`;
+            }
+        }
+
+        async function safeFlushGameData() {
+            const frame = document.getElementById("game-frame");
+            if (!frame || !frame.contentWindow || frame.src === "about:blank") {
+                await migrateAndSnapshotLocalStorage();
+                return;
+            }
+
+            try {
+                const win = frame.contentWindow;
+
+                try {
+                    win.dispatchEvent(new Event("beforeunload"));
+                    win.dispatchEvent(new Event("pagehide"));
+                } catch (e) {}
+
+                if (win.FS && typeof win.FS.syncfs === "function") {
+                    await new Promise(resolve => {
+                        try {
+                            win.FS.syncfs(false, () => resolve());
+                            setTimeout(resolve, 100);
+                        } catch (e) {
+                            resolve();
+                        }
+                    });
+                }
+
+                if (typeof win.saveGame === "function") {
+                    try { win.saveGame(); } catch (e) {}
+                } else if (typeof win.save === "function") {
+                    try { win.save(); } catch (e) {}
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 80));
+            } catch (err) {}
+
+            await migrateAndSnapshotLocalStorage();
+            updateStorageStatusUI();
+        }
+
+        async function initDataPreservationProtocol() {
+            await initStoragePersistence();
+            await initStorageVault();
+            await migrateAndSnapshotLocalStorage();
+            updateStorageStatusUI();
+
+            if (!storageDaemonInterval) {
+                storageDaemonInterval = setInterval(async () => {
+                    await migrateAndSnapshotLocalStorage();
+                    updateStorageStatusUI();
+                }, 30000);
+            }
+        }
+
+        function exportSingleDatabase(name, version) {
+            return new Promise(resolve => {
+                const req = indexedDB.open(name);
+                req.onerror = () => resolve(null);
+                req.onsuccess = () => {
+                    const db = req.result;
+                    const storeNames = Array.from(db.objectStoreNames);
+                    if (storeNames.length === 0) {
+                        db.close();
+                        return resolve({ name, version: db.version, stores: [] });
+                    }
+
+                    const tx = db.transaction(storeNames, "readonly");
+                    const storesData = [];
+                    let pending = storeNames.length;
+
+                    storeNames.forEach(sName => {
+                        const store = tx.objectStore(sName);
+                        const recordsReq = store.getAll();
+                        const keysReq = store.getAllKeys();
+
+                        let records = null;
+                        let keys = null;
+
+                        function checkDone() {
+                            if (records !== null && keys !== null) {
+                                storesData.push({
+                                    name: sName,
+                                    keyPath: store.keyPath,
+                                    autoIncrement: store.autoIncrement,
+                                    keys: keys,
+                                    values: records
+                                });
+                                pending--;
+                                if (pending === 0) {
+                                    db.close();
+                                    resolve({ name, version: db.version, stores: storesData });
+                                }
+                            }
+                        }
+
+                        recordsReq.onsuccess = () => { records = recordsReq.result; checkDone(); };
+                        recordsReq.onerror = () => { records = []; checkDone(); };
+                        keysReq.onsuccess = () => { keys = keysReq.result; checkDone(); };
+                        keysReq.onerror = () => { keys = []; checkDone(); };
+                    });
+
+                    tx.onerror = () => {
+                        db.close();
+                        resolve({ name, version: db.version, stores: storesData });
+                    };
+                };
+            });
+        }
+
+        async function getAllIndexedDBData() {
+            if (!window.indexedDB || !window.indexedDB.databases) return [];
+            try {
+                const dbs = await window.indexedDB.databases();
+                const exportData = [];
+
+                for (const dbInfo of dbs) {
+                    if (!dbInfo.name) continue;
+                    try {
+                        const dbData = await exportSingleDatabase(dbInfo.name, dbInfo.version);
+                        if (dbData) exportData.push(dbData);
+                    } catch (err) {}
+                }
+                return exportData;
+            } catch (e) {
+                return [];
+            }
+        }
+
+        async function exportAllGameSaves() {
+            await safeFlushGameData();
+            const lsData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                lsData[k] = localStorage.getItem(k);
+            }
+
+            const idbData = await getAllIndexedDBData();
+
+            const backupPayload = {
+                app: "H&H Launcher",
+                formatVersion: 1,
+                exportedAt: new Date().toISOString(),
+                timestamp: Date.now(),
+                localStorage: lsData,
+                indexedDB: idbData
+            };
+
+            const jsonStr = JSON.stringify(backupPayload, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            const d = new Date();
+            const dateTag = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            a.href = url;
+            a.download = `hh_game_saves_backup_${dateTag}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showHudToast("Saves Exported Successfully");
+        }
+
+        function restoreSingleDatabase(dbInfo) {
+            return new Promise(resolve => {
+                const req = indexedDB.open(dbInfo.name, dbInfo.version || 1);
+                req.onupgradeneeded = e => {
+                    const db = req.result;
+                    for (const storeInfo of dbInfo.stores) {
+                        if (!db.objectStoreNames.contains(storeInfo.name)) {
+                            const params = {};
+                            if (storeInfo.keyPath) params.keyPath = storeInfo.keyPath;
+                            if (storeInfo.autoIncrement !== undefined) params.autoIncrement = storeInfo.autoIncrement;
+                            db.createObjectStore(storeInfo.name, params);
+                        }
+                    }
+                };
+                req.onsuccess = () => {
+                    const db = req.result;
+                    const validStores = dbInfo.stores.filter(s => db.objectStoreNames.contains(s.name));
+                    if (validStores.length === 0) {
+                        db.close();
+                        return resolve();
+                    }
+
+                    const storeNames = validStores.map(s => s.name);
+                    const tx = db.transaction(storeNames, "readwrite");
+
+                    validStores.forEach(sInfo => {
+                        const store = tx.objectStore(sInfo.name);
+                        if (Array.isArray(sInfo.values)) {
+                            sInfo.values.forEach((val, idx) => {
+                                try {
+                                    if (sInfo.keys && sInfo.keys[idx] !== undefined && !sInfo.keyPath) {
+                                        store.put(val, sInfo.keys[idx]);
+                                    } else {
+                                        store.put(val);
+                                    }
+                                } catch (e) {}
+                            });
+                        }
+                    });
+
+                    tx.oncomplete = () => { db.close(); resolve(); };
+                    tx.onerror = () => { db.close(); resolve(); };
+                };
+                req.onerror = () => resolve();
+            });
+        }
+
+        async function handleRestoreFile(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            try {
+                const text = await file.text();
+                const payload = JSON.parse(text);
+
+                if (!payload || typeof payload !== "object") {
+                    alert("Invalid backup file format.");
+                    return;
+                }
+
+                let restoredLs = 0;
+                if (payload.localStorage && typeof payload.localStorage === "object") {
+                    for (const [key, val] of Object.entries(payload.localStorage)) {
+                        if (typeof val === "string") {
+                            localStorage.setItem(key, val);
+                            restoredLs++;
+                        }
+                    }
+                }
+
+                let restoredDbs = 0;
+                if (Array.isArray(payload.indexedDB)) {
+                    for (const dbInfo of payload.indexedDB) {
+                        if (dbInfo && dbInfo.name && Array.isArray(dbInfo.stores)) {
+                            await restoreSingleDatabase(dbInfo);
+                            restoredDbs++;
+                        }
+                    }
+                }
+
+                await migrateAndSnapshotLocalStorage();
+                updateStorageStatusUI();
+                alert(`Restore complete: Restored ${restoredLs} local storage items and ${restoredDbs} databases.`);
+                populateDiscovery();
+                updateLibraryView();
+            } catch (err) {
+                alert("Error restoring backup: " + err.message);
+            } finally {
+                input.value = "";
+            }
+        }
+
+        async function restoreFromInternalVault() {
+            if (!storageVaultDb) {
+                await initStorageVault();
+            }
+            if (!storageVaultDb) {
+                alert("Storage vault is not accessible.");
+                return;
+            }
+
+            try {
+                const tx = storageVaultDb.transaction(["snapshots"], "readonly");
+                const store = tx.objectStore("snapshots");
+                const req = store.get("latest");
+                req.onsuccess = () => {
+                    const snapshot = req.result;
+                    if (!snapshot || !snapshot.data) {
+                        alert("No vault snapshot found yet.");
+                        return;
+                    }
+                    let restored = 0;
+                    for (const [key, val] of Object.entries(snapshot.data)) {
+                        if (typeof val === "string") {
+                            localStorage.setItem(key, val);
+                            restored++;
+                        }
+                    }
+                    alert(`Recovered ${restored} save items from internal vault snapshot.`);
+                    populateDiscovery();
+                    updateLibraryView();
+                };
+                req.onerror = () => {
+                    alert("Failed to read snapshot from vault.");
+                };
+            } catch (e) {
+                alert("Vault recovery error: " + e.message);
+            }
+        }
+
+        async function triggerManualGameSave() {
+            const saveBtn = document.getElementById("hud-save-btn");
+            if (saveBtn) {
+                saveBtn.style.pointerEvents = "none";
+            }
+            await safeFlushGameData();
+            showHudToast("Progress Saved Safely");
+            if (saveBtn) {
+                saveBtn.classList.add("saved");
+                setTimeout(() => {
+                    saveBtn.classList.remove("saved");
+                    saveBtn.style.pointerEvents = "auto";
+                }, 1500);
+            }
+        }
+
+        function showHudToast(text) {
+            const toast = document.getElementById("hud-save-toast");
+            const label = document.getElementById("hud-toast-text");
+            if (!toast) return;
+            if (label && text) label.textContent = text;
+            toast.classList.add("visible");
+            setTimeout(() => {
+                toast.classList.remove("visible");
+            }, 2200);
+        }
+
+        window.addEventListener("beforeunload", () => {
+            try {
+                const frame = document.getElementById("game-frame");
+                if (frame && frame.contentWindow && frame.src !== "about:blank") {
+                    frame.contentWindow.dispatchEvent(new Event("beforeunload"));
+                    frame.contentWindow.dispatchEvent(new Event("pagehide"));
+                    if (frame.contentWindow.FS && typeof frame.contentWindow.FS.syncfs === "function") {
+                        frame.contentWindow.FS.syncfs(false, () => {});
+                    }
+                }
+            } catch (e) {}
+        });
+
+        window.addEventListener("pagehide", () => {
+            try {
+                const frame = document.getElementById("game-frame");
+                if (frame && frame.contentWindow && frame.src !== "about:blank") {
+                    frame.contentWindow.dispatchEvent(new Event("pagehide"));
+                }
+            } catch (e) {}
+        });
+
         async function bootstrap() {
             showLoadingSkeletons();
+            await initDataPreservationProtocol();
 
             try {
                 const url = BASE_URL + "games.json?_=" + Date.now();
@@ -2378,15 +2978,21 @@
             hudName.textContent = name.toUpperCase();
             frame.src = finalUrl;
 
+            if (autoSaveInterval) clearInterval(autoSaveInterval);
+            autoSaveInterval = setInterval(() => {
+                safeFlushGameData();
+            }, 30000);
+
             setTimeout(() => frame.focus(), 120);
         }
 
         const launchModule = launchGame;
 
-        function reloadGameSession() {
+        async function reloadGameSession() {
             const frame = document.getElementById("game-frame");
             if (frame && frame.src && frame.src !== "about:blank") {
                 const current = frame.src;
+                await safeFlushGameData();
                 frame.src = "about:blank";
                 setTimeout(() => {
                     frame.src = current;
@@ -2413,8 +3019,13 @@
             document.getElementById("exit-modal").style.display = "none";
         }
 
-        function confirmExit() {
+        async function confirmExit() {
             const frame = document.getElementById("game-frame");
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+                autoSaveInterval = null;
+            }
+            await safeFlushGameData();
             frame.src = "about:blank";
             document.getElementById("launcher-overlay").style.display = "none";
             document.getElementById("exit-modal").style.display = "none";
@@ -2603,6 +3214,9 @@
 
         function toggleSettings(visible) { 
             document.getElementById("settings-modal").style.display = visible ? "flex" : "none"; 
+            if (visible) {
+                updateStorageStatusUI();
+            }
         }
 
         bootstrap();

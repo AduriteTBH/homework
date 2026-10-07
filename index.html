@@ -1579,6 +1579,47 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        .app-footer {
+            max-width: 1400px;
+            margin: 48px auto 0 auto;
+            padding: 24px 0 12px 0;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+        }
+        .footer-credit {
+            color: var(--text-dim);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .footer-separator {
+            color: var(--border);
+            font-weight: 400;
+        }
+        .settings-credit-row {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+        }
+        .settings-credit-row span {
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+
         body.reduce-animations * {
             animation-duration: 0.001s !important;
             transition-duration: 0.001s !important;
@@ -1816,6 +1857,16 @@
 
             <div class="game-grid" id="full-library-list"></div>
         </div>
+
+        <footer class="app-footer">
+            <div class="footer-inner">
+                <span class="footer-brand">H&amp;H Launcher</span>
+                <span class="footer-separator">/</span>
+                <span class="footer-credit">Engineered by Haris Abid</span>
+                <span class="footer-separator">/</span>
+                <span class="footer-version">v0.8.3</span>
+            </div>
+        </footer>
     </div>
 
     <div id="launcher-overlay">
@@ -1990,6 +2041,10 @@
                     </div>
                     <button class="settings-action-btn ripple-target" onclick="restoreFromInternalVault()">Recover</button>
                 </div>
+            </div>
+
+            <div class="settings-credit-row">
+                Engineered by <span>Haris Abid</span>
             </div>
 
             <div class="modal-actions">

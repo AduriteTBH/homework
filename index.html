@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H&amp;H Launcher</title>
+    <script src="coi-serviceworker.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -1986,7 +1987,7 @@
             </svg>
             <span id="hud-toast-text">Progress Saved Safely</span>
         </div>
-        <iframe id="game-frame" src="about:blank" scrolling="no" allow="autoplay; fullscreen; gamepad; focus-without-user-activation *; keyboard-map; clipboard-read; clipboard-write"></iframe>
+        <iframe id="game-frame" src="about:blank" scrolling="no" allow="cross-origin-isolated; autoplay; fullscreen; gamepad; focus-without-user-activation *; keyboard-map; clipboard-read; clipboard-write" allowfullscreen></iframe>
     </div>
 
     <div id="exit-modal" class="modal-wrapper">
@@ -3094,6 +3095,8 @@
 
             const finalUrl = await resolveGameUrl(file);
             hudName.textContent = name.toUpperCase();
+            frame.setAttribute("allow", "cross-origin-isolated; autoplay; fullscreen; gamepad; focus-without-user-activation *; keyboard-map; clipboard-read; clipboard-write");
+            frame.setAttribute("allowfullscreen", "true");
             frame.src = finalUrl;
 
             if (autoSaveInterval) clearInterval(autoSaveInterval);
@@ -3217,15 +3220,12 @@
                         style = doc.createElement("style");
                         style.id = "hh-noscroll-style";
                         style.textContent = `
-                            html, body, #canvas, canvas, #game-container, #gameContainer, #unity-container, #player {
+                            html, body {
                                 overflow: hidden !important;
                                 scrollbar-width: none !important;
                                 -ms-overflow-style: none !important;
                                 margin: 0 !important;
                                 padding: 0 !important;
-                                box-sizing: border-box !important;
-                                width: 100% !important;
-                                height: 100% !important;
                             }
                             html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
                                 display: none !important;
@@ -3252,7 +3252,6 @@
 
             volumeEnforcerInterval = setInterval(() => {
                 try {
-                    suppressIframeScrollbars(frame);
                     if (frame && frame.contentWindow) {
                         const mediaElements = frame.contentWindow.document.querySelectorAll("audio, video");
                         mediaElements.forEach(media => {

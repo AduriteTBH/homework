@@ -282,5 +282,7 @@
   { "name": "H&H Invaders 3D", "file": "H&H Invaders", "icon": "💥" },
   { "name": "Deltarune", "file": "deltarune.html", "icon": "👾" },
   { "name": "Hollow Knight", "file": "hollowknight.html", "icon": "⚔️" },
-  { "name": "Grand Theft Auto: Vice City", "file": "gtavicecity.html", "icon": "💥" }
+  { "name": "Grand Theft Auto: Vice City", "file": "gtavicecity.html", "icon": "💥" },
+  { "name": "Grand Theft Auto: Vice City", "file": "blackops1zombies.html", "icon": "💥" },
+  { "name": "Grand Theft Auto: V", "file": "grandtheftautov.html", "icon": "🚨" }
 ]

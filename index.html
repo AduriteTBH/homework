@@ -1987,7 +1987,7 @@
             </svg>
             <span id="hud-toast-text">Progress Saved Safely</span>
         </div>
-        <iframe id="game-frame" src="about:blank" scrolling="no" allow="cross-origin-isolated; autoplay; fullscreen; gamepad; focus-without-user-activation *; keyboard-map; clipboard-read; clipboard-write" allowfullscreen></iframe>
+        <iframe id="game-frame" src="about:blank" scrolling="no" allow="cross-origin-isolated; autoplay; fullscreen; gamepad; pointer-lock; keyboard-map; clipboard-read; clipboard-write" allowfullscreen></iframe>
     </div>
 
     <div id="exit-modal" class="modal-wrapper">
@@ -3067,11 +3067,47 @@
             return `${BASE_URL}${cleanFile}/index.html`;
         }
 
+        const externalEmbedCache = new Map();
+
+        async function getExternalEmbedUrl(file) {
+            if (/^https?:\/\//i.test(file)) {
+                return file;
+            }
+            if (isFolder(file)) {
+                return null;
+            }
+            if (externalEmbedCache.has(file)) {
+                return externalEmbedCache.get(file);
+            }
+            try {
+                const response = await fetch(BASE_URL + file, { cache: "no-store" });
+                if (response.ok) {
+                    const text = await response.text();
+                    if (text.length < 2048 && !/<script\b/i.test(text)) {
+                        const match = text.match(/<iframe[^>]+src=["'](https?:\/\/[^"']+)["']/i);
+                        if (match && match[1]) {
+                            externalEmbedCache.set(file, match[1]);
+                            return match[1];
+                        }
+                    }
+                }
+            } catch (err) {}
+            externalEmbedCache.set(file, null);
+            return null;
+        }
+
         async function launchGame(file, name) {
+            recordRecent(file, name);
+
+            const externalUrl = await getExternalEmbedUrl(file);
+            if (externalUrl) {
+                window.open(externalUrl, "_blank", "noopener,noreferrer");
+                populateDiscovery();
+                return;
+            }
+
             activeGameFile = file;
             activeGameName = name;
-
-            recordRecent(file, name);
 
             const overlay = document.getElementById("launcher-overlay");
             const frame = document.getElementById("game-frame");
@@ -3095,7 +3131,7 @@
 
             const finalUrl = await resolveGameUrl(file);
             hudName.textContent = name.toUpperCase();
-            frame.setAttribute("allow", "cross-origin-isolated; autoplay; fullscreen; gamepad; focus-without-user-activation *; keyboard-map; clipboard-read; clipboard-write");
+            frame.setAttribute("allow", "cross-origin-isolated; autoplay; fullscreen; gamepad; pointer-lock; keyboard-map; clipboard-read; clipboard-write");
             frame.setAttribute("allowfullscreen", "true");
             frame.src = finalUrl;
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="https://cdn.jsdelivr.net/gh/thirstygithub/web-ports@main/crashout/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Crashout Crew</title>
+  <style>
+    html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; }
+    #unity-canvas { display:block; width:100%; height:100%; background:#000; outline:none; }
+    #unity-loading { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:240px; height:6px; background:#222; border-radius:3px; overflow:hidden; }
+    #unity-loading-fill { width:0%; height:100%; background:#fff; transition:width .15s ease-out; }
+    #unity-status { position:absolute; top:50%; left:50%; transform:translate(-50%,16px); color:#9aa0a6; font:12px/1.4 system-ui,sans-serif; white-space:nowrap; }
+    #unity-error { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); max-width:80%; color:#fff; font:14px/1.5 system-ui,sans-serif; white-space:pre-wrap; display:none; }
+  </style>
+</head>
+<body>
+  <canvas id="unity-canvas" tabindex="-1"></canvas>
+  <div id="unity-loading"><div id="unity-loading-fill"></div></div>
+  <div id="unity-status">Preparing…</div><div id="unity-error"></div>
+  <script>
+    var canvas=document.querySelector('#unity-canvas'), loading=document.querySelector('#unity-loading'), fill=document.querySelector('#unity-loading-fill'), status=document.querySelector('#unity-status'), errorBox=document.querySelector('#unity-error');
+    var SPLIT={dataUrl:{path:'chunks/WebGL.data',count:31,type:'application/octet-stream',label:'game data'},codeUrl:{path:'chunks/WebGL.wasm',count:4,type:'application/wasm',label:'game code'}};
+    var totalParts=SPLIT.dataUrl.count+SPLIT.codeUrl.count,loadedParts=0;
+    function partUrl(spec,index){var n=String(index);while(n.length<3)n='0'+n;return spec.path+'.part'+n;}
+    var FETCH_ATTEMPTS=4;
+    function fetchPart(url){var attempt=0;function tryOnce(){attempt++;return fetch(url).then(function(response){if(response.ok)return response;throw new Error('Could not load '+url+' (HTTP '+response.status+')');}).catch(function(error){if(attempt>=FETCH_ATTEMPTS)throw error;return new Promise(function(resolve){setTimeout(resolve,300*attempt);}).then(tryOnce);});}return tryOnce();}
+    function loadSplit(spec){var blobs=[],index=0;function step(){if(index>=spec.count)return URL.createObjectURL(new Blob(blobs,{type:spec.type}));var name=partUrl(spec,++index);return fetchPart(name).then(function(response){return response.blob();}).then(function(blob){blobs.push(blob);loadedParts++;status.textContent='Downloading '+spec.label+' — '+Math.round(100*loadedParts/totalParts)+'%';fill.style.width=(80*loadedParts/totalParts)+'%';return step();});}return step();}
+    loadSplit(SPLIT.dataUrl).then(function(dataUrl){return loadSplit(SPLIT.codeUrl).then(function(codeUrl){status.textContent='Starting…';var config={dataUrl:dataUrl,frameworkUrl:'Build/WebGL.framework.js',codeUrl:codeUrl,streamingAssetsUrl:'StreamingAssets',companyName:'Aggro Crab',productName:'CrashoutCrew',productVersion:'1.1.9',showBanner:function(msg,type){if(type==='error'){errorBox.style.display='block';errorBox.textContent=msg;}}};var script=document.createElement('script');script.src='https://cdn.jsdelivr.net/gh/thirstygithub/web-ports@main/crashout/Build/WebGL.loader.js';script.onload=function(){createUnityInstance(canvas,config,function(progress){fill.style.width=(80+20*progress)+'%';}).then(function(){loading.style.display='none';status.style.display='none';canvas.focus();}).catch(function(message){loading.style.display='none';status.style.display='none';errorBox.style.display='block';errorBox.textContent=message;});};script.onerror=function(){throw new Error('Could not load the Crashout Crew Unity loader.');};document.body.appendChild(script);});}).catch(function(error){console.error(error);loading.style.display='none';status.style.display='none';errorBox.style.display='block';errorBox.textContent=error.message;});
+  </script>
+</body>
+</html>

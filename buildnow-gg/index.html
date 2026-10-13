@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+  <base href="https://cdn.jsdelivr.net/gh/bubblfan/cg-rip@main/buildnow-gg/">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>BuildNow GG</title>
+  <style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#fff}.noselect{user-select:none;-webkit-user-select:none}#loading-text{position:fixed;inset:0 0 auto 0;z-index:2;color:#111;font-size:clamp(24px,4vw,48px);font-family:cursive;text-align:center;margin-top:20px;pointer-events:none}#unity-canvas{position:fixed;top:0;left:0;width:100%;height:100%;outline:none;display:block}</style>
+</head>
+<body class="noselect">
+  <div id="loading-text">LOADING...</div>
+  <canvas id="unity-canvas" tabindex="-1"></canvas>
+  <script>
+    const SPLIT_MAP = {
+      "7db022abd161455e3cc5f207e75d294b.wasm": null,
+      "ab8dd356a41a2943639294657a0990f8.data": null
+    };
+    async function mergeParts(baseUrl) {
+      const parts=[];
+      for(let i=1;i<=99;i++) {
+        const testUrl=baseUrl+".part"+i;
+        try { const head=await fetch(testUrl,{method:"HEAD"}); if(!head.ok) break; parts.push(testUrl); }
+        catch { break; }
+      }
+      if(!parts.length) return baseUrl;
+      const buffers=await Promise.all(parts.map(async u=>{const r=await fetch(u);if(!r.ok)throw new Error("Failed part "+u);return new Uint8Array(await r.arrayBuffer())}));
+      const total=buffers.reduce((a,b)=>a+b.length,0), merged=new Uint8Array(total);let offset=0;
+      for(const b of buffers){merged.set(b,offset);offset+=b.length;}
+      return URL.createObjectURL(new Blob([merged]));
+    }
+    async function preMergeAll(){
+      const map={},files=Object.keys(SPLIT_MAP),loading=document.getElementById("loading-text");let done=0;
+      for(const file of files){map[file]=await mergeParts("Build/"+file);done++;loading.innerText=`LOADING... ${Math.floor(done/files.length*100)}%`;}
+      return map;
+    }
+    (async()=>{
+      const mergedMap=await preMergeAll();window.SPLIT_MAP=mergedMap;
+      const origFetch=window.fetch;
+      window.fetch=async function(resource,options){
+        if(typeof resource==="string"){
+          const key=resource.split("/").pop();if(mergedMap[key])return origFetch(mergedMap[key],options);
+          if(resource.includes("StreamingAssets")){const tail=resource.split("/StreamingAssets/")[1];return origFetch(new URL("StreamingAssets/"+tail,document.querySelector("base").href).href,options);}
+        }
+        return origFetch(resource,options);
+      };
+      const OrigXHR=window.XMLHttpRequest;
+      window.XMLHttpRequest=function(){const xhr=new OrigXHR(),origOpen=xhr.open;xhr.open=function(method,url,...rest){const key=String(url).split("/").pop();origOpen.call(xhr,method,mergedMap[key]||url,...rest)};return xhr};
+      const canvas=document.querySelector("#unity-canvas");
+      const loaderUrl="Build/7a2dbded24d57e056180125b1583e7c4.loader.js";
+      const config={dataUrl:"Build/ab8dd356a41a2943639294657a0990f8.data",frameworkUrl:"Build/91a2bfcec140bc524100478b99a4f6d7.framework.js",codeUrl:"Build/7db022abd161455e3cc5f207e75d294b.wasm",streamingAssetsUrl:"StreamingAssets",companyName:"BuildNow GG",productName:"BuildNow GG",productVersion:"1.0.0"};
+      const script=document.createElement("script");script.src=loaderUrl;
+      script.onload=()=>createUnityInstance(canvas,config,()=>{}).then(instance=>{window.gameInstance=instance;document.getElementById("loading-text").style.display="none"}).catch(message=>{document.getElementById("loading-text").textContent="Game failed to load: "+message});
+      script.onerror=()=>{document.getElementById("loading-text").textContent="Could not load BuildNow GG."};document.body.appendChild(script);
+    })().catch(error=>{document.getElementById("loading-text").textContent="Game failed to load: "+error.message;console.error(error)});
+    function resizeCanvas(){const c=document.getElementById("unity-canvas");c.width=window.innerWidth;c.height=window.innerHeight;c.style.width=window.innerWidth+"px";c.style.height=window.innerHeight+"px"}
+    addEventListener("load",resizeCanvas);addEventListener("resize",resizeCanvas);
+  </script>
+</body>
+</html>

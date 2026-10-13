@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <base href="https://cdn.jsdelivr.net/gh/thirstygithub/web-ports@main/noomi/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>NoomiClone</title>
+  <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/thirstygithub/web-ports@main/noomi/TemplateData/favicon.ico">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thirstygithub/web-ports@main/noomi/TemplateData/style.css">
+  <script src="https://cdn.jsdelivr.net/gh/thirstygithub/web-ports@main/noomi/TemplateData/UnityProgress.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/thirstygithub/web-ports@main/noomi/Build/UnityLoader.js"></script>
+  <script>var unityInstance = UnityLoader.instantiate("unityContainer", "Build/webgl 4.json", {onProgress: UnityProgress});</script>
+</head>
+<body>
+  <div class="webgl-content">
+    <div id="unityContainer" style="width: min(1280px, 100vw); height: min(720px, 100vh)"></div>
+    <div class="footer"><div class="webgl-logo"></div><div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div><div class="title">NoomiClone</div></div>
+  </div>
+</body>
+</html>

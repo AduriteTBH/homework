@@ -1,0 +1,1003 @@
+<!doctype html>
+<html data-theme="slate" lang="en"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#394547" name="theme-color"/>
+<meta content="Classic Counter-Strike surfing in your browser. Fifteen maps, Source-style movement, saved times, and global leaderboards." name="description"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<title>Surfd — Classic surf</title>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%233e4637'/%3E%3Cpath d='M4 24L16 6L28 24Z' fill='%23b9cbb0'/%3E%3C/svg%3E" rel="icon"/>
+<script crossorigin="" src="./surf_files/game-BVcIp-Ck.js" type="module"></script>
+
+<link crossorigin="" href="./surf_files/game-CtmXm4et.css" rel="stylesheet"/>
+<style>.ZFfasc5f5NTIdwkMzNMy .zhhsfrubRJBf86cRcjeS {
+  height: 32px;
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+  line-height: 32px;
+}
+.ZFfasc5f5NTIdwkMzNMy .TiFcRFnjGcRWQCxcglYv {
+  position: relative;
+}
+.ZFfasc5f5NTIdwkMzNMy .TiFcRFnjGcRWQCxcglYv select {
+  width: 100%;
+  height: 32px;
+  border-radius: 6px;
+  opacity: 0.5;
+  border: 1px solid #000000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0 12px;
+  padding-right: 30px;
+}
+.ZFfasc5f5NTIdwkMzNMy .TiFcRFnjGcRWQCxcglYv select:focus-visible {
+  outline: none;
+  border: 1px solid #000000;
+}
+.ZFfasc5f5NTIdwkMzNMy .TiFcRFnjGcRWQCxcglYv:after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+}
+.ZFfasc5f5NTIdwkMzNMy .TiFcRFnjGcRWQCxcglYv:focus-visible {
+  border: none;
+  background: salmon;
+}
+.rxQr7drg0GrqV8vmOncn {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.M2gRdCRtGXZfWo_K9lvd {
+  display: flex;
+  flex-direction: column;
+}
+.M2gRdCRtGXZfWo_K9lvd .zhhsfrubRJBf86cRcjeS {
+  font-family: OpenSans-Regular, OpenSans;
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.88);
+  line-height: 16px;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy92aWV3cy9jb21wb25lbnRzL1NlbGVjdC9zZWxlY3QubW9kdWxlLmxlc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFFSSxZQUFBO0VBQ0EsZUFBQTtFQUNBLGlCQUFBO0VBQ0EsMEJBQUE7RUFDQSxpQkFBQTtBQUFKO0FBTkE7RUFVSSxrQkFBQTtBQURKO0FBVEE7RUFZTSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGtCQUFBO0VBQ0EsWUFBQTtFQUNBLHlCQUFBO0VBRUEsZ0JBQUE7RUFDQSx1QkFBQTtFQUNBLG1CQUFBO0VBR0Esd0JBQUE7RUFDQSxxQkFBQTtFQUNBLGdCQUFBO0VBRUEsZUFBQTtFQUNBLG1CQUFBO0FBSk47QUF4QkE7RUFnQ00sYUFBQTtFQUNBLHlCQUFBO0FBTE47QUE1QkE7RUFxQ0ksV0FBQTtFQUNBLGNBQUE7RUFFQSxRQUFBO0VBQ0EsU0FBQTtFQUNBLGtDQUFBO0VBQ0EsbUNBQUE7RUFDQSx3Q0FBQTtFQUVBLGtCQUFBO0VBQ0EsUUFBQTtFQUNBLFdBQUE7RUFDQSwyQkFBQTtBQVJKO0FBekNBO0VBcURJLFlBQUE7RUFDQSxrQkFBQTtBQVRKO0FBYUE7RUFDRSxhQUFBO0VBQ0EsOEJBQUE7RUFDQSxtQkFBQTtBQVhGO0FBa0JBO0VBQ0UsYUFBQTtFQUNBLHNCQUFBO0FBaEJGO0FBY0E7RUFJSSx1Q0FBQTtFQUNBLGdCQUFBO0VBQ0EsZUFBQTtFQUNBLDBCQUFBO0VBQ0EsaUJBQUE7QUFmSiIsInNvdXJjZXNDb250ZW50IjpbIi5pdGVtIHtcbiAgLm5hbWUge1xuICAgIGhlaWdodDogMzJweDtcbiAgICBmb250LXNpemU6IDE2cHg7XG4gICAgZm9udC13ZWlnaHQ6IGJvbGQ7XG4gICAgY29sb3I6IHJnYmEoMCwgMCwgMCwgMC44OCk7XG4gICAgbGluZS1oZWlnaHQ6IDMycHg7XG4gIH1cblxuICAuc2VsZWN0IHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgc2VsZWN0IHtcbiAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgaGVpZ2h0OiAzMnB4O1xuICAgICAgYm9yZGVyLXJhZGl1czogNnB4O1xuICAgICAgb3BhY2l0eTogMC41O1xuICAgICAgYm9yZGVyOiAxcHggc29saWQgIzAwMDAwMDtcblxuICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgIHRleHQtb3ZlcmZsb3c6IGVsbGlwc2lzO1xuICAgICAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcblxuICAgICAgLy8g5Y675o6J5LiL5ouJ6buY6K6kaWNvblxuICAgICAgLXdlYmtpdC1hcHBlYXJhbmNlOiBub25lO1xuICAgICAgLW1vei1hcHBlYXJhbmNlOiBub25lO1xuICAgICAgYXBwZWFyYW5jZTogbm9uZTtcblxuICAgICAgcGFkZGluZzogMCAxMnB4O1xuICAgICAgcGFkZGluZy1yaWdodDogMzBweDtcbiAgICB9XG5cbiAgICBzZWxlY3Q6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICBvdXRsaW5lOiBub25lO1xuICAgICAgYm9yZGVyOiAxcHggc29saWQgIzAwMDAwMDtcbiAgICB9XG4gIH1cbiAgLnNlbGVjdDphZnRlciB7XG4gICAgY29udGVudDogXCJcIjtcbiAgICBkaXNwbGF5OiBibG9jaztcblxuICAgIHdpZHRoOiAwO1xuICAgIGhlaWdodDogMDtcbiAgICBib3JkZXItbGVmdDogNHB4IHNvbGlkIHRyYW5zcGFyZW50O1xuICAgIGJvcmRlci1yaWdodDogNHB4IHNvbGlkIHRyYW5zcGFyZW50O1xuICAgIGJvcmRlci10b3A6IDRweCBzb2xpZCByZ2JhKDAsIDAsIDAsIDAuNSk7XG5cbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgdG9wOiA1MCU7XG4gICAgcmlnaHQ6IDE1cHg7XG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKC01MCUpO1xuICB9XG5cbiAgLnNlbGVjdDpmb2N1cy12aXNpYmxlIHtcbiAgICBib3JkZXI6IG5vbmU7XG4gICAgYmFja2dyb3VuZDogc2FsbW9uO1xuICB9XG59XG5cbi5hY3Jvc3Mge1xuICBkaXNwbGF5OiBmbGV4O1xuICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gIG1hcmdpbi1ib3R0b206IDI0cHg7XG5cbiAgLnNlbGVjdCB7XG4gICAgc2VsZWN0IHtcbiAgICB9XG4gIH1cbn1cbi52ZXJ0aWNhbCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gIC5uYW1lIHtcbiAgICBmb250LWZhbWlseTogT3BlblNhbnMtUmVndWxhciwgT3BlblNhbnM7XG4gICAgZm9udC13ZWlnaHQ6IDYwMDtcbiAgICBmb250LXNpemU6IDE0cHg7XG4gICAgY29sb3I6IHJnYmEoMCwgMCwgMCwgMC44OCk7XG4gICAgbGluZS1oZWlnaHQ6IDE2cHg7XG4gICAgLy8gbWFyZ2luLWJvdHRvbTogMTZweDtcbiAgfVxuICAuc2VsZWN0IHtcbiAgICBzZWxlY3Qge1xuICAgIH1cbiAgfVxufVxuIl0sInNvdXJjZVJvb3QiOiIifQ== */</style><style>.IRoWVNnxMESYzrLAb1jW {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  opacity: 0.5;
+  border: 1px solid #000000;
+  padding: 0 16px;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-family: OpenSans-Regular, OpenSans;
+  font-weight: 400;
+}
+.IRoWVNnxMESYzrLAb1jW:focus-visible {
+  outline: none;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy92aWV3cy9jb21wb25lbnRzL0lucHV0L2lucHV0Lm1vZHVsZS5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsV0FBQTtFQUNBLFlBQUE7RUFDQSxtQkFBQTtFQUNBLFlBQUE7RUFDQSx5QkFBQTtFQUNBLGVBQUE7RUFDQSxzQkFBQTtFQUVBLGVBQUE7RUFDQSx1Q0FBQTtFQUNBLGdCQUFBO0FBQUY7QUFFRTtFQUNFLGFBQUE7QUFBSiIsInNvdXJjZXNDb250ZW50IjpbIi5pbnB1dCB7XG4gIHdpZHRoOiAxMDAlO1xuICBoZWlnaHQ6IDQ4cHg7XG4gIGJvcmRlci1yYWRpdXM6IDEycHg7XG4gIG9wYWNpdHk6IDAuNTtcbiAgYm9yZGVyOiAxcHggc29saWQgIzAwMDAwMDtcbiAgcGFkZGluZzogMCAxNnB4O1xuICBib3gtc2l6aW5nOiBib3JkZXItYm94O1xuXG4gIGZvbnQtc2l6ZTogMTRweDtcbiAgZm9udC1mYW1pbHk6IE9wZW5TYW5zLVJlZ3VsYXIsIE9wZW5TYW5zO1xuICBmb250LXdlaWdodDogNDAwO1xuXG4gICY6Zm9jdXMtdmlzaWJsZSB7XG4gICAgb3V0bGluZTogbm9uZTtcbiAgfVxufVxuIl0sInNvdXJjZVJvb3QiOiIifQ== */</style><style>.Ib6CUk9NvPeuYdBNTyjg {
+  display: flex;
+  align-items: flex-start;
+}
+.Ib6CUk9NvPeuYdBNTyjg input[type="radio"] {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  position: relative;
+}
+.Ib6CUk9NvPeuYdBNTyjg input[type="radio"]:checked {
+  border-color: #ff8f00;
+}
+.Ib6CUk9NvPeuYdBNTyjg input[type="radio"]:checked::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: #ff8f00;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.Ib6CUk9NvPeuYdBNTyjg label {
+  flex: 1;
+  cursor: pointer;
+  margin-left: 32px;
+  font-size: 14px;
+  font-family: OpenSans-Regular, OpenSans;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.88);
+  line-height: 24px;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy92aWV3cy9jb21wb25lbnRzL1JhZGlvL3JhZGlvLm1vZHVsZS5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsYUFBQTtFQUNBLHVCQUFBO0FBQ0Y7QUFIQTtFQUlJLGdCQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7RUFDQSxrQkFBQTtFQUNBLHNCQUFBO0VBQ0Esa0JBQUE7QUFFSjtBQVhBO0VBYUkscUJBQUE7QUFDSjtBQWRBO0VBaUJJLFdBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtFQUNBLG1CQUFBO0VBQ0Esa0JBQUE7RUFDQSxrQkFBQTtFQUNBLFFBQUE7RUFDQSxTQUFBO0VBQ0EsZ0NBQUE7QUFBSjtBQXpCQTtFQTZCSSxPQUFBO0VBQ0EsZUFBQTtFQUNBLGlCQUFBO0VBRUEsZUFBQTtFQUNBLHVDQUFBO0VBQ0EsZ0JBQUE7RUFDQSwwQkFBQTtFQUNBLGlCQUFBO0FBRkoiLCJzb3VyY2VzQ29udGVudCI6WyIucmFkaW8ge1xuICBkaXNwbGF5OiBmbGV4O1xuICBhbGlnbi1pdGVtczogZmxleC1zdGFydDtcbiAgaW5wdXRbdHlwZT1cInJhZGlvXCJdIHtcbiAgICBhcHBlYXJhbmNlOiBub25lO1xuICAgIHdpZHRoOiAyNHB4O1xuICAgIGhlaWdodDogMjRweDtcbiAgICBib3JkZXItcmFkaXVzOiA1MCU7XG4gICAgYm9yZGVyOiAycHggc29saWQgI2NjYztcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gIH1cblxuICBpbnB1dFt0eXBlPVwicmFkaW9cIl06Y2hlY2tlZCB7XG4gICAgYm9yZGVyLWNvbG9yOiAjZmY4ZjAwO1xuICB9XG5cbiAgaW5wdXRbdHlwZT1cInJhZGlvXCJdOmNoZWNrZWQ6OmFmdGVyIHtcbiAgICBjb250ZW50OiBcIlwiO1xuICAgIHdpZHRoOiAxMHB4O1xuICAgIGhlaWdodDogMTBweDtcbiAgICBiYWNrZ3JvdW5kOiAjZmY4ZjAwO1xuICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICB9XG5cbiAgbGFiZWwge1xuICAgIGZsZXg6IDE7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIG1hcmdpbi1sZWZ0OiAzMnB4O1xuXG4gICAgZm9udC1zaXplOiAxNHB4O1xuICAgIGZvbnQtZmFtaWx5OiBPcGVuU2Fucy1SZWd1bGFyLCBPcGVuU2FucztcbiAgICBmb250LXdlaWdodDogNDAwO1xuICAgIGNvbG9yOiByZ2JhKDAsIDAsIDAsIDAuODgpO1xuICAgIGxpbmUtaGVpZ2h0OiAyNHB4O1xuICB9XG59XG4iXSwic291cmNlUm9vdCI6IiJ9 */</style><style>.c9sddWo_i7vCT4SyyItq {
+  width: 100%;
+  height: 100%;
+  background: #ff8f00;
+  position: relative;
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.08), 0px 3px 14px 2px rgba(0, 0, 0, 0.04), 0px 8px 10px 1px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  font-family: OpenSans-Bold, OpenSans;
+  font-weight: bold;
+  color: #ffffff;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 禁用状态的样式 */
+}
+.c9sddWo_i7vCT4SyyItq:disabled {
+  background: #c2c2c2 !important;
+  /* 更淡的背景色表示不可点击 */
+  color: #eceff1;
+  /* 淡色文字 */
+  cursor: not-allowed;
+  /* 禁用光标 */
+  box-shadow: none;
+  /* 去除阴影 */
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy92aWV3cy9jb21wb25lbnRzL0J1dHRvbi9idXR0b24ubW9kdWxlLmxlc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxXQUFBO0VBQ0EsWUFBQTtFQUNBLG1CQUFBO0VBQ0Esa0JBQUE7RUFDQSw0SEFBQTtFQUVBLGtCQUFBO0VBQ0EsWUFBQTtFQUNBLGVBQUE7RUFDQSxvQ0FBQTtFQUNBLGlCQUFBO0VBQ0EsY0FBQTtFQUNBLGdCQUFBO0VBQ0EsZUFBQTtFQUVBLGFBQUE7RUFDQSxtQkFBQTtFQUNBLHVCQUFBO0VBREEsWUFBWTtBQUNkO0FBR0U7RUFDRSw4QkFBQTtFQURGLGlCQUFpQjtFQUVmLGNBQUE7RUFBRixTQUFTO0VBQ1AsbUJBQUE7RUFDRixTQUFTO0VBQVAsZ0JBQUE7RUFFRixTQUFTO0FBQ1giLCJzb3VyY2VzQ29udGVudCI6WyIuYnV0dG9uIHtcbiAgd2lkdGg6IDEwMCU7XG4gIGhlaWdodDogMTAwJTtcbiAgYmFja2dyb3VuZDogI2ZmOGYwMDtcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xuICBib3gtc2hhZG93OiAwcHggNXB4IDVweCAtM3B4IHJnYmEoMCwgMCwgMCwgMC4wOCksXG4gICAgMHB4IDNweCAxNHB4IDJweCByZ2JhKDAsIDAsIDAsIDAuMDQpLCAwcHggOHB4IDEwcHggMXB4IHJnYmEoMCwgMCwgMCwgMC4wNik7XG4gIGJvcmRlci1yYWRpdXM6IDhweDtcbiAgYm9yZGVyOiBub25lO1xuICBmb250LXNpemU6IDE2cHg7XG4gIGZvbnQtZmFtaWx5OiBPcGVuU2Fucy1Cb2xkLCBPcGVuU2FucztcbiAgZm9udC13ZWlnaHQ6IGJvbGQ7XG4gIGNvbG9yOiAjZmZmZmZmO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBjdXJzb3I6IHBvaW50ZXI7XG5cbiAgZGlzcGxheTogZmxleDtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG5cbiAgLyog56aB55So54q25oCB55qE5qC35byPICovXG4gICY6ZGlzYWJsZWQge1xuICAgIGJhY2tncm91bmQ6ICNjMmMyYzIgIWltcG9ydGFudDsgLyog5pu05reh55qE6IOM5pmv6Imy6KGo56S65LiN5Y+v54K55Ye7ICovXG4gICAgY29sb3I6ICNlY2VmZjE7IC8qIOa3oeiJsuaWh+WtlyAqL1xuICAgIGN1cnNvcjogbm90LWFsbG93ZWQ7IC8qIOemgeeUqOWFieaghyAqL1xuICAgIGJveC1zaGFkb3c6IG5vbmU7IC8qIOWOu+mZpOmYtOW9sSAqL1xuICB9XG59XG4iXSwic291cmNlUm9vdCI6IiJ9 */</style><style>.EEznAG43zTuQkQq624yy {
+  width: 400px;
+}
+.EEznAG43zTuQkQq624yy .Zt6_7jfC9rAnl4Hvckzs {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.EEznAG43zTuQkQq624yy .Zt6_7jfC9rAnl4Hvckzs .Je2jFsFrbPjN7Upq5740 {
+  width: 69px;
+  height: 24px;
+  margin: 7px 4px;
+}
+.EEznAG43zTuQkQq624yy .Zt6_7jfC9rAnl4Hvckzs .Je2jFsFrbPjN7Upq5740 svg {
+  width: 100%;
+  height: 100%;
+}
+.EEznAG43zTuQkQq624yy .Zt6_7jfC9rAnl4Hvckzs .c7QEl61sArXCQe0GnzQ5 {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+.EEznAG43zTuQkQq624yy .ci0NHoq5VTLikHkgliPO {
+  padding: 8px 16px 16px;
+}
+.EEznAG43zTuQkQq624yy .ci0NHoq5VTLikHkgliPO > a {
+  display: block;
+  padding-top: 8px;
+  text-align: center;
+  color: #3d5afe;
+}
+.EEznAG43zTuQkQq624yy .ci0NHoq5VTLikHkgliPO > a:hover {
+  color: #3d5afe;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy92aWV3cy9jb21wb25lbnRzL0JveC9pbmRleC5tb2R1bGUubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLFlBQUE7QUFDRjtBQUZBO0VBR0ksYUFBQTtFQUNBLGFBQUE7RUFDQSxtQkFBQTtFQUNBLDhCQUFBO0FBRUo7QUFSQTtFQVFNLFdBQUE7RUFDQSxZQUFBO0VBQ0EsZUFBQTtBQUdOO0FBYkE7RUFZUSxXQUFBO0VBQ0EsWUFBQTtBQUlSO0FBakJBO0VBaUJNLFdBQUE7RUFDQSxZQUFBO0VBQ0EsZUFBQTtBQUdOO0FBdEJBO0VBdUJJLHNCQUFBO0FBRUo7QUFESTtFQUNFLGNBQUE7RUFDQSxnQkFBQTtFQUNBLGtCQUFBO0VBQ0EsY0FBQTtBQUdOO0FBRk07RUFDRSxjQUFBO0FBSVIiLCJzb3VyY2VzQ29udGVudCI6WyIuYm94IHtcbiAgd2lkdGg6IDQwMHB4O1xuICAuaGVhZGVyIHtcbiAgICBwYWRkaW5nOiAxNnB4O1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gICAgLmxvZ28ge1xuICAgICAgd2lkdGg6IDY5cHg7XG4gICAgICBoZWlnaHQ6IDI0cHg7XG4gICAgICBtYXJnaW46IDdweCA0cHg7XG4gICAgICBzdmcge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgfVxuICAgIH1cbiAgICAuY2xvc2VJY29uIHtcbiAgICAgIHdpZHRoOiAyNHB4O1xuICAgICAgaGVpZ2h0OiAyNHB4O1xuICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbiAgfVxuICAuY29udGVudCB7XG4gICAgcGFkZGluZzogOHB4IDE2cHggMTZweDtcbiAgICAmID4gYSB7XG4gICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgIHBhZGRpbmctdG9wOiA4cHg7XG4gICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICBjb2xvcjogIzNkNWFmZTtcbiAgICAgICY6aG92ZXIge1xuICAgICAgICBjb2xvcjogIzNkNWFmZTtcbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdLCJzb3VyY2VSb290IjoiIn0= */</style><style>.BW1QT6wRodElrY9DbAeQ {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+.BW1QT6wRodElrY9DbAeQ .U_jFhfpfYNrIrQRSO7_Z {
+  text-wrap: nowrap;
+}
+.BW1QT6wRodElrY9DbAeQ input[type="checkbox"] {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  display: none;
+}
+.BW1QT6wRodElrY9DbAeQ label {
+  cursor: pointer;
+  text-indent: -9999px;
+  width: 56px;
+  height: 28px;
+  background: grey;
+  display: block;
+  border-radius: 100px;
+  position: relative;
+}
+.BW1QT6wRodElrY9DbAeQ label:after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 90px;
+  transition: 0.3s;
+}
+.BW1QT6wRodElrY9DbAeQ input:checked + label {
+  background: #ff8f00;
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.08), 0px 3px 14px 2px rgba(0, 0, 0, 0.04), 0px 8px 10px 1px rgba(0, 0, 0, 0.06);
+}
+.BW1QT6wRodElrY9DbAeQ input:checked + label:after {
+  left: calc(100% - 4px);
+  transform: translateX(-100%);
+}
+.BW1QT6wRodElrY9DbAeQ label:active:after {
+  width: 56px;
+}
+.BW1QT6wRodElrY9DbAeQ body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy92aWV3cy9jb21wb25lbnRzL1N3aXRjaC9zd2l0Y2gubW9kdWxlLmxlc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxhQUFBO0VBQ0EsbUJBQUE7RUFDQSwyQkFBQTtFQUNBLDhCQUFBO0FBQ0Y7QUFMQTtFQU9JLGlCQUFBO0FBQ0o7QUFSQTtFQVdJLFNBQUE7RUFDQSxRQUFBO0VBQ0Esa0JBQUE7RUFDQSxhQUFBO0FBQUo7QUFkQTtFQWtCSSxlQUFBO0VBQ0Esb0JBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGdCQUFBO0VBQ0EsY0FBQTtFQUNBLG9CQUFBO0VBQ0Esa0JBQUE7QUFESjtBQXhCQTtFQTZCSSxXQUFBO0VBQ0Esa0JBQUE7RUFDQSxRQUFBO0VBQ0EsU0FBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0EsZ0JBQUE7RUFDQSxtQkFBQTtFQUNBLGdCQUFBO0FBRko7QUFuQ0E7RUF5Q0ksbUJBQUE7RUFDQSw0SEFBQTtBQUhKO0FBdkNBO0VBK0NJLHNCQUFBO0VBQ0EsNEJBQUE7QUFMSjtBQTNDQTtFQW9ESSxXQUFBO0FBTko7QUE5Q0E7RUF5REksYUFBQTtFQUNBLHVCQUFBO0VBQ0EsbUJBQUE7RUFDQSxhQUFBO0FBUkoiLCJzb3VyY2VzQ29udGVudCI6WyIuc3dpdGNoIHtcbiAgZGlzcGxheTogZmxleDtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgZmxleC1kaXJlY3Rpb246IHJvdy1yZXZlcnNlO1xuICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG5cbiAgLmRlc2NyaWJlIHtcbiAgICB0ZXh0LXdyYXA6IG5vd3JhcDtcbiAgfVxuXG4gIGlucHV0W3R5cGU9XCJjaGVja2JveFwiXSB7XG4gICAgaGVpZ2h0OiAwO1xuICAgIHdpZHRoOiAwO1xuICAgIHZpc2liaWxpdHk6IGhpZGRlbjtcbiAgICBkaXNwbGF5OiBub25lO1xuICB9XG5cbiAgbGFiZWwge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB0ZXh0LWluZGVudDogLTk5OTlweDtcbiAgICB3aWR0aDogNTZweDtcbiAgICBoZWlnaHQ6IDI4cHg7XG4gICAgYmFja2dyb3VuZDogZ3JleTtcbiAgICBkaXNwbGF5OiBibG9jaztcbiAgICBib3JkZXItcmFkaXVzOiAxMDBweDtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gIH1cblxuICBsYWJlbDphZnRlciB7XG4gICAgY29udGVudDogXCJcIjtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgdG9wOiA0cHg7XG4gICAgbGVmdDogNHB4O1xuICAgIHdpZHRoOiAyMHB4O1xuICAgIGhlaWdodDogMjBweDtcbiAgICBiYWNrZ3JvdW5kOiAjZmZmO1xuICAgIGJvcmRlci1yYWRpdXM6IDkwcHg7XG4gICAgdHJhbnNpdGlvbjogMC4zcztcbiAgfVxuXG4gIGlucHV0OmNoZWNrZWQgKyBsYWJlbCB7XG4gICAgYmFja2dyb3VuZDogI2ZmOGYwMDtcbiAgICBib3gtc2hhZG93OiAwcHggNXB4IDVweCAtM3B4IHJnYmEoMCwgMCwgMCwgMC4wOCksXG4gICAgICAwcHggM3B4IDE0cHggMnB4IHJnYmEoMCwgMCwgMCwgMC4wNCksIDBweCA4cHggMTBweCAxcHggcmdiYSgwLCAwLCAwLCAwLjA2KTtcbiAgfVxuXG4gIGlucHV0OmNoZWNrZWQgKyBsYWJlbDphZnRlciB7XG4gICAgbGVmdDogY2FsYygxMDAlIC0gNHB4KTtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVgoLTEwMCUpO1xuICB9XG5cbiAgbGFiZWw6YWN0aXZlOmFmdGVyIHtcbiAgICB3aWR0aDogNTZweDtcbiAgfVxuXG4gIC8vIGNlbnRlcmluZ1xuICBib2R5IHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgaGVpZ2h0OiAxMDB2aDtcbiAgfVxufVxuIl0sInNvdXJjZVJvb3QiOiIifQ== */</style><style>.av93VnBkT8rC6BfwHXXl {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+/* 隐藏原始复选框 */
+.av93VnBkT8rC6BfwHXXl input {
+  visibility: hidden;
+  position: absolute;
+}
+/* 自定义复选框的样式 */
+.av93VnBkT8rC6BfwHXXl .ccHDoQWfCQ0wpKNe51Og {
+  position: relative;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  /* 背景色保持白色以保持较好的对比 */
+  border: 1px solid #d9d9d9;
+  /* 默认边框颜色为浅灰色 */
+  display: inline-block;
+  border-radius: 4px;
+  /* 圆角 */
+  transition: background-color 0.3s, border-color 0.3s;
+  /* 添加过渡效果 */
+}
+/* 当复选框被选中或不确定状态时的样式 */
+.av93VnBkT8rC6BfwHXXl input:checked + .ccHDoQWfCQ0wpKNe51Og,
+.av93VnBkT8rC6BfwHXXl input:indeterminate + .ccHDoQWfCQ0wpKNe51Og {
+  background-color: #ffc107;
+  /* 金色背景 */
+  border-color: #ffc107;
+  /* 金色边框 */
+}
+/* 添加对号 */
+.av93VnBkT8rC6BfwHXXl .ccHDoQWfCQ0wpKNe51Og:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.av93VnBkT8rC6BfwHXXl input:checked + .ccHDoQWfCQ0wpKNe51Og:after {
+  display: block;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+  /* Combine translations and rotations */
+}
+/* 不确定状态下的方块 */
+.av93VnBkT8rC6BfwHXXl input:indeterminate + .ccHDoQWfCQ0wpKNe51Og:after {
+  content: "";
+  position: absolute;
+  display: block;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* Perfectly center the square */
+  width: 10px;
+  height: 5px;
+  background: white;
+  /* 使用白色方块以增加对比度 */
+}
+/* 处理禁用状态 */
+.av93VnBkT8rC6BfwHXXl input:disabled + .ccHDoQWfCQ0wpKNe51Og {
+  background-color: #e0e0e0;
+  /* 灰色背景表示禁用 */
+  border-color: #bdbdbd;
+  /* 灰色边框 */
+  cursor: not-allowed;
+  /* 鼠标禁用状态指示 */
+}
+.av93VnBkT8rC6BfwHXXl input:disabled + .ccHDoQWfCQ0wpKNe51Og:after {
+  background: #bdbdbd;
+  /* 灰色对号或方块表示禁用 */
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy92aWV3cy9jb21wb25lbnRzL0NoZWNrYm94L0NoZWNrYm94Lm1vZHVsZS5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsYUFBQTtFQUNBLG1CQUFBO0VBQ0EsZUFBQTtBQUNGO0FBQ0EsWUFBWTtBQUVaO0VBQ0Usa0JBQUE7RUFDQSxrQkFBQTtBQUFGO0FBQ0EsY0FBYztBQUdkO0VBQ0Usa0JBQUE7RUFDQSxZQUFBO0VBQ0EsV0FBQTtFQUNBLHNCQUFBO0VBREEsb0JBQW9CO0VBRXBCLHlCQUFBO0VBQUEsZUFBZTtFQUNmLHFCQUFBO0VBQ0Esa0JBQUE7RUFDQSxPQUFPO0VBQVAsb0RBQUE7RUFFQSxXQUFXO0FBQ2I7QUFDQSxzQkFBc0I7QUFBdEI7O0VBRUUseUJBQUE7RUFFQSxTQUFTO0VBRFQscUJBQUE7RUFHQSxTQUFTO0FBQ1g7QUFDQSxTQUFTO0FBRFQ7RUFDRSxXQUFBO0VBQ0Esa0JBQUE7RUFDQSxhQUFBO0FBR0Y7QUFBQTtFQUNFLGNBQUE7RUFDQSxTQUFBO0VBQ0EsUUFBQTtFQUNBLFVBQUE7RUFDQSxZQUFBO0VBQ0EsbUJBQUE7RUFDQSx5QkFBQTtFQUNBLDhDQUFBO0VBRUEsdUNBQXVDO0FBQ3pDO0FBQ0EsY0FBYztBQUFkO0VBQ0UsV0FBQTtFQUNBLGtCQUFBO0VBQ0EsY0FBQTtFQUNBLFNBQUE7RUFDQSxRQUFBO0VBQ0EsZ0NBQUE7RUFFQSxnQ0FBZ0M7RUFEaEMsV0FBQTtFQUNBLFdBQUE7RUFDQSxpQkFBQTtFQUdBLGlCQUFpQjtBQUNuQjtBQUNBLFdBQVc7QUFEWDtFQUNFLHlCQUFBO0VBR0EsYUFBYTtFQUZiLHFCQUFBO0VBSUEsU0FBUztFQUhULG1CQUFBO0VBS0EsYUFBYTtBQUNmO0FBSEE7RUFDRSxtQkFBQTtFQUtBLGdCQUFnQjtBQUNsQiIsInNvdXJjZXNDb250ZW50IjpbIi5jdXN0b21DaGVja2JveCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLyog6ZqQ6JeP5Y6f5aeL5aSN6YCJ5qGGICovXG4uY3VzdG9tQ2hlY2tib3ggaW5wdXQge1xuICB2aXNpYmlsaXR5OiBoaWRkZW47XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbn1cblxuLyog6Ieq5a6a5LmJ5aSN6YCJ5qGG55qE5qC35byPICovXG4uY3VzdG9tQ2hlY2tib3ggLmNoZWNrbWFyayB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgaGVpZ2h0OiAyMHB4O1xuICB3aWR0aDogMjBweDtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjsgLyog6IOM5pmv6Imy5L+d5oyB55m96Imy5Lul5L+d5oyB6L6D5aW955qE5a+55q+UICovXG4gIGJvcmRlcjogMXB4IHNvbGlkICNkOWQ5ZDk7IC8qIOm7mOiupOi+ueahhuminOiJsuS4uua1heeBsOiJsiAqL1xuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIGJvcmRlci1yYWRpdXM6IDRweDsgLyog5ZyG6KeSICovXG4gIHRyYW5zaXRpb246IGJhY2tncm91bmQtY29sb3IgMC4zcywgYm9yZGVyLWNvbG9yIDAuM3M7IC8qIOa3u+WKoOi/h+a4oeaViOaenCAqL1xufVxuXG4vKiDlvZPlpI3pgInmoYbooqvpgInkuK3miJbkuI3noa7lrprnirbmgIHml7bnmoTmoLflvI8gKi9cbi5jdXN0b21DaGVja2JveCBpbnB1dDpjaGVja2VkICsgLmNoZWNrbWFyayxcbi5jdXN0b21DaGVja2JveCBpbnB1dDppbmRldGVybWluYXRlICsgLmNoZWNrbWFyayB7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmZmMxMDc7IC8qIOmHkeiJsuiDjOaZryAqL1xuICBib3JkZXItY29sb3I6ICNmZmMxMDc7IC8qIOmHkeiJsui+ueahhiAqL1xufVxuXG4vKiDmt7vliqDlr7nlj7cgKi9cbi5jdXN0b21DaGVja2JveCAuY2hlY2ttYXJrOmFmdGVyIHtcbiAgY29udGVudDogXCJcIjtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBkaXNwbGF5OiBub25lO1xufVxuXG4uY3VzdG9tQ2hlY2tib3ggaW5wdXQ6Y2hlY2tlZCArIC5jaGVja21hcms6YWZ0ZXIge1xuICBkaXNwbGF5OiBibG9jaztcbiAgbGVmdDogNTAlO1xuICB0b3A6IDUwJTtcbiAgd2lkdGg6IDZweDtcbiAgaGVpZ2h0OiAxMHB4O1xuICBib3JkZXI6IHNvbGlkIHdoaXRlO1xuICBib3JkZXItd2lkdGg6IDAgM3B4IDNweCAwO1xuICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlLCAtNTAlKSByb3RhdGUoNDVkZWcpOyAvKiBDb21iaW5lIHRyYW5zbGF0aW9ucyBhbmQgcm90YXRpb25zICovXG59XG5cbi8qIOS4jeehruWumueKtuaAgeS4i+eahOaWueWdlyAqL1xuLmN1c3RvbUNoZWNrYm94IGlucHV0OmluZGV0ZXJtaW5hdGUgKyAuY2hlY2ttYXJrOmFmdGVyIHtcbiAgY29udGVudDogXCJcIjtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBkaXNwbGF5OiBibG9jaztcbiAgbGVmdDogNTAlO1xuICB0b3A6IDUwJTtcbiAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7IC8qIFBlcmZlY3RseSBjZW50ZXIgdGhlIHNxdWFyZSAqL1xuICB3aWR0aDogMTBweDtcbiAgaGVpZ2h0OiA1cHg7XG4gIGJhY2tncm91bmQ6IHdoaXRlOyAvKiDkvb/nlKjnmb3oibLmlrnlnZfku6Xlop7liqDlr7nmr5TluqYgKi9cbn1cblxuLyog5aSE55CG56aB55So54q25oCBICovXG4uY3VzdG9tQ2hlY2tib3ggaW5wdXQ6ZGlzYWJsZWQgKyAuY2hlY2ttYXJrIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2UwZTBlMDsgLyog54Gw6Imy6IOM5pmv6KGo56S656aB55SoICovXG4gIGJvcmRlci1jb2xvcjogI2JkYmRiZDsgLyog54Gw6Imy6L655qGGICovXG4gIGN1cnNvcjogbm90LWFsbG93ZWQ7IC8qIOm8oOagh+emgeeUqOeKtuaAgeaMh+ekuiAqL1xufVxuXG4uY3VzdG9tQ2hlY2tib3ggaW5wdXQ6ZGlzYWJsZWQgKyAuY2hlY2ttYXJrOmFmdGVyIHtcbiAgYmFja2dyb3VuZDogI2JkYmRiZDsgLyog54Gw6Imy5a+55Y+35oiW5pa55Z2X6KGo56S656aB55SoICovXG59XG4iXSwic291cmNlUm9vdCI6IiJ9 */</style><style>.kLB7SXuCbOA1VDEuayQ2 {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  min-height: 244px;
+  width: 400px;
+  background: #ffffff;
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.08), 0px 1px 10px 0px rgba(0, 0, 0, 0.04), 0px 4px 5px 0px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+}
+.kLB7SXuCbOA1VDEuayQ2 .zEOKQl0KPtsInhEXQ5Bz .cLVWKu0XCorcERQg9FKl {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+.kLB7SXuCbOA1VDEuayQ2 .zEOKQl0KPtsInhEXQ5Bz .cLVWKu0XCorcERQg9FKl .jR9tZOYlGybercDP5RXg {
+  animation: yjWYeSBhppaYr8pyCDGP 1s linear infinite;
+}
+.kLB7SXuCbOA1VDEuayQ2 .zEOKQl0KPtsInhEXQ5Bz .cyF9d8HEngPs9BJtmRBB {
+  font-size: 16px;
+  font-family: OpenSans-Bold, OpenSans;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+  line-height: 22px;
+  text-align: center;
+}
+.kLB7SXuCbOA1VDEuayQ2 .zEOKQl0KPtsInhEXQ5Bz .Panq7Ykt8Gxb0RQl78BV {
+  font-size: 16px;
+  font-family: OpenSans-Bold, OpenSans;
+  font-weight: bold;
+  color: #479e25;
+  margin-top: 6px;
+  line-height: 22px;
+  text-decoration: underline;
+  text-align: center;
+  cursor: pointer;
+}
+@keyframes yjWYeSBhppaYr8pyCDGP {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL25vdEJhY2tncm91bmQvbm90aWZpY2F0aW9uL2luZGV4Lm1vZHVsZS5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsZUFBQTtFQUNBLFNBQUE7RUFDQSxXQUFBO0VBQ0EsYUFBQTtFQUVBLGlCQUFBO0VBQ0EsWUFBQTtFQUNBLG1CQUFBO0VBQ0EsMkhBQUE7RUFFQSxtQkFBQTtBQURGO0FBVkE7RUFlTSxhQUFBO0VBQ0EsdUJBQUE7RUFDQSxtQkFBQTtBQUZOO0FBZkE7RUFvQlEsa0RBQUE7QUFGUjtBQWxCQTtFQXlCTSxlQUFBO0VBQ0Esb0NBQUE7RUFDQSxpQkFBQTtFQUNBLDBCQUFBO0VBQ0EsaUJBQUE7RUFDQSxrQkFBQTtBQUpOO0FBMUJBO0VBa0NNLGVBQUE7RUFDQSxvQ0FBQTtFQUNBLGlCQUFBO0VBQ0EsY0FBQTtFQUNBLGVBQUE7RUFDQSxpQkFBQTtFQUNBLDBCQUFBO0VBQ0Esa0JBQUE7RUFDQSxlQUFBO0FBTE47QUFVQTtFQUNFO0lBQ0UseUJBQUE7RUFSRjtFQVdBO0lBQ0UsdUJBQUE7RUFURjtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiLm5vdGlmeUNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgdG9wOiAyMHB4O1xuICByaWdodDogMjBweDtcbiAgei1pbmRleDogOTk5OTtcblxuICBtaW4taGVpZ2h0OiAyNDRweDtcbiAgd2lkdGg6IDQwMHB4O1xuICBiYWNrZ3JvdW5kOiAjZmZmZmZmO1xuICBib3gtc2hhZG93OiAwcHggMnB4IDRweCAtMXB4IHJnYmEoMCwgMCwgMCwgMC4wOCksXG4gICAgMHB4IDFweCAxMHB4IDBweCByZ2JhKDAsIDAsIDAsIDAuMDQpLCAwcHggNHB4IDVweCAwcHggcmdiYSgwLCAwLCAwLCAwLjA2KTtcbiAgYm9yZGVyLXJhZGl1czogMTJweDtcblxuICAubm90aWZ5Q29udGVudCB7XG4gICAgLmltZyB7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICBtYXJnaW4tYm90dG9tOiAyOHB4O1xuXG4gICAgICAubG9hZGluZyB7XG4gICAgICAgIGFuaW1hdGlvbjogcm90YXRlIDFzIGxpbmVhciBpbmZpbml0ZTtcbiAgICAgIH1cbiAgICB9XG5cbiAgICAudGl0bGUge1xuICAgICAgZm9udC1zaXplOiAxNnB4O1xuICAgICAgZm9udC1mYW1pbHk6IE9wZW5TYW5zLUJvbGQsIE9wZW5TYW5zO1xuICAgICAgZm9udC13ZWlnaHQ6IGJvbGQ7XG4gICAgICBjb2xvcjogcmdiYSgwLCAwLCAwLCAwLjg4KTtcbiAgICAgIGxpbmUtaGVpZ2h0OiAyMnB4O1xuICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIH1cblxuICAgIC5zdWJUaXRsZSB7XG4gICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICBmb250LWZhbWlseTogT3BlblNhbnMtQm9sZCwgT3BlblNhbnM7XG4gICAgICBmb250LXdlaWdodDogYm9sZDtcbiAgICAgIGNvbG9yOiAjNDc5ZTI1O1xuICAgICAgbWFyZ2luLXRvcDogNnB4O1xuICAgICAgbGluZS1oZWlnaHQ6IDIycHg7XG4gICAgICB0ZXh0LWRlY29yYXRpb246IHVuZGVybGluZTtcbiAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB9XG4gIH1cbn1cblxuQGtleWZyYW1lcyByb3RhdGUge1xuICBmcm9tIHtcbiAgICB0cmFuc2Zvcm06IHJvdGF0ZSgzNjBkZWcpO1xuICB9XG5cbiAgdG8ge1xuICAgIHRyYW5zZm9ybTogcm90YXRlKDBkZWcpO1xuICB9XG59XG4iXSwic291cmNlUm9vdCI6IiJ9 */</style><style>.L6ydMcbc4E5EF6EfA6aG .ant-modal-title {
+  font-weight: bold;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.88);
+  line-height: 28px;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+}
+.hNkYvyrcRaG_kWiy3rkO {
+  margin-top: 16px;
+}
+.hNkYvyrcRaG_kWiy3rkO .ant-alert-message {
+  color: #2189e5;
+}
+.TmOCIHFUEqljERUfq_aY {
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+  line-height: 24px;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+  margin-bottom: 24px;
+}
+.FijT8eY01qZ_10LX68JG {
+  margin-bottom: 24px;
+}
+.FijT8eY01qZ_10LX68JG .lwYJMkm6l65Ew9BB03hg {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 24px;
+  flex-wrap: wrap;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL25vdEJhY2tncm91bmQvYWUvdmVyaWZ5TXVsdGlsaW5ndWFsSW1wb3J0c01vZHVsZS5tb2R1bGUubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUdNLGlCQUFBO0VBQ0EsZUFBQTtFQUNBLDBCQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtFQUNBLGtCQUFBO0VBQ0Esb0JBQUE7QUFETjtBQVNBO0VBQ0UsZ0JBQUE7QUFQRjtBQU1BO0VBSU0sY0FBQTtBQVBOO0FBWUE7RUFDRSxnQkFBQTtFQUNBLGVBQUE7RUFDQSx5QkFBQTtFQUNBLGlCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxrQkFBQTtFQUNBLG9CQUFBO0VBRUEsbUJBQUE7QUFYRjtBQWNBO0VBQ0UsbUJBQUE7QUFaRjtBQVdBO0VBR0ksV0FBQTtFQUNBLGFBQUE7RUFDQSxxQ0FBQTtFQUNBLGNBQUE7RUFDQSxlQUFBO0FBWEoiLCJzb3VyY2VzQ29udGVudCI6WyIubW9kYWwge1xuICA6Z2xvYmFsIHtcbiAgICAuYW50LW1vZGFsLXRpdGxlIHtcbiAgICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgICAgZm9udC1zaXplOiAyMHB4O1xuICAgICAgY29sb3I6IHJnYmEoMCwgMCwgMCwgMC44OCk7XG4gICAgICBsaW5lLWhlaWdodDogMjhweDtcbiAgICAgIHRleHQtYWxpZ246IGxlZnQ7XG4gICAgICBmb250LXN0eWxlOiBub3JtYWw7XG4gICAgICB0ZXh0LXRyYW5zZm9ybTogbm9uZTtcbiAgICB9XG4gIH1cbn1cblxuLmNvbnRhaW5lciB7XG59XG5cbi5hbGVydCB7XG4gIG1hcmdpbi10b3A6IDE2cHg7XG4gIDpnbG9iYWwge1xuICAgIC5hbnQtYWxlcnQtbWVzc2FnZSB7XG4gICAgICBjb2xvcjogIzIxODllNTtcbiAgICB9XG4gIH1cbn1cblxuLmhlYWRlcnNUaXRsZSB7XG4gIGZvbnQtd2VpZ2h0OiA0MDA7XG4gIGZvbnQtc2l6ZTogMTRweDtcbiAgY29sb3I6IHJnYmEoMCwgMCwgMCwgMC41KTtcbiAgbGluZS1oZWlnaHQ6IDI0cHg7XG4gIHRleHQtYWxpZ246IGxlZnQ7XG4gIGZvbnQtc3R5bGU6IG5vcm1hbDtcbiAgdGV4dC10cmFuc2Zvcm06IG5vbmU7XG5cbiAgbWFyZ2luLWJvdHRvbTogMjRweDtcbn1cblxuLm11bHRpcGxlQ2hvaWNlIHtcbiAgbWFyZ2luLWJvdHRvbTogMjRweDtcbiAgLmNoZWNrYm94cyB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgZGlzcGxheTogZ3JpZDtcbiAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IHJlcGVhdCgzLCAxZnIpO1xuICAgIGdyaWQtZ2FwOiAyNHB4O1xuICAgIGZsZXgtd3JhcDogd3JhcDtcbiAgfVxufVxuIl0sInNvdXJjZVJvb3QiOiIifQ== */</style><style>.YezkX1bsuRLzG32QxqOg {
+  top: 0;
+  right: 0;
+  z-index: 1;
+  position: absolute;
+  font-family: OpenSans-Bold, OpenSans;
+  text-wrap: nowrap;
+}
+.YezkX1bsuRLzG32QxqOg .NO7_066UyH5F_wWr_CDK {
+  width: 100%;
+  height: 21px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  color: #ffffff;
+}
+.YezkX1bsuRLzG32QxqOg .NO7_066UyH5F_wWr_CDK .SVkdhKdtfHfJYdb3DeAC {
+  position: absolute;
+  left: 10px;
+  width: 15px;
+  height: 15px;
+}
+.YezkX1bsuRLzG32QxqOg .NO7_066UyH5F_wWr_CDK .SVkdhKdtfHfJYdb3DeAC g {
+  fill: antiquewhite;
+}
+.YezkX1bsuRLzG32QxqOg .NO7_066UyH5F_wWr_CDK .OCxxhXIFkJiVv3OW8Dki {
+  flex: 1;
+  text-align: center;
+}
+.YezkX1bsuRLzG32QxqOg .NO7_066UyH5F_wWr_CDK .eCi62QFGWYWFIdMKmoCY {
+  min-width: 45px;
+  height: 21px;
+  position: absolute;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #11bc57;
+  border-top-right-radius: 8px;
+  border-left: 1px solid #00b050;
+}
+.YezkX1bsuRLzG32QxqOg .jkiqcnRJY9Y07V6l96yO {
+  background: #2acc6f;
+}
+.YezkX1bsuRLzG32QxqOg .mUWOwtz1vBHUHo7ESj3H {
+  background: #fb5b28;
+}
+.YezkX1bsuRLzG32QxqOg .AJ8PVFZUE_njDcnN2VtU {
+  padding: 0 20px;
+  background: #ff8f00;
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.08), 0px 3px 14px 2px rgba(0, 0, 0, 0.04), 0px 8px 10px 1px rgba(0, 0, 0, 0.06);
+  border-radius: 22px;
+  margin-top: 6px px;
+  font-family: OpenSans-Bold, OpenSans;
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 38px;
+}
+.YezkX1bsuRLzG32QxqOg .AJ8PVFZUE_njDcnN2VtU svg {
+  margin-right: 8px;
+}
+.mrHXcmsfueCtCtmrCvhk .UN3gm0MT4HG3PapvB5Es {
+  width: 100%;
+  height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+  background: white !important;
+  color: rgba(0, 0, 0, 0.24);
+}
+.mrHXcmsfueCtCtmrCvhk .UN3gm0MT4HG3PapvB5Es svg {
+  margin-bottom: 4px;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  max-height: 500px;
+  overflow-x: hidden;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao::-webkit-scrollbar {
+  width: 4px;
+  height: 1px;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #f7f7f7;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background: #f7f7f7;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao > div {
+  min-height: auto;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 8px;
+  margin-bottom: 16px;
+  display: flex;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao > div:last-child {
+  border-bottom: 0;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao > div .irbDaxm05L90StDOVuFf {
+  width: 54px;
+  height: 54px;
+  border-radius: 4px 4px 4px 4px;
+  margin-right: 8px;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao > div .irbDaxm05L90StDOVuFf img {
+  width: 100%;
+  height: 100%;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao > div .BEeSRQYIPezxiElL7Y1u {
+  min-height: 54px;
+  font-weight: 400;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao > div .BEeSRQYIPezxiElL7Y1u .me9J0Ec7gRu7hAXPGzY_ {
+  color: #000000;
+  line-height: 16px;
+  text-align: left;
+  text-transform: none;
+  margin-right: 11px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  height: 34px;
+  width: 268px;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao > div .BEeSRQYIPezxiElL7Y1u .w6zpsVlllx6TB6P6tv7T {
+  width: 268px;
+  color: #ff0000;
+}
+.mrHXcmsfueCtCtmrCvhk .MWgMsOT14PgnlhzDhUao > div .h7v9y0cCilg07Xbu3ry8 {
+  display: flex;
+  align-items: center;
+}
+.mrHXcmsfueCtCtmrCvhk .u4k0WEcFhM_UruSqNh2H {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.mrHXcmsfueCtCtmrCvhk .u4k0WEcFhM_UruSqNh2H button {
+  margin-bottom: 8px;
+  height: 36px;
+}
+.mrHXcmsfueCtCtmrCvhk .u4k0WEcFhM_UruSqNh2H ._69nR89KKgxcsjj4aZVg {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: black !important;
+  font-weight: 400 !important;
+  font-size: 14px !important ;
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+.mrHXcmsfueCtCtmrCvhk .u4k0WEcFhM_UruSqNh2H ._69nR89KKgxcsjj4aZVg svg {
+  margin-right: 5px;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL25vdEJhY2tncm91bmQvYWUvYmF0Y2hJbXBvcnREb20ubW9kdWxlLmxlc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBdURBO0VBQ0UsTUFBQTtFQUNBLFFBQUE7RUFDQSxVQUFBO0VBQ0Esa0JBQUE7RUFDQSxvQ0FBQTtFQUNBLGlCQUFBO0FBdERGO0FBZ0RBO0VBU0ksV0FBQTtFQUNBLFlBQUE7RUFDQSwyQkFBQTtFQUNBLDRCQUFBO0VBRUEsYUFBQTtFQUNBLG1CQUFBO0VBQ0Esa0JBQUE7RUFFQSxjQUFBO0FBeERKO0FBc0NBO0VBeUJNLGtCQUFBO0VBQ0EsVUFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0FBNUROO0FBZ0NBO0VBOEJRLGtCQUFBO0FBM0RSO0FBNkJBO0VBbUNNLE9BQUE7RUFDQSxrQkFBQTtBQTdETjtBQXlCQTtFQXdDTSxlQUFBO0VBQ0EsWUFBQTtFQUVBLGtCQUFBO0VBQ0EsUUFBQTtFQUVBLGFBQUE7RUFDQSx1QkFBQTtFQUNBLG1CQUFBO0VBRUEseUJBQUE7RUFDQSw0QkFBQTtFQUNBLDhCQUFBO0FBakVOO0FBYUE7RUF5REksbUJBQUE7QUFuRUo7QUFVQTtFQTZESSxtQkFBQTtBQXBFSjtBQU9BO0VBaUVJLGVBQUE7RUFDQSxtQkFBQTtFQUNBLDRIQUFBO0VBRUEsbUJBQUE7RUFDQSxrQkFBQTtFQUNBLG9DQUFBO0VBQ0EsaUJBQUE7RUFDQSxjQUFBO0VBQ0EsZUFBQTtFQUNBLGlCQUFBO0FBdEVKO0FBTEE7RUE4RU0saUJBQUE7QUF0RU47QUEyRUE7RUFFSSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGFBQUE7RUFDQSxtQkFBQTtFQUNBLHVCQUFBO0VBQ0EsaUJBQUE7RUFDQSw0QkFBQTtFQUNBLDBCQUFBO0FBMUVKO0FBaUVBO0VBV00sa0JBQUE7QUF6RU47QUE4REE7RUFnQkksYUFBQTtFQUNBLG1CQUFBO0VBQ0Esc0JBQUE7RUFDQSxpQkFBQTtFQUNBLGtCQUFBO0FBM0VKO0FBNkVJO0VBQ0UsVUFBQTtFQUNBLFdBQUE7QUEzRU47QUE2RUk7RUFDRSxtQkFBQTtFQUNBLG9EQUFBO0VBQ0EsbUJBQUE7QUEzRU47QUE2RUk7RUFDRSxvREFBQTtFQUNBLG1CQUFBO0VBQ0EsbUJBQUE7QUEzRU47QUE4RUk7RUFDRSxnQkFBQTtFQUNBLCtCQUFBO0VBQ0EsWUFBQTtFQUNBLG1CQUFBO0VBQ0EsYUFBQTtBQTVFTjtBQTZFTTtFQUNFLGdCQUFBO0FBM0VSO0FBb0VJO0VBVUksV0FBQTtFQUNBLFlBQUE7RUFDQSw4QkFBQTtFQUNBLGlCQUFBO0FBM0VSO0FBOERJO0VBZU0sV0FBQTtFQUNBLFlBQUE7QUExRVY7QUEwREk7RUFxQkksZ0JBQUE7RUFDQSxnQkFBQTtFQUNBLGVBQUE7RUFDQSxhQUFBO0VBQ0Esc0JBQUE7RUFDQSx1QkFBQTtBQTVFUjtBQWtESTtFQTRCTSxjQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtFQUNBLG9CQUFBO0VBQ0Esa0JBQUE7RUFDQSxnQkFBQTtFQUNBLG9CQUFBO0VBQ0EscUJBQUE7RUFDQSw0QkFBQTtFQUNBLHVCQUFBO0VBQ0EsWUFBQTtFQUNBLFlBQUE7QUEzRVY7QUFvQ0k7RUEwQ00sWUFBQTtFQUNBLGNBQUE7QUEzRVY7QUFnQ0k7RUFnREksYUFBQTtFQUNBLG1CQUFBO0FBN0VSO0FBVEE7RUE0RkksV0FBQTtFQUNBLGFBQUE7RUFDQSx1QkFBQTtFQUNBLHNCQUFBO0FBaEZKO0FBZkE7RUFpR00sa0JBQUE7RUFDQSxZQUFBO0FBL0VOO0FBbkJBO0VBc0dNLGtDQUFBO0VBQ0EsMkJBQUE7RUFDQSx1QkFBQTtFQUNBLDJCQUFBO0VBQ0EsMkJBQUE7RUFDQSxvQ0FBQTtBQWhGTjtBQTNCQTtFQThHUSxpQkFBQTtBQWhGUiIsInNvdXJjZXNDb250ZW50IjpbIi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJIZWx2ZXRpY2FcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9VQi1IZWx2ZXRpY2EudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiT3BlblNhbnMtUmVndWxhclwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L09wZW5TYW5zLVJlZ3VsYXIudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiT3BlblNhbnMtQm9sZFwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L09wZW5TYW5zLUJvbGQudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiT3BlblNhbnMtU2VtaUJvbGRcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9PcGVuU2Fucy1TZW1pQm9sZC50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJIZWx2ZXRpY2FOZXVlLUJvbGRcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9IZWx2ZXRpY2FOZXVlLUJvbGQub3RmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwicHNsXCI7XG4vLyAgIHNyYzogdXJsKFwiaHR0cHM6Ly9pbWcuZHNlcnMuY29tL2ZvbnQvUFNMMDAyU1AudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiQXJpYWwtQm9sZE1UXCI7XG4vLyAgIHNyYzogdXJsKFwiaHR0cHM6Ly9pbWcuZHNlcnMuY29tL2ZvbnQvQXJpYWwtQm9sZE1ULm90ZlwiKTtcbi8vIH1cblxuLy8gQGZvbnQtZmFjZSB7XG4vLyAgIGZvbnQtZmFtaWx5OiBcIlJ1YmlrLUJvbGRJdGFsaWNcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9SdWJpay1Cb2xkSXRhbGljLnR0ZlwiKTtcbi8vIH1cblxuLy8gQGZvbnQtZmFjZSB7XG4vLyAgIGZvbnQtZmFtaWx5OiBcIlJ1YmlrLVJlZ3VsYXJcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9SdWJpay1SZWd1bGFyLnR0ZlwiKTtcbi8vIH1cblxuLy8gQGZvbnQtZmFjZSB7XG4vLyAgIGZvbnQtZmFtaWx5OiBcIlJ1YmlrLUJvbGRcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9SdWJpay1Cb2xkLnR0ZlwiKTtcbi8vIH1cblxuLy8gQGZvbnQtZmFjZSB7XG4vLyAgIGZvbnQtZmFtaWx5OiBcIlVidW50dS1Cb2xkXCI7XG4vLyAgIHNyYzogdXJsKFwiaHR0cHM6Ly9pbWcuZHNlcnMuY29tL2ZvbnQvVWJ1bnR1LUJvbGQudHRmXCIpO1xuLy8gfVxuXG4uaW1wb3J0X3Byb2R1Y3RfYnV0dG9uIHtcbiAgdG9wOiAwO1xuICByaWdodDogMDtcbiAgei1pbmRleDogMTtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBmb250LWZhbWlseTogT3BlblNhbnMtQm9sZCwgT3BlblNhbnM7XG4gIHRleHQtd3JhcDogbm93cmFwO1xuXG4gIC5oZWFkZXIge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGhlaWdodDogMjFweDtcbiAgICBib3JkZXItdG9wLWxlZnQtcmFkaXVzOiA4cHg7XG4gICAgYm9yZGVyLXRvcC1yaWdodC1yYWRpdXM6IDhweDtcblxuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG5cbiAgICBjb2xvcjogI2ZmZmZmZjtcblxuICAgIC8vIGJveC1zaGFkb3c6IDBweCA1cHggNXB4IC0zcHggcmdiYSgwLCAwLCAwLCAwLjA4KSxcbiAgICAvLyAgIDBweCAzcHggMTRweCAycHggcmdiYSgwLCAwLCAwLCAwLjA0KSwgMHB4IDhweCAxMHB4IDFweCByZ2JhKDAsIDAsIDAsIDAuMDYpO1xuICAgIC8vIGJvcmRlci1yYWRpdXM6IDRweDtcblxuICAgIC5pY29uIHtcbiAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgIGxlZnQ6IDEwcHg7XG4gICAgICB3aWR0aDogMTVweDtcbiAgICAgIGhlaWdodDogMTVweDtcbiAgICAgIGcge1xuICAgICAgICBmaWxsOiBhbnRpcXVld2hpdGU7XG4gICAgICB9XG4gICAgfVxuXG4gICAgLnRpdGxlIHtcbiAgICAgIGZsZXg6IDE7XG4gICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgfVxuXG4gICAgLnByaWNlIHtcbiAgICAgIG1pbi13aWR0aDogNDVweDtcbiAgICAgIGhlaWdodDogMjFweDtcblxuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgcmlnaHQ6IDA7XG5cbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG5cbiAgICAgIGJhY2tncm91bmQtY29sb3I6ICMxMWJjNTc7XG4gICAgICBib3JkZXItdG9wLXJpZ2h0LXJhZGl1czogOHB4O1xuICAgICAgYm9yZGVyLWxlZnQ6IDFweCBzb2xpZCAjMDBiMDUwO1xuICAgIH1cbiAgfVxuXG4gIC5zdWNjZWVkIHtcbiAgICBiYWNrZ3JvdW5kOiByZ2IoNDIsIDIwNCwgMTExKTtcbiAgfVxuXG4gIC5lcnJvciB7XG4gICAgYmFja2dyb3VuZDogcmdiKDI1MSwgOTEsIDQwKTtcbiAgfVxuXG4gIC5idXR0b24ge1xuICAgIHBhZGRpbmc6IDAgMjBweDtcbiAgICBiYWNrZ3JvdW5kOiAjZmY4ZjAwO1xuICAgIGJveC1zaGFkb3c6IDBweCA1cHggNXB4IC0zcHggcmdiYSgwLCAwLCAwLCAwLjA4KSxcbiAgICAgIDBweCAzcHggMTRweCAycHggcmdiYSgwLCAwLCAwLCAwLjA0KSwgMHB4IDhweCAxMHB4IDFweCByZ2JhKDAsIDAsIDAsIDAuMDYpO1xuICAgIGJvcmRlci1yYWRpdXM6IDIycHg7XG4gICAgbWFyZ2luLXRvcDogNnB4IHB4O1xuICAgIGZvbnQtZmFtaWx5OiBPcGVuU2Fucy1Cb2xkLCBPcGVuU2FucztcbiAgICBmb250LXdlaWdodDogYm9sZDtcbiAgICBjb2xvcjogI2ZmZmZmZjtcbiAgICBmb250LXNpemU6IDE2cHg7XG4gICAgbGluZS1oZWlnaHQ6IDM4cHg7XG5cbiAgICBzdmcge1xuICAgICAgbWFyZ2luLXJpZ2h0OiA4cHg7XG4gICAgfVxuICB9XG59XG5cbi5iYXRjaENvbnRhaW5lciB7XG4gIC5ub0RhdGEge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGhlaWdodDogODZweDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgZmxleC1mbG93OiBjb2x1bW47XG4gICAgYmFja2dyb3VuZDogd2hpdGUgIWltcG9ydGFudDtcbiAgICBjb2xvcjogcmdiYSgwLCAwLCAwLCAwLjI0KTtcbiAgICBzdmcge1xuICAgICAgbWFyZ2luLWJvdHRvbTogNHB4O1xuICAgIH1cbiAgfVxuXG4gIC5iYXRjaENvbnRhaW5lcl9ib3gge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIG1heC1oZWlnaHQ6IDUwMHB4O1xuICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcblxuICAgICY6Oi13ZWJraXQtc2Nyb2xsYmFyIHtcbiAgICAgIHdpZHRoOiA0cHg7XG4gICAgICBoZWlnaHQ6IDFweDtcbiAgICB9XG4gICAgJjo6LXdlYmtpdC1zY3JvbGxiYXItdGh1bWIge1xuICAgICAgYm9yZGVyLXJhZGl1czogMTBweDtcbiAgICAgIC13ZWJraXQtYm94LXNoYWRvdzogaW5zZXQgMCAwIDVweCByZ2JhKDAsIDAsIDAsIDAuMik7XG4gICAgICBiYWNrZ3JvdW5kOiAjZjdmN2Y3O1xuICAgIH1cbiAgICAmOjotd2Via2l0LXNjcm9sbGJhci10cmFjayB7XG4gICAgICAtd2Via2l0LWJveC1zaGFkb3c6IGluc2V0IDAgMCA1cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgYm9yZGVyLXJhZGl1czogMTBweDtcbiAgICAgIGJhY2tncm91bmQ6ICNmN2Y3Zjc7XG4gICAgfVxuXG4gICAgJiA+IGRpdiB7XG4gICAgICBtaW4taGVpZ2h0OiBhdXRvO1xuICAgICAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjA0KTtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIG1hcmdpbi1ib3R0b206IDE2cHg7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgJjpsYXN0LWNoaWxkIHtcbiAgICAgICAgYm9yZGVyLWJvdHRvbTogMDtcbiAgICAgIH1cbiAgICAgIC5pbWcge1xuICAgICAgICB3aWR0aDogNTRweDtcbiAgICAgICAgaGVpZ2h0OiA1NHB4O1xuICAgICAgICBib3JkZXItcmFkaXVzOiA0cHggNHB4IDRweCA0cHg7XG4gICAgICAgIG1hcmdpbi1yaWdodDogOHB4O1xuICAgICAgICBpbWcge1xuICAgICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgfVxuICAgICAgfVxuXG4gICAgICAudGV4dCB7XG4gICAgICAgIG1pbi1oZWlnaHQ6IDU0cHg7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiA0MDA7XG4gICAgICAgIGZvbnQtc2l6ZTogMTRweDtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIC5uYW1lIHtcbiAgICAgICAgICBjb2xvcjogIzAwMDAwMDtcbiAgICAgICAgICBsaW5lLWhlaWdodDogMTZweDtcbiAgICAgICAgICB0ZXh0LWFsaWduOiBsZWZ0O1xuICAgICAgICAgIHRleHQtdHJhbnNmb3JtOiBub25lO1xuICAgICAgICAgIG1hcmdpbi1yaWdodDogMTFweDtcbiAgICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICAgIGRpc3BsYXk6IC13ZWJraXQtYm94O1xuICAgICAgICAgIC13ZWJraXQtbGluZS1jbGFtcDogMjtcbiAgICAgICAgICAtd2Via2l0LWJveC1vcmllbnQ6IHZlcnRpY2FsO1xuICAgICAgICAgIHRleHQtb3ZlcmZsb3c6IGVsbGlwc2lzO1xuICAgICAgICAgIGhlaWdodDogMzRweDtcbiAgICAgICAgICB3aWR0aDogMjY4cHg7XG4gICAgICAgIH1cbiAgICAgICAgLmVyclRleHQge1xuICAgICAgICAgIHdpZHRoOiAyNjhweDtcbiAgICAgICAgICBjb2xvcjogI2ZmMDAwMDtcbiAgICAgICAgfVxuICAgICAgfVxuXG4gICAgICAuc3RhdHVzIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgIH1cbiAgICB9XG4gIH1cblxuICAuYnRuIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgYnV0dG9uIHtcbiAgICAgIG1hcmdpbi1ib3R0b206IDhweDtcbiAgICAgIGhlaWdodDogMzZweDtcbiAgICB9XG5cbiAgICAuY2xlYXIge1xuICAgICAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQgIWltcG9ydGFudDtcbiAgICAgIGJveC1zaGFkb3c6IG5vbmUgIWltcG9ydGFudDtcbiAgICAgIGNvbG9yOiBibGFjayAhaW1wb3J0YW50O1xuICAgICAgZm9udC13ZWlnaHQ6IDQwMCAhaW1wb3J0YW50O1xuICAgICAgZm9udC1zaXplOiAxNHB4ICFpbXBvcnRhbnQgO1xuICAgICAgY29sb3I6IHJnYmEoMCwgMCwgMCwgMC41KSAhaW1wb3J0YW50O1xuXG4gICAgICBzdmcge1xuICAgICAgICBtYXJnaW4tcmlnaHQ6IDVweDtcbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdLCJzb3VyY2VSb290IjoiIn0= */</style><style>.vsK1fKu8GYkRlcoudhIh {
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  z-index: 2;
+  font-family: OpenSans-Bold, OpenSans;
+}
+.vsK1fKu8GYkRlcoudhIh .kNT2mFuNFTBP9Hi7bAC8 {
+  width: 100%;
+  height: 21px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  color: #ffffff;
+}
+.vsK1fKu8GYkRlcoudhIh .kNT2mFuNFTBP9Hi7bAC8 .mZYCnZhor58rYAUqK4ng {
+  position: absolute;
+  left: 10px;
+  width: 15px;
+  height: 15px;
+}
+.vsK1fKu8GYkRlcoudhIh .kNT2mFuNFTBP9Hi7bAC8 .mZYCnZhor58rYAUqK4ng g {
+  fill: antiquewhite;
+}
+.vsK1fKu8GYkRlcoudhIh .kNT2mFuNFTBP9Hi7bAC8 .ngtRvSjrm9yOTPcnJvii {
+  flex: 1;
+  text-align: center;
+}
+.vsK1fKu8GYkRlcoudhIh .kNT2mFuNFTBP9Hi7bAC8 .rd0GcjHkbm37tIo1UZkh {
+  min-width: 45px;
+  height: 21px;
+  position: absolute;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #11bc57;
+  border-top-right-radius: 8px;
+  border-left: 1px solid #00b050;
+}
+.vsK1fKu8GYkRlcoudhIh .xqJbzeH_Z6QRQ9J1z5UV {
+  background: #2acc6f;
+}
+.vsK1fKu8GYkRlcoudhIh .mmXPLYRJZx8YRhtuZOzD {
+  background: #fb5b28;
+}
+.vsK1fKu8GYkRlcoudhIh .jaTHVmG4yPmCMGNQaqic {
+  display: none;
+  width: 98%;
+  height: 32px;
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.08), 0px 3px 14px 2px rgba(0, 0, 0, 0.04), 0px 8px 10px 1px rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-family: OpenSans-Bold, OpenSans;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 17px;
+}
+.vsK1fKu8GYkRlcoudhIh .jaTHVmG4yPmCMGNQaqic svg {
+  margin-right: 8px;
+}
+.vsK1fKu8GYkRlcoudhIh .lXitMkUNrxq6Y3RWLqKg {
+  position: absolute;
+  top: 34px;
+  left: 11px;
+  z-index: 99999999;
+}
+.vsK1fKu8GYkRlcoudhIh .lXitMkUNrxq6Y3RWLqKg input {
+  width: 18px;
+  height: 18px;
+}
+.NlPS3pzpp0kyiw7u3qbU {
+  width: 200px;
+  height: 36px;
+  background: #ff8f00;
+  border-radius: 8px 8px 8px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20px;
+}
+.NlPS3pzpp0kyiw7u3qbU > div {
+  margin-right: 15px;
+}
+.NlPS3pzpp0kyiw7u3qbU button {
+  background: #ff8f00;
+  color: #ffffff;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL25vdEJhY2tncm91bmQvYWUvYWVMaXN0RG9tLm1vZHVsZS5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQXVEQTtFQUNFLFdBQUE7RUFHQSxNQUFBO0VBQ0EsT0FBQTtFQUNBLFFBQUE7RUFFQSxhQUFBO0VBQ0EsbUJBQUE7RUFDQSxzQkFBQTtFQUVBLGtCQUFBO0VBQ0EsVUFBQTtFQUNBLG9DQUFBO0FBMURGO0FBNENBO0VBaUJJLFdBQUE7RUFDQSxZQUFBO0VBQ0EsMkJBQUE7RUFDQSw0QkFBQTtFQUVBLGFBQUE7RUFDQSxtQkFBQTtFQUNBLGtCQUFBO0VBRUEsY0FBQTtBQTVESjtBQWtDQTtFQWlDTSxrQkFBQTtFQUNBLFVBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtBQWhFTjtBQTRCQTtFQXNDUSxrQkFBQTtBQS9EUjtBQXlCQTtFQTJDTSxPQUFBO0VBQ0Esa0JBQUE7QUFqRU47QUFxQkE7RUFnRE0sZUFBQTtFQUNBLFlBQUE7RUFFQSxrQkFBQTtFQUNBLFFBQUE7RUFFQSxhQUFBO0VBQ0EsdUJBQUE7RUFDQSxtQkFBQTtFQUVBLHlCQUFBO0VBQ0EsNEJBQUE7RUFDQSw4QkFBQTtBQXJFTjtBQVNBO0VBaUVJLG1CQUFBO0FBdkVKO0FBTUE7RUFxRUksbUJBQUE7QUF4RUo7QUFHQTtFQXlFSSxhQUFBO0VBQ0EsVUFBQTtFQUNBLFlBQUE7RUFDQSw0SEFBQTtFQUVBLGtCQUFBO0VBQ0EsZUFBQTtFQUVBLGVBQUE7RUFDQSxvQ0FBQTtFQUNBLGlCQUFBO0VBQ0EsY0FBQTtFQUNBLGlCQUFBO0FBM0VKO0FBVkE7RUF3Rk0saUJBQUE7QUEzRU47QUFiQTtFQTZGSSxrQkFBQTtFQUNBLFNBQUE7RUFDQSxVQUFBO0VBQ0EsaUJBQUE7QUE3RUo7QUFuQkE7RUFrR00sV0FBQTtFQUNBLFlBQUE7QUE1RU47QUFpRkE7RUFDRSxZQUFBO0VBQ0EsWUFBQTtFQUNBLG1CQUFBO0VBQ0EsOEJBQUE7RUFDQSxhQUFBO0VBQ0EsbUJBQUE7RUFDQSx1QkFBQTtFQUVBLGVBQUE7RUFDQSxTQUFBO0VBQ0EsMkJBQUE7RUFDQSxZQUFBO0FBaEZGO0FBa0ZFO0VBQ0Usa0JBQUE7QUFoRko7QUFpRUE7RUFrQkksbUJBQUE7RUFDQSxjQUFBO0FBaEZKIiwic291cmNlc0NvbnRlbnQiOlsiLy8gQGZvbnQtZmFjZSB7XG4vLyAgIGZvbnQtZmFtaWx5OiBcIkhlbHZldGljYVwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L1VCLUhlbHZldGljYS50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJPcGVuU2Fucy1SZWd1bGFyXCI7XG4vLyAgIHNyYzogdXJsKFwiaHR0cHM6Ly9pbWcuZHNlcnMuY29tL2ZvbnQvT3BlblNhbnMtUmVndWxhci50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJPcGVuU2Fucy1Cb2xkXCI7XG4vLyAgIHNyYzogdXJsKFwiaHR0cHM6Ly9pbWcuZHNlcnMuY29tL2ZvbnQvT3BlblNhbnMtQm9sZC50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJPcGVuU2Fucy1TZW1pQm9sZFwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L09wZW5TYW5zLVNlbWlCb2xkLnR0ZlwiKTtcbi8vIH1cblxuLy8gQGZvbnQtZmFjZSB7XG4vLyAgIGZvbnQtZmFtaWx5OiBcIkhlbHZldGljYU5ldWUtQm9sZFwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L0hlbHZldGljYU5ldWUtQm9sZC5vdGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJwc2xcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9QU0wwMDJTUC50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJBcmlhbC1Cb2xkTVRcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9BcmlhbC1Cb2xkTVQub3RmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiUnViaWstQm9sZEl0YWxpY1wiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L1J1YmlrLUJvbGRJdGFsaWMudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiUnViaWstUmVndWxhclwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L1J1YmlrLVJlZ3VsYXIudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiUnViaWstQm9sZFwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L1J1YmlrLUJvbGQudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiVWJ1bnR1LUJvbGRcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9VYnVudHUtQm9sZC50dGZcIik7XG4vLyB9XG5cbi5pbXBvcnRfcHJvZHVjdF9idXR0b24ge1xuICB3aWR0aDogMTAwJTtcbiAgLy8gYm9yZGVyOiAxcHggc29saWQgc2FsbW9uO1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHRvcDogMDtcbiAgbGVmdDogMDtcbiAgcmlnaHQ6IDA7XG5cbiAgZGlzcGxheTogZmxleDtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcblxuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHotaW5kZXg6IDI7XG4gIGZvbnQtZmFtaWx5OiBPcGVuU2Fucy1Cb2xkLCBPcGVuU2FucztcblxuICAuaGVhZGVyIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDIxcHg7XG4gICAgYm9yZGVyLXRvcC1sZWZ0LXJhZGl1czogOHB4O1xuICAgIGJvcmRlci10b3AtcmlnaHQtcmFkaXVzOiA4cHg7XG5cbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuXG4gICAgY29sb3I6ICNmZmZmZmY7XG5cbiAgICAvLyBib3gtc2hhZG93OiAwcHggNXB4IDVweCAtM3B4IHJnYmEoMCwgMCwgMCwgMC4wOCksXG4gICAgLy8gICAwcHggM3B4IDE0cHggMnB4IHJnYmEoMCwgMCwgMCwgMC4wNCksIDBweCA4cHggMTBweCAxcHggcmdiYSgwLCAwLCAwLCAwLjA2KTtcbiAgICAvLyBib3JkZXItcmFkaXVzOiA0cHg7XG5cbiAgICAuaWNvbiB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBsZWZ0OiAxMHB4O1xuICAgICAgd2lkdGg6IDE1cHg7XG4gICAgICBoZWlnaHQ6IDE1cHg7XG4gICAgICBnIHtcbiAgICAgICAgZmlsbDogYW50aXF1ZXdoaXRlO1xuICAgICAgfVxuICAgIH1cblxuICAgIC50aXRsZSB7XG4gICAgICBmbGV4OiAxO1xuICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIH1cblxuICAgIC5wcmljZSB7XG4gICAgICBtaW4td2lkdGg6IDQ1cHg7XG4gICAgICBoZWlnaHQ6IDIxcHg7XG5cbiAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgIHJpZ2h0OiAwO1xuXG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuXG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjMTFiYzU3O1xuICAgICAgYm9yZGVyLXRvcC1yaWdodC1yYWRpdXM6IDhweDtcbiAgICAgIGJvcmRlci1sZWZ0OiAxcHggc29saWQgIzAwYjA1MDtcbiAgICB9XG4gIH1cblxuICAuc3VjY2VlZCB7XG4gICAgYmFja2dyb3VuZDogcmdiKDQyLCAyMDQsIDExMSk7XG4gIH1cblxuICAuZXJyb3Ige1xuICAgIGJhY2tncm91bmQ6IHJnYigyNTEsIDkxLCA0MCk7XG4gIH1cblxuICAuYnV0dG9uIHtcbiAgICBkaXNwbGF5OiBub25lO1xuICAgIHdpZHRoOiA5OCU7XG4gICAgaGVpZ2h0OiAzMnB4O1xuICAgIGJveC1zaGFkb3c6IDBweCA1cHggNXB4IC0zcHggcmdiYSgwLCAwLCAwLCAwLjA4KSxcbiAgICAgIDBweCAzcHggMTRweCAycHggcmdiYSgwLCAwLCAwLCAwLjA0KSwgMHB4IDhweCAxMHB4IDFweCByZ2JhKDAsIDAsIDAsIDAuMDYpO1xuICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICBtYXJnaW4tdG9wOiA2cHg7XG5cbiAgICBmb250LXNpemU6IDEycHg7XG4gICAgZm9udC1mYW1pbHk6IE9wZW5TYW5zLUJvbGQsIE9wZW5TYW5zO1xuICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgIGNvbG9yOiAjZmZmZmZmO1xuICAgIGxpbmUtaGVpZ2h0OiAxN3B4O1xuXG4gICAgc3ZnIHtcbiAgICAgIG1hcmdpbi1yaWdodDogOHB4O1xuICAgIH1cbiAgfVxuXG4gIC5jaGVja2JveCB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHRvcDogMzRweDtcbiAgICBsZWZ0OiAxMXB4O1xuICAgIHotaW5kZXg6IDk5OTk5OTk5O1xuICAgIGlucHV0IHtcbiAgICAgIHdpZHRoOiAxOHB4O1xuICAgICAgaGVpZ2h0OiAxOHB4O1xuICAgIH1cbiAgfVxufVxuXG4uYWVMaXN0QmF0Y2hCdG5Cb3gge1xuICB3aWR0aDogMjAwcHg7XG4gIGhlaWdodDogMzZweDtcbiAgYmFja2dyb3VuZDogI2ZmOGYwMDtcbiAgYm9yZGVyLXJhZGl1czogOHB4IDhweCA4cHggOHB4O1xuICBkaXNwbGF5OiBmbGV4O1xuICBhbGlnbi1pdGVtczogY2VudGVyO1xuICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcblxuICBwb3NpdGlvbjogZml4ZWQ7XG4gIGxlZnQ6IDUwJTtcbiAgdHJhbnNmb3JtOiB0cmFuc2xhdGVYKC01MCUpO1xuICBib3R0b206IDIwcHg7XG5cbiAgJiA+IGRpdiB7XG4gICAgbWFyZ2luLXJpZ2h0OiAxNXB4O1xuICB9XG4gIGJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZDogI2ZmOGYwMDtcbiAgICBjb2xvcjogI2ZmZmZmZjtcbiAgfVxufVxuIl0sInNvdXJjZVJvb3QiOiIifQ== */</style><style>.WeMhfmnyjZApMUugIiUr {
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  z-index: 2;
+  font-family: OpenSans-Bold, OpenSans;
+}
+.WeMhfmnyjZApMUugIiUr .D5xruGoBdBD8fjbDpn0T {
+  width: 100%;
+  height: 21px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  color: #ffffff;
+}
+.WeMhfmnyjZApMUugIiUr .D5xruGoBdBD8fjbDpn0T .z568v0OExVt7aKAe_qwb {
+  position: absolute;
+  left: 10px;
+  width: 15px;
+  height: 15px;
+}
+.WeMhfmnyjZApMUugIiUr .D5xruGoBdBD8fjbDpn0T .z568v0OExVt7aKAe_qwb g {
+  fill: antiquewhite;
+}
+.WeMhfmnyjZApMUugIiUr .D5xruGoBdBD8fjbDpn0T .YvPjV_lQ9LjrwsRvkSAx {
+  flex: 1;
+  text-align: center;
+}
+.WeMhfmnyjZApMUugIiUr .D5xruGoBdBD8fjbDpn0T .w9aSxjg6VdZA_08E8a_P {
+  min-width: 45px;
+  height: 21px;
+  position: absolute;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #11bc57;
+  border-top-right-radius: 8px;
+  border-left: 1px solid #00b050;
+}
+.WeMhfmnyjZApMUugIiUr .p5jxubOfKVHADwdR4sVq {
+  background: #2acc6f;
+}
+.WeMhfmnyjZApMUugIiUr .BiGR8PrJwIl3jPvAzTRy {
+  background: #fb5b28;
+}
+.WeMhfmnyjZApMUugIiUr .ddn6LFwb35gnBPJ__Ma4 {
+  display: none;
+  width: 98%;
+  height: 32px;
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.08), 0px 3px 14px 2px rgba(0, 0, 0, 0.04), 0px 8px 10px 1px rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-family: OpenSans-Bold, OpenSans;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 17px;
+}
+.WeMhfmnyjZApMUugIiUr .ddn6LFwb35gnBPJ__Ma4 svg {
+  margin-right: 8px;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9jb21wb25lbnRzL25vdEJhY2tncm91bmQvYWUvcHJvZHVjdERPTS5tb2R1bGUubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUF1REE7RUFDRSxXQUFBO0VBR0EsTUFBQTtFQUNBLE9BQUE7RUFDQSxRQUFBO0VBRUEsYUFBQTtFQUNBLG1CQUFBO0VBQ0Esc0JBQUE7RUFFQSxrQkFBQTtFQUNBLFVBQUE7RUFDQSxvQ0FBQTtBQTFERjtBQTRDQTtFQWlCSSxXQUFBO0VBQ0EsWUFBQTtFQUNBLDJCQUFBO0VBQ0EsNEJBQUE7RUFFQSxhQUFBO0VBQ0EsbUJBQUE7RUFDQSxrQkFBQTtFQUVBLGNBQUE7QUE1REo7QUFrQ0E7RUFpQ00sa0JBQUE7RUFDQSxVQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7QUFoRU47QUE0QkE7RUFzQ1Esa0JBQUE7QUEvRFI7QUF5QkE7RUEyQ00sT0FBQTtFQUNBLGtCQUFBO0FBakVOO0FBcUJBO0VBZ0RNLGVBQUE7RUFDQSxZQUFBO0VBRUEsa0JBQUE7RUFDQSxRQUFBO0VBRUEsYUFBQTtFQUNBLHVCQUFBO0VBQ0EsbUJBQUE7RUFFQSx5QkFBQTtFQUNBLDRCQUFBO0VBQ0EsOEJBQUE7QUFyRU47QUFTQTtFQWlFSSxtQkFBQTtBQXZFSjtBQU1BO0VBcUVJLG1CQUFBO0FBeEVKO0FBR0E7RUF5RUksYUFBQTtFQUNBLFVBQUE7RUFDQSxZQUFBO0VBQ0EsNEhBQUE7RUFFQSxrQkFBQTtFQUNBLGVBQUE7RUFFQSxlQUFBO0VBQ0Esb0NBQUE7RUFDQSxpQkFBQTtFQUNBLGNBQUE7RUFDQSxpQkFBQTtBQTNFSjtBQVZBO0VBd0ZNLGlCQUFBO0FBM0VOIiwic291cmNlc0NvbnRlbnQiOlsiLy8gQGZvbnQtZmFjZSB7XG4vLyAgIGZvbnQtZmFtaWx5OiBcIkhlbHZldGljYVwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L1VCLUhlbHZldGljYS50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJPcGVuU2Fucy1SZWd1bGFyXCI7XG4vLyAgIHNyYzogdXJsKFwiaHR0cHM6Ly9pbWcuZHNlcnMuY29tL2ZvbnQvT3BlblNhbnMtUmVndWxhci50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJPcGVuU2Fucy1Cb2xkXCI7XG4vLyAgIHNyYzogdXJsKFwiaHR0cHM6Ly9pbWcuZHNlcnMuY29tL2ZvbnQvT3BlblNhbnMtQm9sZC50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJPcGVuU2Fucy1TZW1pQm9sZFwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L09wZW5TYW5zLVNlbWlCb2xkLnR0ZlwiKTtcbi8vIH1cblxuLy8gQGZvbnQtZmFjZSB7XG4vLyAgIGZvbnQtZmFtaWx5OiBcIkhlbHZldGljYU5ldWUtQm9sZFwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L0hlbHZldGljYU5ldWUtQm9sZC5vdGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJwc2xcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9QU0wwMDJTUC50dGZcIik7XG4vLyB9XG5cbi8vIEBmb250LWZhY2Uge1xuLy8gICBmb250LWZhbWlseTogXCJBcmlhbC1Cb2xkTVRcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9BcmlhbC1Cb2xkTVQub3RmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiUnViaWstQm9sZEl0YWxpY1wiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L1J1YmlrLUJvbGRJdGFsaWMudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiUnViaWstUmVndWxhclwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L1J1YmlrLVJlZ3VsYXIudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiUnViaWstQm9sZFwiO1xuLy8gICBzcmM6IHVybChcImh0dHBzOi8vaW1nLmRzZXJzLmNvbS9mb250L1J1YmlrLUJvbGQudHRmXCIpO1xuLy8gfVxuXG4vLyBAZm9udC1mYWNlIHtcbi8vICAgZm9udC1mYW1pbHk6IFwiVWJ1bnR1LUJvbGRcIjtcbi8vICAgc3JjOiB1cmwoXCJodHRwczovL2ltZy5kc2Vycy5jb20vZm9udC9VYnVudHUtQm9sZC50dGZcIik7XG4vLyB9XG5cbi5pbXBvcnRfcHJvZHVjdF9idXR0b24ge1xuICB3aWR0aDogMTAwJTtcbiAgLy8gYm9yZGVyOiAxcHggc29saWQgc2FsbW9uO1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHRvcDogMDtcbiAgbGVmdDogMDtcbiAgcmlnaHQ6IDA7XG5cbiAgZGlzcGxheTogZmxleDtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcblxuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHotaW5kZXg6IDI7XG4gIGZvbnQtZmFtaWx5OiBPcGVuU2Fucy1Cb2xkLCBPcGVuU2FucztcblxuICAuaGVhZGVyIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDIxcHg7XG4gICAgYm9yZGVyLXRvcC1sZWZ0LXJhZGl1czogOHB4O1xuICAgIGJvcmRlci10b3AtcmlnaHQtcmFkaXVzOiA4cHg7XG5cbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuXG4gICAgY29sb3I6ICNmZmZmZmY7XG5cbiAgICAvLyBib3gtc2hhZG93OiAwcHggNXB4IDVweCAtM3B4IHJnYmEoMCwgMCwgMCwgMC4wOCksXG4gICAgLy8gICAwcHggM3B4IDE0cHggMnB4IHJnYmEoMCwgMCwgMCwgMC4wNCksIDBweCA4cHggMTBweCAxcHggcmdiYSgwLCAwLCAwLCAwLjA2KTtcbiAgICAvLyBib3JkZXItcmFkaXVzOiA0cHg7XG5cbiAgICAuaWNvbiB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBsZWZ0OiAxMHB4O1xuICAgICAgd2lkdGg6IDE1cHg7XG4gICAgICBoZWlnaHQ6IDE1cHg7XG4gICAgICBnIHtcbiAgICAgICAgZmlsbDogYW50aXF1ZXdoaXRlO1xuICAgICAgfVxuICAgIH1cblxuICAgIC50aXRsZSB7XG4gICAgICBmbGV4OiAxO1xuICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIH1cblxuICAgIC5wcmljZSB7XG4gICAgICBtaW4td2lkdGg6IDQ1cHg7XG4gICAgICBoZWlnaHQ6IDIxcHg7XG5cbiAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgIHJpZ2h0OiAwO1xuXG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuXG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjMTFiYzU3O1xuICAgICAgYm9yZGVyLXRvcC1yaWdodC1yYWRpdXM6IDhweDtcbiAgICAgIGJvcmRlci1sZWZ0OiAxcHggc29saWQgIzAwYjA1MDtcbiAgICB9XG4gIH1cblxuICAuc3VjY2VlZCB7XG4gICAgYmFja2dyb3VuZDogcmdiKDQyLCAyMDQsIDExMSk7XG4gIH1cblxuICAuZXJyb3Ige1xuICAgIGJhY2tncm91bmQ6IHJnYigyNTEsIDkxLCA0MCk7XG4gIH1cblxuICAuYnV0dG9uIHtcbiAgICBkaXNwbGF5OiBub25lO1xuICAgIHdpZHRoOiA5OCU7XG4gICAgaGVpZ2h0OiAzMnB4O1xuICAgIGJveC1zaGFkb3c6IDBweCA1cHggNXB4IC0zcHggcmdiYSgwLCAwLCAwLCAwLjA4KSxcbiAgICAgIDBweCAzcHggMTRweCAycHggcmdiYSgwLCAwLCAwLCAwLjA0KSwgMHB4IDhweCAxMHB4IDFweCByZ2JhKDAsIDAsIDAsIDAuMDYpO1xuICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICBtYXJnaW4tdG9wOiA2cHg7XG5cbiAgICBmb250LXNpemU6IDEycHg7XG4gICAgZm9udC1mYW1pbHk6IE9wZW5TYW5zLUJvbGQsIE9wZW5TYW5zO1xuICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgIGNvbG9yOiAjZmZmZmZmO1xuICAgIGxpbmUtaGVpZ2h0OiAxN3B4O1xuXG4gICAgc3ZnIHtcbiAgICAgIG1hcmdpbi1yaWdodDogOHB4O1xuICAgIH1cbiAgfVxufVxuIl0sInNvdXJjZVJvb3QiOiIifQ== */</style><style>#bw-fallback{position:fixed;z-index:999;right:14px;bottom:14px;font:12px/1.4 system-ui,sans-serif;color:#fff;background:#17202de8;border:1px solid #697583;border-radius:10px;padding:8px 12px;text-decoration:none;opacity:.83}#bw-fallback:hover{opacity:1}</style></head>
+<body>
+<canvas aria-label="surf_beginner game" data-engine="three.js r180" height="971" id="game" width="1875"></canvas>
+<div id="hud">
+<div class="server-info"><span id="map-name">surf_beginner</span><small>66 tick <span class="hud-separator">/</span> Source-style surf <span hidden="" id="fps"></span></small><small id="room-hud-label">Solo</small></div>
+<div class="top-right"><span id="mode">NORMAL + AUTO BHOP</span><small id="best">Personal best: —</small></div>
+<div aria-label="Course progress" class="route"><span id="route-start">S1</span><span id="route-cp1">S2</span><span id="route-cp2">S3</span><span id="route-cp3">S4</span><span id="route-cp4">S5</span><span id="route-cp5">S6</span><span id="route-cp6">S7</span><span id="route-finish">Finish</span></div>
+<div aria-hidden="true" id="crosshair"></div>
+<div id="telemetry"><div id="run-time">00:00.000</div><div class="speed-line"><strong id="speed">0</strong><span> units/s</span></div><div id="run-status">In start zone</div><div id="section"></div><div id="ranked-run-status" role="status"></div></div>
+<div aria-label="Centre speed" hidden="" id="center-speed-hud"><strong id="center-speed">0</strong><small>units/s</small></div>
+<section aria-label="Checkpoint comparison" hidden="" id="split-comparison"><span id="split-comparison-label"></span><div><span>PB <strong id="split-pb">—</strong></span><span>WR <strong id="split-wr">—</strong></span></div></section>
+<div aria-hidden="true" id="keys"><span data-key="w">W</span><div><span data-key="a">A</span><span data-key="s">S</span><span data-key="d">D</span></div></div>
+<div id="toast" role="status"></div>
+<div class="bottom-right" id="shortcut-hint">R restart   Esc menu</div>
+<div hidden="" id="turn-speed-hud"></div>
+<pre hidden="" id="diagnostics"></pre>
+</div>
+<div class="screen lobby-mode" data-in-game="false" data-preview="beginner" id="menu">
+<section aria-labelledby="brand-title" class="main-menu">
+<div class="game-title"><svg aria-hidden="true" class="surfd-mark" viewbox="0 0 64 48"><path d="M4 36 27 10h16L20 36Zm21 0L48 10h12L37 36Z" fill="currentColor"></path><path d="M4 44h56" stroke="currentColor" stroke-width="2"></path></svg><span id="brand-title">surfd<span class="brand-period">.</span></span><small>Surf the web.</small></div>
+<div class="menu-map">
+<p class="menu-eyebrow">Current map</p>
+<h1 id="menu-title">surf_beginner</h1>
+<div class="map-credit">by Kiiru · Tier 1 · Staged · 7 stages</div>
+</div>
+<div class="menu-primary">
+<nav aria-label="Game menu" class="menu-actions">
+<button aria-current="page" class="lobby-nav-current" id="home">Play surf <span aria-hidden="true">›</span></button>
+<button class="button-primary" id="play">Play</button>
+<button id="maps">Change map</button>
+<button id="leaderboard" type="button">Records</button><button id="options">Settings</button>
+<button id="account" title="Sign in to save ranked times" type="button">Sign in</button><a class="button-link discord-link" href="https://discord.gg/D5CYH7SBs6" id="discord" rel="noopener noreferrer" target="_blank" title="Join the Surfd Discord server (opens in a new tab)"><svg aria-hidden="true" class="ui-icon" viewbox="0 0 24 24"><path d="M19.7 5.1a18.4 18.4 0 0 0-4.5-1.4l-.6 1.2a16.7 16.7 0 0 0-5.2 0l-.6-1.2a18.4 18.4 0 0 0-4.5 1.4C1.4 9.4.6 13.6 1 17.7a18.5 18.5 0 0 0 5.5 2.8l1.1-1.8-1.7-.8.4-.3a13.6 13.6 0 0 0 11.4 0l.4.3-1.7.8 1.1 1.8a18.5 18.5 0 0 0 5.5-2.8c.5-4.8-.9-9-3.3-12.6ZM8.5 14.9c-1 0-1.8-1-1.8-2.1s.8-2.1 1.8-2.1 1.8 1 1.8 2.1-.8 2.1-1.8 2.1Zm7 0c-1 0-1.8-1-1.8-2.1s.8-2.1 1.8-2.1 1.8 1 1.8 2.1-.8 2.1-1.8 2.1Z" fill="currentColor"></path></svg><span>Discord</span><span aria-hidden="true" class="discord-external">↗</span></a>
+<button class="menu-secondary" id="restart">Restart run</button>
+<button class="menu-secondary" id="watch">Watch route</button>
+<button class="menu-secondary" id="lab">Practice facility</button>
+</nav>
+<button class="button-primary" hidden="" id="client-resume">Return to game <span aria-hidden="true">↗</span></button>
+<div hidden="" id="menu-run"><span class="menu-eyebrow pause-run-label">Current run</span><strong id="menu-run-time"></strong><small id="menu-run-status"></small></div>
+</div>
+<div class="menu-tools">
+<div id="menu-server-controls"><div aria-label="Server controls" class="room-menu-actions" hidden="" role="group"><button class="room-players" type="button">Players</button><button class="room-chat" type="button">Chat</button><button class="room-nominate" type="button">Nominate map</button><button class="room-extend" type="button">Vote to extend</button><button class="room-rtv" type="button">Rock the vote</button><button class="room-leave" type="button">Leave server</button><button class="room-reports" hidden="" type="button">Moderator reports</button></div></div>
+<div id="practice-stations"><label for="station">Practice station</label><select id="station"><option value="0">Stage 1 · 1</option><option value="1">Stage 2 · 2</option><option value="2">Stage 3 · 3</option><option value="3">Stage 4 · 4</option><option value="4">Stage 5 · 5</option><option value="5">Stage 6 · 6</option><option value="6">Stage 7 · 7</option></select><button id="visit-station">Go to station</button></div>
+<details class="pause-display"><summary>Display mode <span aria-hidden="true">›</span></summary><div class="pause-play-options play-options" data-play-options=""><div class="play-options-heading"><span>Display mode</span><span class="play-mode-tag">Recommended</span></div>
+<div aria-label="Display mode" class="play-mode-choices" role="group">
+<label><input name="play-mode-0" type="radio" value="fullscreen"/><span><svg aria-hidden="true" viewbox="0 0 16 16"><path d="M6 2H2v4m8-4h4v4M2 10v4h4m8-4v4h-4"></path></svg>Fullscreen</span></label>
+<label><input name="play-mode-0" type="radio" value="windowed"/><span><svg aria-hidden="true" viewbox="0 0 16 16"><path d="M2 3h12v10H2zM2 6h12"></path></svg>Windowed</span></label>
+</div><p class="play-mode-help">Keep game keys in the game. Esc opens the menu. Shortcut support varies by browser.</p></div></details>
+</div>
+<div class="lobby-sidebar-note"><span aria-hidden="true" class="connection-dot"></span> Free to play. No download.<small>Desktop · Keyboard &amp; mouse</small></div>
+<div class="menu-status-group"><p id="menu-status" role="status">Green marks the start. Gold marks the finish.</p><p class="ranked-ready" id="online-menu-status" role="status">Guest run ready · Finish, then sign in to save.</p><div hidden="" id="online-start-actions"><button type="button">Retry online start</button><button type="button">Play this run locally</button></div></div>
+<details class="quick-guide">
+<summary>How to surf <span aria-hidden="true">+</span></summary>
+<div class="guide-body">
+<div id="move-hint">W A S D — move / strafe</div>
+<div id="jump-hint">Space / Wheel down — jump</div>
+<div id="duck-hint">Left Ctrl / Right Ctrl / C — duck</div>
+<div>Mouse — look   Esc — menu</div>
+<p>On a ramp, release W and hold the strafe key toward the face. Turn the mouse gently to shape your line.</p>
+<p><span class="zone-key">Green</span> is the start. <span class="zone-key zone-finish">Gold</span> is the finish.</p>
+</div>
+</details>
+<footer class="menu-links">
+<a class="reference-link" href="https://surfd.net/reference.html" rel="noopener" target="_blank">Notes &amp; credits</a>
+<a class="reference-link" href="https://surfd.net/privacy.html" rel="noopener" target="_blank">Privacy</a>
+<a class="reference-link" href="https://surfd.net/terms.html" rel="noopener" target="_blank">Terms</a>
+<a class="creator-credit" href="https://x.com/0yield" rel="noopener noreferrer" target="_blank">made by <strong>@0yield</strong> <span aria-hidden="true">↗</span></a>
+</footer>
+</section>
+<section aria-labelledby="settings-title" class="vgui-window client-page" hidden="" id="settings" role="region">
+<header class="window-title"><span id="settings-title">Settings — Surfd</span><button aria-label="Close settings" id="close-options">×</button></header>
+<div aria-label="Settings categories" class="tabs" role="tablist">
+<button aria-controls="settings-controls" aria-selected="true" class="selected" data-tab="controls" id="settings-tab-controls" role="tab">Controls</button>
+<button aria-controls="settings-mouse" aria-selected="false" data-tab="mouse" id="settings-tab-mouse" role="tab" tabindex="-1">Mouse &amp; view</button>
+<button aria-controls="settings-gameplay" aria-selected="false" data-tab="gameplay" id="settings-tab-gameplay" role="tab" tabindex="-1">Gameplay</button>
+<button aria-controls="settings-display" aria-selected="false" data-tab="display" id="settings-tab-display" role="tab" tabindex="-1">Video &amp; audio</button>
+<button aria-controls="settings-hud" aria-selected="false" data-tab="hud" id="settings-tab-hud" role="tab" tabindex="-1">HUD</button>
+<button aria-controls="settings-community" aria-selected="false" data-tab="community" id="settings-tab-community" role="tab" tabindex="-1">Community</button>
+</div>
+<div aria-labelledby="settings-tab-controls" class="tab-page" data-page="controls" id="settings-controls" role="tabpanel">
+<h2 class="settings-heading">Keyboard &amp; mouse bindings</h2>
+<p class="setting-intro">Bind keys, mouse buttons, or the scroll wheel. You can use more than one binding for each action.</p>
+<div class="binding-header"><span>Action</span><span>Bindings</span></div>
+<div class="bindings" id="bindings"><div class="binding-row" data-action="forward"><span>Move forward</span><div class="binding-buttons"><button aria-label="Change Move forward: W" data-binding="0" type="button">W</button><button aria-label="Add binding for Move forward" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="back"><span>Move backward</span><div class="binding-buttons"><button aria-label="Change Move backward: S" data-binding="0" type="button">S</button><button aria-label="Add binding for Move backward" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="left"><span>Strafe left</span><div class="binding-buttons"><button aria-label="Change Strafe left: A" data-binding="0" type="button">A</button><button aria-label="Add binding for Strafe left" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="right"><span>Strafe right</span><div class="binding-buttons"><button aria-label="Change Strafe right: D" data-binding="0" type="button">D</button><button aria-label="Add binding for Strafe right" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="jump"><span>Jump</span><div class="binding-buttons"><button aria-label="Change Jump: Space" data-binding="0" type="button">Space</button><button aria-label="Change Jump: Wheel down" data-binding="1" type="button">Wheel down</button><button aria-label="Add binding for Jump" class="binding-add" data-binding="2" type="button">+</button></div></div><div class="binding-row" data-action="duck"><span>Duck</span><div class="binding-buttons"><button aria-label="Change Duck: Left Ctrl" data-binding="0" type="button">Left Ctrl</button><button aria-label="Change Duck: Right Ctrl" data-binding="1" type="button">Right Ctrl</button><button aria-label="Change Duck: C" data-binding="2" type="button">C</button><button aria-label="Add binding for Duck" class="binding-add" data-binding="3" type="button">+</button></div></div><div class="binding-row" data-action="restart"><span>Restart</span><div class="binding-buttons"><button aria-label="Change Restart: R" data-binding="0" type="button">R</button><button aria-label="Add binding for Restart" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="practice"><span>Practice mode</span><div class="binding-buttons"><button aria-label="Change Practice mode: P" data-binding="0" type="button">P</button><button aria-label="Add binding for Practice mode" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="save"><span>Save position</span><div class="binding-buttons"><button aria-label="Change Save position: F5" data-binding="0" type="button">F5</button><button aria-label="Add binding for Save position" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="load"><span>Load position</span><div class="binding-buttons"><button aria-label="Change Load position: F9" data-binding="0" type="button">F9</button><button aria-label="Add binding for Load position" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="diagnostics"><span>Diagnostics</span><div class="binding-buttons"><button aria-label="Change Diagnostics: F3" data-binding="0" type="button">F3</button><button aria-label="Add binding for Diagnostics" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="chat"><span>Chat</span><div class="binding-buttons"><button aria-label="Change Chat: Y" data-binding="0" type="button">Y</button><button aria-label="Add binding for Chat" class="binding-add" data-binding="1" type="button">+</button></div></div><div class="binding-row" data-action="scoreboard"><span>Scoreboard</span><div class="binding-buttons"><button aria-label="Change Scoreboard: Tab" data-binding="0" type="button">Tab</button><button aria-label="Add binding for Scoreboard" class="binding-add" data-binding="1" type="button">+</button></div></div></div>
+<p id="binding-help" role="status">Choose a binding, then press a key or scroll. Escape cancels.</p>
+<button class="button-secondary" id="reset-bindings">Reset controls</button>
+<details class="settings-advanced" id="turn-options">
+<summary><span class="turn-summary-copy"><strong>Turn binds</strong><span>Turn keys and yaw-speed presets</span></span><span class="turn-status" id="turn-status">Off</span><span aria-hidden="true" class="turn-expand">›</span></summary>
+<div class="turn-panel">
+<label class="check"><input aria-controls="turn-settings" aria-expanded="false" id="turns-enabled" type="checkbox"/> Enable turn binds</label>
+<div hidden="" id="turn-settings">
+<p class="setting-intro">Hold a bound key to turn. Mouse look still works. All turn controls start unbound.</p>
+<div class="bindings turn-bindings" id="turn-bindings"><div class="binding-row" data-action="turnLeft"><span>Turn left (+left)</span><div class="binding-buttons"><button aria-label="Add binding for Turn left (+left)" class="binding-add" data-binding="0" type="button">+</button></div></div><div class="binding-row" data-action="turnRight"><span>Turn right (+right)</span><div class="binding-buttons"><button aria-label="Add binding for Turn right (+right)" class="binding-add" data-binding="0" type="button">+</button></div></div><div class="binding-row" data-action="turnCycle"><span>Cycle yaw speed</span><div class="binding-buttons"><button aria-label="Add binding for Cycle yaw speed" class="binding-add" data-binding="0" type="button">+</button></div></div></div>
+<div class="yaw-heading"><h3 id="yaw-speeds-title">Yaw speeds</h3><span>°/s</span></div>
+<div aria-labelledby="yaw-speeds-title" id="yaw-presets" role="radiogroup"><div class="yaw-preset active" data-preset="0"><label class="yaw-pick"><input aria-label="Use yaw speed 1: 210 degrees per second" name="active-yaw-speed" type="radio" value="0"/><span>01</span></label><input aria-label="Yaw speed 1" class="yaw-value" max="100000" min="-100000" step="any" type="number"/><span class="yaw-active">Active</span><button aria-label="Remove yaw speed 1" class="yaw-remove" disabled="" title="Remove speed" type="button">×</button></div></div>
+<div class="yaw-add"><label class="visually-hidden" for="new-yaw-speed">New yaw speed</label><input id="new-yaw-speed" max="100000" min="-100000" placeholder="e.g. 105" step="any" type="number"/><button id="add-yaw-speed" type="button">+ Add speed</button><span id="yaw-preset-count">1 / 8</span></div>
+<p id="yaw-speed-help" role="status">Cycle follows the order above and returns to the first speed.</p>
+<p class="setting-note">Select a speed to use it. Bind “Cycle yaw speed” to switch while surfing. CSS cl_yawspeed defaults to 210. Negative values reverse the direction.</p>
+</div>
+</div>
+</details>
+</div>
+<div aria-labelledby="settings-tab-mouse" class="tab-page" data-page="mouse" hidden="" id="settings-mouse" role="tabpanel">
+<h2 class="settings-heading">Mouse &amp; camera</h2>
+<label class="setting-label" for="sensitivity">Mouse sensitivity <input aria-describedby="sensitivity-note" aria-label="Mouse sensitivity value" id="sensitivity-number" max="20" min="0" step="any" type="number" value="2.5"/></label>
+<input id="sensitivity" max="20" min="0" step="0.01" type="range" value="2.5"/><output hidden="" id="sensitivity-value">2.5</output>
+<p class="setting-note" id="sensitivity-note">Type an exact value, including 0.001 or 0.00000001. Zero disables mouse look. Uses the CSS scale: 0.022° × sensitivity per mouse count. Raw input is requested; smoothing is off.</p>
+<label class="setting-label" for="fov">Field of view <output id="fov-value">90°</output></label>
+<input id="fov" max="120" min="75" step="1" type="range" value="90"/>
+<p class="setting-note">Source FOV at 4:3. Wider screens show more to the sides.</p>
+<hr/>
+<label class="check"><input aria-describedby="interpolate-note" checked="" id="interpolate" type="checkbox"/> Interpolate camera position <span class="setting-inline-note">Recommended</span></label>
+<p class="setting-note" id="interpolate-note">Smoother movement between physics ticks, with about 15 ms of visual delay. Mouse look stays immediate. Allowed on leaderboards with either setting.</p>
+<p class="setting-status" id="raw-status">Click Play to capture the mouse.</p>
+</div>
+<div aria-labelledby="settings-tab-gameplay" class="tab-page" data-page="gameplay" hidden="" id="settings-gameplay" role="tabpanel">
+<h2 class="settings-heading">Movement rules</h2>
+<label class="check"><input checked="" id="autobhop" type="checkbox"/> Auto bunnyhop <span class="setting-inline-note">Hold jump</span></label>
+<label class="check"><input id="prehop" type="checkbox"/> Unrestricted start speed <span class="setting-inline-note">Unranked</span></label>
+<p class="setting-note">Leaderboard runs use auto bunnyhop with capped starting speed. You can jump in the start zone, but excess horizontal speed is reduced when you leave: 325 units/s grounded, 350 airborne. Unrestricted starts keep separate local bests and never enter the leaderboard. Changing a rule restarts your run.</p>
+<hr/>
+<h2 class="settings-heading">Practice</h2>
+<label class="check"><input id="practice-setting" type="checkbox"/> Practice mode <span class="setting-inline-note">No records</span></label>
+<div class="practice-buttons"><button id="save">Save position</button><button id="load">Load position</button></div>
+<p class="setting-note">Save a tricky approach and try it again. Restoring a position keeps the run in practice mode.</p>
+<details class="settings-advanced"><summary>Replays &amp; diagnostics</summary><div><label class="check"><input id="diagnostic-setting" type="checkbox"/> Show movement diagnostics</label><button id="export">Download command replay</button><p class="setting-note">Movement and view commands only. This is not a video recording.</p></div></details>
+</div>
+<div aria-labelledby="settings-tab-display" class="tab-page" data-page="display" hidden="" id="settings-display" role="tabpanel">
+<h2 class="settings-heading">Video</h2>
+<label class="setting-label" for="quality">Rendering quality</label>
+<select id="quality"><option value="balanced">Balanced — recommended</option><option value="native">Native — sharper on high-DPI screens</option><option value="performance">Performance — lower resolution</option></select>
+<p class="setting-note">Adjusts resolution and texture filtering. Movement and mouse response stay the same.</p>
+<label class="check"><input id="show-fps" type="checkbox"/> Show frame rate</label>
+<hr/>
+<h2 class="settings-heading">Audio</h2>
+<label class="check"><input checked="" id="ambience" type="checkbox"/> Environmental ambience</label>
+<label class="setting-label" for="volume">Volume <output id="volume-value">14%</output></label>
+<input id="volume" max="100" min="0" type="range" value="14"/>
+<p class="setting-note">Quiet wind and air. Fades out when paused.</p>
+</div>
+<div aria-labelledby="settings-tab-hud" class="tab-page" data-page="hud" hidden="" id="settings-hud" role="tabpanel">
+<h2 class="settings-heading">Keep your eyes on the ramp</h2>
+<label class="check"><input id="center-speed-setting" type="checkbox"/> Centre speed display</label>
+<p class="setting-note">Moves your speed just below the crosshair, like a classic surf server. Your timer stays at the bottom.</p>
+<label class="check"><input checked="" id="checkpoint-comparisons-setting" type="checkbox"/> Checkpoint time comparisons</label>
+<p class="setting-note">See time gained or lost against your personal best and the top verified run. Minus means ahead; plus means behind. Comparisons use the same map and movement rules. No reference time? You’ll see a dash.</p>
+<div aria-label="Example HUD" class="hud-setting-preview"><strong>1,248 <small>units/s</small></strong><span>CHECKPOINT 2 · 00:24.381</span><div><span>PB <b class="split-ahead">−0.428</b></span><span>WR <b class="split-behind">+0.215</b></span></div><small>Example — your run is faster than your PB, but behind the record.</small></div>
+</div>
+<div aria-labelledby="settings-tab-community" class="tab-page" data-page="community" hidden="" id="settings-community" role="tabpanel"><fieldset class="community-settings"><legend>Community &amp; interface</legend><label class="check"><input data-pref="showPlayers" type="checkbox"/>Show other players</label><label class="check"><input data-pref="showNames" type="checkbox"/>Show player names</label><label class="check"><input data-pref="showChat" type="checkbox"/>Show player chat</label><label class="check"><input data-pref="sounds" type="checkbox"/>Record and achievement sounds</label><label class="setting-label">Event volume<input data-volume="" max="100" min="0" type="range"/></label><label class="setting-label">Interface palette<select data-theme=""><option value="slate">Slate &amp; sea blue</option><option value="olive">Warm olive</option></select></label></fieldset></div>
+<footer class="window-footer"><span class="footer-note">Changes are saved automatically</span><button class="button-primary" id="options-done">Done</button></footer>
+</section>
+<section aria-labelledby="maps-title" class="lobby-browser vgui-window" id="map-picker">
+<header class="window-title"><span id="maps-title">Play — Surfd</span><span class="window-badge">SURF CLIENT / 01</span></header>
+<div aria-label="Play mode" class="tabs play-tabs" role="tablist"><button aria-controls="play-online" aria-selected="false" id="play-tab-online" role="tab" tabindex="-1">Online</button><button aria-controls="play-solo" aria-selected="true" class="selected" id="play-tab-solo" role="tab">Solo</button></div>
+<section aria-busy="false" aria-labelledby="play-tab-solo" class="play-page" id="play-solo" role="tabpanel">
+<div class="browser-toolbar"><label class="search-box"><span>Find map</span><input autocomplete="off" id="map-search" placeholder="Name or author…" type="search"/></label><label class="sort-box">Sort <select id="map-sort"><option value="collection">Collection</option><option value="name">Name</option><option value="tier">Difficulty</option><option value="type">Course type</option></select></label></div>
+<div class="course-browser"><div class="course-directory"><div class="directory-heading"><span>Map</span><span>Type</span><span class="map-row-tier">Tier</span><span class="map-row-rank" title="Your position on this map’s verified leaderboard. Shared across Solo, EU and NA.">Your rank</span></div><div aria-label="Choose a surf map" class="lobby-map-list" id="map-list" role="group"><button aria-label="surf_boreas, Linear · 2 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_boreas" type="button"><span class="map-row-name">Boreas</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_utopia_njv, Linear · 3 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_utopia_njv" type="button"><span class="map-row-name">Utopia</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_mesa_fixed, Linear · 3 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_mesa_fixed" type="button"><span class="map-row-name">Mesa</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_demise, Linear · 2 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_demise" type="button"><span class="map-row-name">Demise</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_kitsune, Staged · 9 stages, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_kitsune" type="button"><span class="map-row-name">Kitsune</span><span>Staged</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_aircontrol_ksf, Linear · 5 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_aircontrol_ksf" type="button"><span class="map-row-name">Aircontrol</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_lux, Linear · 3 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_lux" type="button"><span class="map-row-name">Lux</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_nyx, Linear · 2 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_nyx" type="button"><span class="map-row-name">Nyx</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_reprise, Linear · 3 checkpoints, Tier 2. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_reprise" type="button"><span class="map-row-name">Reprise</span><span>Linear</span><span class="map-row-tier">T2</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_fornax, Linear · 2 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_fornax" type="button"><span class="map-row-name">Fornax</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_beginner, Staged · 7 stages, Tier 1. Sign in to see your map rank." aria-pressed="true" class="map-row current" data-map="surf_beginner" type="button"><span class="map-row-name">Beginner</span><span>Staged</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_year3000, Staged · 2 stages, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_year3000" type="button"><span class="map-row-name">Year3000</span><span>Staged</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_ace, Staged · 8 stages, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_ace" type="button"><span class="map-row-name">Ace</span><span>Staged</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_legends, Linear · 4 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_legends" type="button"><span class="map-row-name">Legends</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_eclipse, Staged · 3 stages, Tier 2. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_eclipse" type="button"><span class="map-row-name">Eclipse</span><span>Staged</span><span class="map-row-tier">T2</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_summer_ksf, Staged · 11 stages, Tier 2. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_summer_ksf" type="button"><span class="map-row-name">Summer</span><span>Staged</span><span class="map-row-tier">T2</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_forbidden_ways_ksf, Linear · 6 checkpoints, Tier 2. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_forbidden_ways_ksf" type="button"><span class="map-row-name">Forbidden Ways</span><span>Linear</span><span class="map-row-tier">T2</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_tendies, Linear · 4 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_tendies" type="button"><span class="map-row-name">Tendies</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_derpis_ksf, Staged · 6 stages, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_derpis_ksf" type="button"><span class="map-row-name">Derpis</span><span>Staged</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button><button aria-label="surf_prelude_fix, Linear · 3 checkpoints, Tier 1. Sign in to see your map rank." aria-pressed="false" class="map-row" data-map="surf_prelude_fix" type="button"><span class="map-row-name">Prelude</span><span>Linear</span><span class="map-row-tier">T1</span><span class="map-row-rank" title="Sign in to see your map rank.">N/A</span></button></div><p hidden="" id="map-empty">No maps match that search.</p></div>
+<aside aria-label="Selected map" class="course-detail" id="featured-map"><img alt="Sunset above Beginner’s stone ramps" fetchpriority="high" height="360" id="lobby-preview" src="./surf_files/beginner.jpg" width="640"/><p class="preview-unavailable" hidden="">Preview unavailable</p><div class="detail-copy"><p class="menu-eyebrow">Selected course</p><h2 id="lobby-map-title">Beginner</h2><p id="lobby-map-credit">surf_beginner · by Kiiru</p><p id="lobby-description">Seven classic stages, with short ramps and momentum-carrying portals.</p><dl class="course-facts"><div><dt>Course</dt><dd id="lobby-checkpoints">Staged · 7 stages</dd></div><div><dt>Difficulty</dt><dd id="lobby-tier">Tier 1</dd></div><div><dt>Local best</dt><dd id="lobby-best">Not completed</dd></div></dl></div></aside>
+</div>
+<footer class="browser-action"><div><span id="map-count">20 / 20 courses</span><p id="lobby-load-status" role="status">Ready to surf.</p></div><button class="button-primary" id="join">Play fullscreen <span aria-hidden="true">→</span></button></footer>
+</section>
+<section aria-labelledby="play-tab-online" class="play-page" hidden="" id="play-online" role="tabpanel">
+<div class="browser-toolbar"><div><strong>Find a server</strong><p>Join a few other surfers.</p></div><button id="servers-refresh">Refresh</button></div>
+<div class="server-directory"><table><thead><tr><th>Server</th><th>Map</th><th>Players</th><th>Ping</th></tr></thead><tbody id="server-list"><tr class="current" data-room="eu"><td><button aria-label="Select Surfd EU" aria-pressed="true" type="button">Surfd EU</button></td><td>Offline</td><td>—</td><td title="">—</td></tr><tr data-room="na"><td><button aria-label="Select Surfd NA" aria-pressed="false" type="button">Surfd NA</button></td><td>Offline</td><td>—</td><td title="">—</td></tr></tbody></table></div>
+<div class="server-detail"><div><p class="menu-eyebrow">Community servers</p><h2 id="server-title">Surfd EU</h2><p id="server-description">Pick a server and come surf. Choose the next map together, or stay a little longer on a favourite.</p></div><dl><div><dt>Movement</dt><dd>Normal · Auto bhop</dd></div><div><dt>Players</dt><dd>Non-colliding · Hide any time</dd></div><div><dt>Map duration</dt><dd id="server-time">30 minutes + extensions</dd></div></dl></div>
+<footer class="browser-action"><p id="server-status" role="status">Online servers are not connected yet. Solo is ready to play.</p><button class="button-primary" disabled="" id="server-connect">Connect fullscreen <span aria-hidden="true">→</span></button></footer>
+</section>
+<div class="play-options" data-play-options=""><div class="play-options-heading"><span>Display mode</span><span class="play-mode-tag">Recommended</span></div>
+<div aria-label="Display mode" class="play-mode-choices" role="group">
+<label><input name="play-mode-1" type="radio" value="fullscreen"/><span><svg aria-hidden="true" viewbox="0 0 16 16"><path d="M6 2H2v4m8-4h4v4M2 10v4h4m8-4v4h-4"></path></svg>Fullscreen</span></label>
+<label><input name="play-mode-1" type="radio" value="windowed"/><span><svg aria-hidden="true" viewbox="0 0 16 16"><path d="M2 3h12v10H2zM2 6h12"></path></svg>Windowed</span></label>
+</div><p class="play-mode-help">Keep game keys in the game. Esc opens the menu. Shortcut support varies by browser.</p></div>
+<footer class="lobby-footer"><span>Classic surf · 66 tick</span><span>Keyboard &amp; mouse</span><button hidden="" id="close-maps">Return to current run</button><a class="creator-credit" href="https://x.com/0yield" rel="noopener noreferrer" target="_blank">made by <strong>@0yield</strong> <span aria-hidden="true">↗</span></a></footer>
+</section>
+<dialog aria-labelledby="online-title" class="vgui-window client-page" id="online-panel" role="region">
+<header class="window-title"><span id="online-title">Records — Surfd</span><span class="window-badge">SURF CLIENT / 02</span></header>
+<div aria-label="Online records" class="tabs" role="tablist">
+<button aria-controls="online-board-page" aria-selected="true" class="selected" data-page="board" id="online-tab-board" role="tab" type="button">Leaderboard</button>
+<button aria-controls="online-account-page" aria-selected="false" data-page="account" id="online-tab-account" role="tab" type="button">Account</button>
+<button aria-controls="online-ranks-page" aria-selected="false" data-page="ranks" id="online-tab-ranks" role="tab" type="button">Ranks</button>
+</div>
+<section aria-labelledby="online-tab-board" class="online-page" id="online-board-page" role="tabpanel">
+<div class="online-board-controls"><label for="online-map">Map</label><select aria-label="Leaderboard map" id="online-map"><option value="e14aaf75268c9161a8a895a86e40a2ceef78973ac0780638d85bbceb487a4a64">surf_boreas</option><option value="5012373e9d708f156650939b52d8f46c5613ef91edc6dbb2f4bfe9232a9503ce">surf_utopia_njv</option><option value="f98befd62cdc6531cf012611afae3ced1a676e8182a1e8448b496340991d5594">surf_mesa_fixed</option><option value="1f05711e34722e56b34873d4980b1b4630cf34390356dc6cbbc45d9bb9a52a27">surf_demise</option><option value="3d2a2ce1448b12bff5ca93d91b109c50c81beb67321e4873e7d95a217a642ce0">surf_kitsune</option><option value="543cfb254c8f40308ec25b839bc938b436275b50803e61cb027da30e7bf8ad33">surf_aircontrol_ksf</option><option value="cbec22278d30afd5f7f3854ebfba69f9f7f62e773ba506272f35bca0b0f2c74b">surf_lux</option><option value="d9799e867897db2d71b0b36835d81d3a51e07b5f86031999756d303502abf785">surf_nyx</option><option value="89f6c9dcafc7936c6449bf373f4d87ad942a1cd28700a7d05ceceb9da58a7552">surf_reprise</option><option value="1c81d0eee7f64b6923a6e3ea73ab4388e6cb3c5a38b6c379d2bfc74969e67ee4">surf_fornax</option><option value="75d371445d4d71adcf533a987f8aed759384f610369096aa2b22a5351e8e2a37">surf_beginner</option><option value="51a9dee24a4ed60233621752d1d256c06385a0bd325080af67d94a8de33c17df">surf_year3000</option><option value="2bd361b5f831cec07795041c5cec64364c4f4c1f0d4f046dacd6a22e77163933">surf_ace</option><option value="ad2b7b614d7376f3ef84a69e77c44b44d50b51da800a815a0079e73c4d1e6ec7">surf_legends</option><option value="498fc32f1895b89851705b4bf34244ef885510c0a1d368319e693ad192eda7f9">surf_eclipse</option><option value="96feb61093aca02b9e324716ac2b7fd12817486c1de734868e27095dc81ffe40">surf_summer_ksf</option><option value="4062367b4ebceef9b1ad9b2603cd3d8384e868a097cfa763dda4293bbb4a6ddc">surf_forbidden_ways_ksf</option><option value="90079a67689158157f09a75edee0638d5abd637c4d622af83d982b6719ece3ff">surf_tendies</option><option value="c22c8ec63aa55b17f11d41e19cbbe8057cfe07b140f2426f824a51635bc15f47">surf_derpis_ksf</option><option value="7f8b2b5bc8058835519d18d53587d627b20b06fff009feed181c8c52f04c75ac">surf_prelude_fix</option></select><button id="online-refresh" type="button">Refresh</button></div>
+<div class="online-rule">Normal · Auto bhop · Capped start <span>66 tick</span></div>
+<p class="online-note" id="online-board-status" role="status">Connecting to online records…</p>
+<div class="online-table-wrap"><table class="online-table"><thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col">Time</th><th scope="col"><span class="online-sr-only">Replay</span></th></tr></thead><tbody id="online-rows"></tbody></table></div>
+<p class="online-own" id="online-own">Sign in to save verified times on the leaderboard.</p>
+<details class="online-privacy online-verification"><summary>How ranked times work</summary><p>Times are recalculated from command replays on the server. This verifies the route and movement, not whether a run was human-controlled. Use the default movement rules and finish without pausing or practice assists. Eligible guest runs can be saved after signing in from the finish screen.</p></details>
+</section>
+<section aria-labelledby="online-tab-account" class="online-page" hidden="" id="online-account-page" role="tabpanel">
+<div class="email-auth-layout" id="online-guest"><div class="email-account-intro"><p class="online-eyebrow">Your Surfd account</p><h2>Make your times count.</h2><p class="online-note">Save your best times, earn a rank and share your replays. Just finished as a guest? You can sign in here to save an eligible run.</p><div class="online-providers"><button class="provider-button provider-google" id="online-google" type="button"><img alt="" class="provider-icon" height="18" src="./surf_files/google-g.png" width="18"/><span>Continue with Google</span></button><button class="provider-button provider-x" id="online-x" type="button"><svg aria-hidden="true" class="ui-icon" fill="none" focusable="false" stroke="currentColor" stroke-linecap="square" stroke-width="1.7" viewbox="0 0 24 24"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.3l7.4-8.5L1 2h6.5l4.4 6.8L18.9 2Zm-1.1 18h1.7L6.5 3.9H4.7L17.8 20Z" fill="currentColor" stroke="none"></path></svg><span>Continue with X</span></button></div><p class="online-note" id="online-provider-note">Your local settings and times will stay here.</p><p class="online-footnote">You can always play as a guest. <a href="https://surfd.net/privacy.html" rel="noopener" target="_blank">Privacy</a> · <a href="https://surfd.net/terms.html" rel="noopener" target="_blank">Terms</a></p></div><section class="email-account"><div class="auth-divider"><span>or use your email</span></div>
+<div aria-label="Email account" class="email-auth-tabs"><button aria-pressed="true" id="email-mode-signin" type="button">Sign in</button><button aria-pressed="false" id="email-mode-signup" type="button">Create account</button></div>
+<h3 id="email-form-title">Sign in with email</h3>
+<form id="email-auth-form"><fieldset>
+<div hidden="" id="email-name-field"><label for="email-signup-name">Public username</label><input autocomplete="nickname" id="email-signup-name" maxlength="24" minlength="3" name="nickname" pattern="[A-Za-z0-9_-]{3,24}" spellcheck="false"/><p class="online-note">3–24 letters, numbers, underscores or hyphens. Your name is saved after confirmation, if available.</p></div>
+<label for="email-address">Email</label><input autocapitalize="none" autocomplete="username" id="email-address" maxlength="254" name="username" required="" spellcheck="false" type="email"/>
+<div id="email-password-field"><label for="email-password">Password</label><input autocomplete="current-password" id="email-password" maxlength="128" name="password" required="" type="password"/><label class="email-show-password"><input id="email-show-password" type="checkbox"/> Show password</label><p class="online-note" hidden="" id="email-password-hint">At least 15 characters. A few words work well; no special symbols needed.</p></div>
+<div class="auth-captcha"></div><p class="online-note" id="email-captcha-status" role="status"></p>
+<button class="button-primary" id="email-submit" type="submit">Sign in</button>
+</fieldset></form>
+<p aria-live="polite" class="online-note" id="email-auth-status" role="status"></p>
+<div class="email-auth-links"><button id="email-forgot" type="button">Forgot password?</button><button id="email-resend" type="button">Resend confirmation</button><button hidden="" id="email-back" type="button">Back to sign in</button></div></section></div>
+<section class="online-guest-draft" hidden="" id="online-guest-draft"><p></p><button id="online-restore-guest" type="button">View completed run</button></section>
+<div hidden="" id="online-member"><p class="online-eyebrow">Signed in as</p><h2 id="online-username">Surf player</h2>
+<div class="account-progress"><p id="account-rank">Unranked · Complete a verified run</p><button id="account-profile" type="button">View my profile</button></div>
+<form id="online-name-form"><label for="online-name">Public username</label><div class="online-name-row"><input aria-describedby="online-name-policy" autocomplete="nickname" id="online-name" maxlength="24" minlength="3" name="username" pattern="[A-Za-z0-9_-]{3,24}" required="" spellcheck="false" type="text"/><button type="submit">Save name</button></div><p class="online-note">3–24 letters, numbers, underscores, or hyphens.</p><p class="online-note" id="online-name-policy" role="status">You can change your name now. Saving a different name starts a 60-day wait. Name changes are recorded for moderators.</p></form>
+<div class="online-account-actions"><button id="online-my-records" type="button">My rank on this map</button><button id="online-signout" type="button">Sign out</button><button hidden="" id="online-moderate-names" type="button">Name moderation</button></div><section class="email-account email-security" hidden=""><h3>Password sign-in</h3><p class="online-note">Use an email link to set or reset your password. Your Google/X login, rank and records stay with this account.</p><p class="online-note" id="email-member-address">This account has no email address available. Keep using your existing sign-in provider.</p><div class="auth-captcha"></div><p class="online-note" id="email-member-captcha-status" role="status"></p><button disabled="" id="email-member-reset" type="button">Set or reset password</button><p class="online-note" id="email-member-status" role="status"></p></section>
+<p class="online-note" hidden="" id="online-name-locked">Your public name was set by a moderator. Contact a moderator to change it.</p>
+<div></div><details id="online-delete-section"><summary>Delete account</summary><p class="online-note">Permanently delete your account, public records, and stored replays. Local times on this browser remain.</p><form id="online-delete-form"><label for="online-delete-text">Type DELETE to confirm</label><div class="online-name-row"><input autocomplete="off" id="online-delete-text" pattern="DELETE" required="" spellcheck="false" type="text"/><button disabled="" id="online-delete-button" type="submit">Delete account</button></div></form></details>
+</div>
+<p class="online-note" id="online-account-status" role="status"></p>
+<section class="online-guest-draft" hidden="" id="saved-runs"><p id="saved-runs-status" role="status"></p><button id="saved-runs-retry" type="button">Retry saved runs</button><button hidden="" id="saved-runs-download" type="button">Download retained replays</button><button hidden="" id="saved-runs-remove" type="button">Remove downloaded copies</button></section>
+<details class="online-privacy"><summary>Privacy &amp; stored data</summary><p>Signing in links your login to a Surfd account. Your username, verified times, splits, and successful command replays are public. Replays contain movement and view commands; they do not record your screen, microphone, or other websites.</p><p>The account service stores sign-in information. Name changes and moderator reasons are kept privately for moderators until the account is deleted. Server logs may include connection information for operation and abuse prevention. Local settings and local times stay in this browser. You can delete your account above.</p><p>Ranked runs use the published map and movement rules. Practice, restored positions, paused runs, and changed movement settings are not eligible. Automated runs may be removed from the public board.</p></details>
+</section>
+<section aria-labelledby="online-tab-ranks" class="online-page" hidden="" id="online-ranks-page" role="tabpanel"><div class="rank-toolbar"><h2>Surfd ranks</h2><button class="rank-refresh" type="button">Refresh</button></div><p class="rank-status online-note" role="status"></p><div class="rank-content"></div><details class="rank-explanation online-privacy"><summary>How points work</summary><p>Each map counts once: your best verified time. A completion is worth 100 points, plus up to 400 for your position on that map’s leaderboard. The performance part is 400 divided by the square root of your place, rounded down. Equal times earn equal points.</p><p>Tier 2 maps Reprise and Eclipse count double. Unrated maps use the baseline weight. Performance points can change when other players improve. Repeating a finish earns no extra points. Solo, EU and NA share the same ranks. Practice and unverified runs do not count.</p></details></section>
+<section aria-label="Shared run" class="online-page" hidden="" id="online-shared-page"></section>
+<div class="online-run-status"><p id="online-attempt-status" role="status">Guest run ready · Finish, then sign in to save.</p><p id="online-submission-status" role="status"></p><button hidden="" id="online-retry" type="button">Try again</button></div>
+<footer class="window-footer"><span id="online-connection">Online records · beta</span><button data-close="" type="button">Back to Play</button></footer></dialog><aside aria-label="Players in this server" hidden="" id="menu-roster" style="--menu-card-height: 655.484375px;"><header><div><span class="menu-eyebrow">In this server</span><h2></h2></div><span class="roster-count"></span></header><p class="roster-map"></p><div aria-label="Server player list" class="roster-scroll" tabindex="0"><table><thead><tr><th scope="col">Player</th><th scope="col">Points</th><th scope="col">Time</th></tr></thead><tbody></tbody></table></div><footer><span>Live timers · Verified points</span><button type="button">Player controls <span aria-hidden="true">↗</span></button></footer></aside></div>
+<div class="screen" hidden="" id="finish">
+<section aria-labelledby="finish-title" aria-modal="true" class="vgui-window finish-panel" role="dialog">
+<header class="window-title"><span>Surfd Timer</span><span class="window-badge">Run complete</span></header>
+<div class="finish-content">
+<p class="finish-map-name" id="finish-map-name">surf_boreas</p>
+<h2 id="finish-title">Map complete.</h2>
+<div id="finish-time">00:00.000</div>
+<p id="finish-record"></p>
+<div aria-label="Checkpoint splits" id="finish-splits"></div>
+<p data-state="info" id="online-finish-status" role="status"></p><button hidden="" id="finish-retry" type="button">Try again</button><section class="finish-save-card" hidden=""><h3 class="finish-save-title">Your next run can be ranked.</h3><p class="finish-save-description">This run was not prepared for online saving. Your local best stays here. Sign in and restart with the default rules for a ranked run.</p><div class="finish-providers"><button class="provider-button provider-google" id="finish-google" type="button"><img alt="" class="provider-icon" height="18" src="./surf_files/google-g.png" width="18"/><span>Continue with Google</span></button><button class="provider-button provider-x" id="finish-x" type="button"><svg aria-hidden="true" class="ui-icon" fill="none" focusable="false" stroke="currentColor" stroke-linecap="square" stroke-width="1.7" viewbox="0 0 24 24"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.3l7.4-8.5L1 2h6.5l4.4 6.8L18.9 2Zm-1.1 18h1.7L6.5 3.9H4.7L17.8 20Z" fill="currentColor" stroke="none"></path></svg><span>Continue with X</span></button></div><button class="finish-email-button" id="finish-email" type="button">Sign in or create an account with email</button><button class="button-primary" hidden="" id="finish-save-guest" type="button">Save this run</button><button class="button-secondary" hidden="" id="finish-discard-guest" type="button">Keep local only</button><p id="finish-auth-status" role="status"></p></section><div class="finish-share-actions" hidden=""></div></div>
+<footer class="window-footer"><button type="button">Leaderboard</button><button id="finish-menu">Main menu</button><button class="button-primary" id="again">Surf again</button></footer>
+</section>
+</div>
+<div class="vgui-window" hidden="" id="fatal" role="alert"></div>
+<dialog aria-describedby="asset-recovery-message" aria-labelledby="asset-recovery-title" class="vgui-window asset-recovery" id="asset-recovery"><header class="window-title"><span>Map download</span><button aria-label="Close download help" type="button">×</button></header>
+<div class="asset-recovery-body"><p class="asset-recovery-map"></p><h2 id="asset-recovery-title"></h2>
+<p id="asset-recovery-message"></p><p class="asset-recovery-hint"></p>
+<div class="asset-recovery-actions"><a class="button-primary" href="https://surfd.net/connection-check.html" rel="noopener noreferrer" target="_blank">Open verification ↗</a><button class="asset-recovery-retry" type="button">Retry map</button></div>
+<p class="asset-recovery-status" role="status"></p>
+<details><summary>Troubleshooting details</summary><p>These details contain the file, time and request ID. No sign-in tokens are included.</p><textarea aria-label="Map download details" readonly="" rows="7" spellcheck="false"></textarea><button class="asset-recovery-copy" type="button">Copy details</button></details>
+<p class="asset-recovery-reload-note">If verification does not help, you can reload Surfd. Reloading ends your current run and multiplayer connection.</p>
+<button class="asset-recovery-reload" type="button">Reload Surfd…</button>
+<div class="asset-recovery-confirm" hidden=""><p>Reload this tab and leave the current session?</p><button class="asset-recovery-reload-confirm" type="button">Reload this tab</button><button class="asset-recovery-cancel" type="button">Keep playing</button></div></div></dialog><section aria-label="Game chat" class="" hidden="" id="community-chat"><div aria-label="Messages" aria-live="polite" class="chat-feed" role="log"></div><form class="chat-entry" hidden=""><label for="chat-message">Say</label><input autocomplete="off" id="chat-message" maxlength="240" placeholder="Message or /help" spellcheck="false"/><span>Enter ↵</span></form></section><section aria-label="Server vote" class="vgui-window" hidden="" id="room-vote"><header class="window-title"><span>Map vote</span><span class="vote-countdown"></span></header><div class="vote-choices"></div><p>Press a number to vote. Keep surfing.</p></section><section aria-label="Players" class="vgui-window" hidden="" id="room-scoreboard"><header class="window-title"><span class="score-title">Surfd players</span><button aria-label="Close players" type="button">×</button></header><table><thead><tr><th>Player</th><th>Rank</th><th>Points</th><th>Time</th><th>Controls</th></tr></thead><tbody></tbody></table><footer class="window-footer"><span class="score-note">Verified points · Display-only timers</span></footer></section><dialog aria-label="Moderation reports" class="vgui-window reports-window"><header class="window-title"><span>Moderation reports</span><button aria-label="Close reports">×</button></header><p class="reports-status online-note" role="status"></p><div class="reports-list"></div><footer class="window-footer"><span>Reports retained for 7 days</span><button class="reports-refresh">Refresh</button></footer></dialog><dialog aria-label="Report player" class="vgui-window player-report-window"><form><header class="window-title"><span>Report player</span><button aria-label="Cancel report" type="button">×</button></header><label for="report-reason">What happened?</label><textarea id="report-reason" maxlength="240" required="" rows="4"></textarea><p class="report-status online-note" role="status">A moderator can review your reason and the player’s recent messages.</p><footer class="window-footer"><button type="submit">Send report</button></footer></form></dialog><dialog class="vgui-window nomination-window"><header class="window-title"><span>Nominate next map</span><button aria-label="Close nominations">×</button></header><form method="dialog"><label>Map<select aria-label="Nominate map"></select></label><p class="nomination-note">One nomination per player. A map needs two other maps between plays.</p><footer class="window-footer"><button value="cancel">Cancel</button><button class="button-primary" value="nominate">Nominate</button></footer></form></dialog><a href="https://surfd.net/" id="bw-fallback" rel="noopener noreferrer" target="_blank">Game not loading? Open CS Surf directly ↗</a></body></html>

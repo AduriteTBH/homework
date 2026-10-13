@@ -2383,7 +2383,7 @@
             }
         }
 
-        async function safeFlushGameData() {
+        async function safeFlushGameData(isUnloading = false) {
             const frame = document.getElementById("game-frame");
             if (!frame || !frame.contentWindow || frame.src === "about:blank") {
                 await migrateAndSnapshotLocalStorage();
@@ -2393,10 +2393,12 @@
             try {
                 const win = frame.contentWindow;
 
-                try {
-                    win.dispatchEvent(new Event("beforeunload"));
-                    win.dispatchEvent(new Event("pagehide"));
-                } catch (e) {}
+                if (isUnloading) {
+                    try {
+                        win.dispatchEvent(new Event("beforeunload"));
+                        win.dispatchEvent(new Event("pagehide"));
+                    } catch (e) {}
+                }
 
                 if (win.FS && typeof win.FS.syncfs === "function") {
                     await new Promise(resolve => {
@@ -3149,7 +3151,7 @@
             const frame = document.getElementById("game-frame");
             if (frame && frame.src && frame.src !== "about:blank") {
                 const current = frame.src;
-                await safeFlushGameData();
+                await safeFlushGameData(true);
                 frame.src = "about:blank";
                 setTimeout(() => {
                     frame.src = current;
@@ -3174,6 +3176,11 @@
 
         function cancelExit() {
             document.getElementById("exit-modal").style.display = "none";
+            const frame = document.getElementById("game-frame");
+            if (frame && document.getElementById("launcher-overlay").style.display === "block") {
+                frame.focus();
+                try { frame.contentWindow.focus(); } catch (e) {}
+            }
         }
 
         async function confirmExit() {
@@ -3182,7 +3189,7 @@
                 clearInterval(autoSaveInterval);
                 autoSaveInterval = null;
             }
-            await safeFlushGameData();
+            await safeFlushGameData(true);
             frame.src = "about:blank";
             document.getElementById("launcher-overlay").style.display = "none";
             document.getElementById("exit-modal").style.display = "none";
@@ -3195,10 +3202,34 @@
             populateDiscovery();
         }
 
+        window.addEventListener("focus", () => {
+            const overlay = document.getElementById("launcher-overlay");
+            const exitModal = document.getElementById("exit-modal");
+            const frame = document.getElementById("game-frame");
+            if (overlay && overlay.style.display === "block" && (!exitModal || exitModal.style.display !== "flex") && frame) {
+                frame.focus();
+                try { frame.contentWindow.focus(); } catch (e) {}
+            }
+        });
+
         document.addEventListener("keydown", e => {
             if (e.key === "Escape") {
                 if (document.getElementById("launcher-overlay").style.display === "block") {
-                    requestExit();
+                    const frame = document.getElementById("game-frame");
+                    let lockedInFrame = false;
+                    try {
+                        lockedInFrame = !!(frame && frame.contentDocument && frame.contentDocument.pointerLockElement);
+                        if (lockedInFrame) {
+                            frame.contentDocument.exitPointerLock();
+                        }
+                    } catch (err) {}
+                    if (document.pointerLockElement) {
+                        try { document.exitPointerLock(); } catch (err) {}
+                        lockedInFrame = true;
+                    }
+                    if (!lockedInFrame) {
+                        requestExit();
+                    }
                 } else if (document.activeElement === document.getElementById("lib-search")) {
                     clearSearch();
                     document.getElementById("lib-search").blur();

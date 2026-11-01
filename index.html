@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H&amp;H Launcher</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='5 3 19 12 5 21 5 3'/%3E%3C/svg%3E">
     <script src="coi-serviceworker.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -148,12 +149,31 @@
 }
 
 
-* {
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+*:focus {
+    outline: none !important;
+}
+
+*:focus:not(:focus-visible) {
+    outline: none !important;
+}
+
+*:focus-visible {
+    outline: 2px solid var(--border-hover);
+    outline-offset: 2px;
+}
+
+button, input, select, textarea, [role="button"], a {
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
 }
 
 body {
@@ -164,6 +184,7 @@ body {
     overflow-x: hidden;
     position: relative;
     user-select: none;
+    -webkit-tap-highlight-color: transparent !important;
 }
 
 code, kbd, .mono-font {
@@ -173,13 +194,16 @@ code, kbd, .mono-font {
 input, button {
     font-family: inherit;
     border: none;
-    outline: none;
+    outline: none !important;
     background: none;
     color: inherit;
+    -webkit-tap-highlight-color: transparent !important;
 }
 
 button {
     cursor: pointer;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
 }
 
 ::-webkit-scrollbar {
@@ -285,12 +309,17 @@ button {
     color: var(--text-secondary);
     padding: 6px 20px;
     border-radius: var(--radius-pill);
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), transform 0.1s ease;
     cursor: pointer;
+    user-select: none;
 }
 
 .nav-link:hover {
     color: var(--text-primary);
+}
+
+.nav-link:active {
+    transform: scale(0.97);
 }
 
 .nav-link.active {
@@ -298,6 +327,10 @@ button {
     color: var(--text-primary);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
+}
+
+.nav-link.active:active {
+    transform: scale(0.98);
 }
 
 .header-actions {
@@ -316,7 +349,9 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform 0.12s ease;
+    cursor: pointer;
+    user-select: none;
 }
 
 .action-icon-btn:hover {
@@ -324,6 +359,22 @@ button {
     border-color: var(--border-hover);
     background: var(--btn-surface-hover);
     transform: translateY(-1px);
+}
+
+.action-icon-btn:active {
+    transform: scale(0.93);
+}
+
+.action-icon-btn svg {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.action-icon-btn:hover svg {
+    transform: scale(1.1);
+}
+
+#theme-toggle-btn:hover svg {
+    transform: rotate(20deg) scale(1.12);
 }
 
 .sun-icon { display: none; }
@@ -374,10 +425,44 @@ button {
     overflow: hidden;
     box-shadow: var(--shadow-md);
     transition: border-color var(--transition-smooth);
+    transform: translateZ(0);
+}
+
+.cinematic-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        520px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(255, 255, 255, 0.08),
+        transparent 75%
+    );
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+}
+
+[data-theme="light"] .cinematic-hero::before {
+    background: radial-gradient(
+        520px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(255, 255, 255, 0.35),
+        transparent 75%
+    );
+}
+
+.cinematic-hero:hover::before {
+    opacity: 1;
 }
 
 .cinematic-hero:hover {
     border-color: var(--border-hover);
+}
+
+.hero-pill-cluster, .hero-title, .hero-desc, .hero-actions {
+    position: relative;
+    z-index: 2;
 }
 
 .hero-pill-cluster {
@@ -448,13 +533,19 @@ button {
     font-size: 13px;
     font-weight: 800;
     box-shadow: var(--shadow-sm);
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), transform 0.12s ease, box-shadow var(--transition-fast), opacity var(--transition-fast);
+    cursor: pointer;
+    user-select: none;
 }
 
 .btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     opacity: 0.95;
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0) scale(0.97);
 }
 
 .btn-primary:disabled {
@@ -473,13 +564,19 @@ button {
     color: var(--text-primary);
     font-size: 13px;
     font-weight: 700;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform 0.12s ease;
+    cursor: pointer;
+    user-select: none;
 }
 
 .btn-secondary:hover {
     background: var(--btn-surface-hover);
     border-color: var(--border-hover);
     transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+    transform: translateY(0) scale(0.97);
 }
 
 .section-header {
@@ -529,11 +626,13 @@ button {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 18px;
+    contain: layout;
 }
 
 .game-grid.compact-mode {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 14px;
+    contain: layout;
 }
 
 .game-card {
@@ -544,11 +643,43 @@ button {
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth), background var(--transition-smooth);
     position: relative;
     box-shadow: var(--shadow-sm);
     content-visibility: auto;
     contain-intrinsic-size: 240px;
+    user-select: none;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transform: translateZ(0);
+}
+
+.game-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        280px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(255, 255, 255, 0.16),
+        transparent 75%
+    );
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 0.2s ease;
+}
+
+[data-theme="light"] .game-card::before {
+    background: radial-gradient(
+        280px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(255, 255, 255, 0.6),
+        transparent 75%
+    );
+}
+
+.game-card:hover::before {
+    opacity: 1;
 }
 
 .game-card:hover {
@@ -556,6 +687,11 @@ button {
     transform: translateY(-4px);
     box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.6), 0 0 18px -4px var(--cat-color);
     background: var(--bg-card-hover);
+}
+
+.game-card:active {
+    transform: translateY(-2px) scale(0.985);
+    transition: transform 0.08s ease;
 }
 
 .card-visual {
@@ -624,13 +760,18 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform 0.12s ease;
+    cursor: pointer;
 }
 
 .card-fav-btn:hover {
     color: #facc15;
     background: rgba(0, 0, 0, 0.85);
     transform: scale(1.1);
+}
+
+.card-fav-btn:active {
+    transform: scale(0.94);
 }
 
 .card-fav-btn.active {
@@ -903,14 +1044,20 @@ button {
     gap: 8px;
     font-size: 13px;
     font-weight: 700;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform 0.12s ease;
     flex-shrink: 0;
+    cursor: pointer;
+    user-select: none;
 }
 
 .random-btn:hover {
     background: var(--btn-surface-hover);
     border-color: var(--border-hover);
     transform: translateY(-1px);
+}
+
+.random-btn:active {
+    transform: scale(0.97);
 }
 
 .custom-dropdown {
@@ -931,12 +1078,17 @@ button {
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform 0.12s ease;
+    user-select: none;
 }
 
 .dropdown-trigger:hover {
     border-color: var(--border-hover);
     background: var(--btn-surface-hover);
+}
+
+.dropdown-trigger:active {
+    transform: scale(0.98);
 }
 
 .dropdown-menu {
@@ -966,12 +1118,17 @@ button {
     border-radius: var(--radius-sm);
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), color var(--transition-fast);
+    user-select: none;
 }
 
 .dropdown-item:hover {
     background: var(--accent-subtle);
     color: var(--text-primary);
+}
+
+.dropdown-item:active {
+    transform: scale(0.98);
 }
 
 .dropdown-item.active {
@@ -1002,14 +1159,20 @@ button {
     gap: 6px;
     cursor: pointer;
     white-space: nowrap;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform 0.12s ease;
     flex-shrink: 0;
+    user-select: none;
 }
 
 .category-pill:hover {
     color: var(--text-primary);
     border-color: var(--border-hover);
     background: var(--btn-surface-hover);
+    transform: translateY(-1px);
+}
+
+.category-pill:active {
+    transform: scale(0.95);
 }
 
 .category-pill.active {
@@ -1017,6 +1180,12 @@ button {
     color: var(--primary-foreground);
     border-color: transparent;
     font-weight: 800;
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.category-pill.active:active {
+    transform: scale(0.97);
 }
 
 .category-pill.active svg {
@@ -1151,12 +1320,18 @@ button {
     color: var(--text-primary);
     font-size: 13px;
     font-weight: 700;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform 0.12s ease;
+    cursor: pointer;
+    user-select: none;
 }
 
 .btn-cancel:hover {
     background: var(--btn-surface-hover);
     border-color: var(--border-hover);
+}
+
+.btn-cancel:active {
+    transform: scale(0.97);
 }
 
 .btn-danger {
@@ -1166,11 +1341,17 @@ button {
     color: #ffffff;
     font-size: 13px;
     font-weight: 800;
-    transition: all var(--transition-fast);
+    transition: opacity var(--transition-fast), transform 0.12s ease;
+    cursor: pointer;
+    user-select: none;
 }
 
 .btn-danger:hover {
     opacity: 0.92;
+}
+
+.btn-danger:active {
+    transform: scale(0.97);
 }
 
 .settings-group {
@@ -1251,12 +1432,18 @@ input:checked + .slider:before {
     color: var(--text-primary);
     font-size: 12px;
     font-weight: 800;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform 0.12s ease;
+    cursor: pointer;
+    user-select: none;
 }
 
 .settings-action-btn:hover {
     background: var(--btn-surface-hover);
     border-color: var(--border-hover);
+}
+
+.settings-action-btn:active {
+    transform: scale(0.97);
 }
 
 .settings-action-btn.danger {
@@ -1267,6 +1454,10 @@ input:checked + .slider:before {
 
 .settings-action-btn.danger:hover {
     background: rgba(239, 68, 68, 0.35);
+}
+
+.settings-action-btn.danger:active {
+    transform: scale(0.97);
 }
 
 .settings-status-badge {
@@ -1384,6 +1575,10 @@ kbd {
     background: var(--btn-surface-hover);
     border-color: var(--border-hover);
     transform: translateY(-2px);
+}
+
+.back-to-top-btn:active {
+    transform: translateY(0) scale(0.96);
 }
 
 #launcher-overlay {
@@ -1519,12 +1714,18 @@ kbd {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform 0.12s ease;
+    cursor: pointer;
+    user-select: none;
 }
 
 .hud-btn:hover {
     background: rgba(255, 255, 255, 0.18);
     border-color: rgba(255, 255, 255, 0.3);
+}
+
+.hud-btn:active {
+    transform: scale(0.95);
 }
 
 .hud-icon-btn {
@@ -1609,6 +1810,14 @@ kbd {
 .reduce-animations * {
     animation-duration: 0.001s !important;
     transition-duration: 0.001s !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+
+.reduce-animations .game-card::before,
+.reduce-animations .cinematic-hero::before {
+    display: none !important;
 }
 
 .visually-hidden {
@@ -1668,19 +1877,19 @@ kbd {
         </div>
 
         <nav class="nav-controls">
-            <div class="nav-link active ripple-target" id="nav-discover" onclick="switchView('discovery', this)">Discover</div>
-            <div class="nav-link ripple-target" id="nav-library" onclick="switchView('library', this)">Library</div>
+            <div class="nav-link active" id="nav-discover" onclick="switchView('discovery', this)">Discover</div>
+            <div class="nav-link" id="nav-library" onclick="switchView('library', this)">Library</div>
         </nav>
 
         <div class="header-actions">
-            <button class="action-icon-btn ripple-target" id="shortcuts-btn" onclick="toggleShortcutsModal(true)" title="Keyboard Shortcuts (?)">
+            <button class="action-icon-btn" id="shortcuts-btn" onclick="toggleShortcutsModal(true)" title="Keyboard Shortcuts (?)">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="4" width="20" height="16" rx="2.5"/>
                     <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 16h8"/>
                 </svg>
             </button>
 
-            <button class="action-icon-btn ripple-target" id="theme-toggle-btn" title="Toggle Theme (T)" onclick="toggleTheme()">
+            <button class="action-icon-btn" id="theme-toggle-btn" title="Toggle Theme (T)" onclick="toggleTheme()">
                 <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="5"/>
                     <line x1="12" y1="1" x2="12" y2="3"/>
@@ -1697,7 +1906,7 @@ kbd {
                 </svg>
             </button>
 
-            <button class="action-icon-btn ripple-target" id="settings-toggle-btn" onclick="toggleSettings(true)" title="Launcher Settings">
+            <button class="action-icon-btn" id="settings-toggle-btn" onclick="toggleSettings(true)" title="Launcher Settings">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
                     <circle cx="12" cy="12" r="3"/>
@@ -1726,13 +1935,13 @@ kbd {
                 <h1 class="hero-title loading" id="featured-title">&nbsp;</h1>
                 <p class="hero-desc">Launch instantly in your browser with persistent saves, fluid fullscreen gameplay, and zero distractions.</p>
                 <div class="hero-actions">
-                    <button class="btn-primary ripple-target" id="hero-btn" disabled>
+                    <button class="btn-primary" id="hero-btn" disabled>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                             <polygon points="6 3 20 12 6 21 6 3"/>
                         </svg>
                         Play Now
                     </button>
-                    <button class="btn-secondary ripple-target" onclick="launchRandomGame()" title="Launch a random title">
+                    <button class="btn-secondary" onclick="launchRandomGame()" title="Launch a random title">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="16 3 21 3 21 8"/>
                             <line x1="4" y1="20" x2="21" y2="3"/>
@@ -1777,7 +1986,7 @@ kbd {
                 <div class="section-title-wrap">
                     <h2 class="section-title">Full Library</h2>
                 </div>
-                <span class="view-all-btn ripple-target" onclick="goToLibrary()">Browse All Games &rarr;</span>
+                <span class="view-all-btn" onclick="goToLibrary()">Browse All Games &rarr;</span>
             </div>
             <div class="game-grid" id="featured-grid"></div>
         </section>
@@ -1806,7 +2015,7 @@ kbd {
                     </button>
                 </div>
 
-                <button class="random-btn ripple-target" onclick="launchRandomGame()" title="Launch a random game from current view">
+                <button class="random-btn" onclick="launchRandomGame()" title="Launch a random game from current view">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="16 3 21 3 21 8"/>
                         <line x1="4" y1="20" x2="21" y2="3"/>
@@ -1818,37 +2027,37 @@ kbd {
                 </button>
 
                 <div class="custom-dropdown" id="sort-dropdown">
-                    <div class="dropdown-trigger ripple-target" id="dropdown-trigger-btn">
+                    <div class="dropdown-trigger" id="dropdown-trigger-btn">
                         <span id="dropdown-label">Sort: Default</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="6 9 12 15 18 9"/>
                         </svg>
                     </div>
                     <div class="dropdown-menu">
-                        <div class="dropdown-item ripple-target active" data-value="default">Sort: Default</div>
-                        <div class="dropdown-item ripple-target" data-value="newest">Sort: Newest First</div>
-                        <div class="dropdown-item ripple-target" data-value="az">Sort: Title (A to Z)</div>
-                        <div class="dropdown-item ripple-target" data-value="za">Sort: Title (Z to A)</div>
+                        <div class="dropdown-item active" data-value="default">Sort: Default</div>
+                        <div class="dropdown-item" data-value="newest">Sort: Newest First</div>
+                        <div class="dropdown-item" data-value="az">Sort: Title (A to Z)</div>
+                        <div class="dropdown-item" data-value="za">Sort: Title (Z to A)</div>
                     </div>
                 </div>
             </div>
 
             <div class="category-pills-bar" id="category-pills">
-                <div class="category-pill active ripple-target" data-category="all" onclick="setCategoryFilter('all')">
+                <div class="category-pill active" data-category="all" onclick="setCategoryFilter('all')">
                     All Games
                 </div>
-                <div class="category-pill ripple-target" data-category="favorites" onclick="setCategoryFilter('favorites')">
+                <div class="category-pill" data-category="favorites" onclick="setCategoryFilter('favorites')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
                     Favorites
                 </div>
-                <div class="category-pill ripple-target" data-category="action" onclick="setCategoryFilter('action')">Action</div>
-                <div class="category-pill ripple-target" data-category="racing" onclick="setCategoryFilter('racing')">Driving</div>
-                <div class="category-pill ripple-target" data-category="sports" onclick="setCategoryFilter('sports')">Sports</div>
-                <div class="category-pill ripple-target" data-category="arcade" onclick="setCategoryFilter('arcade')">Arcade</div>
-                <div class="category-pill ripple-target" data-category="puzzle" onclick="setCategoryFilter('puzzle')">Puzzle</div>
-                <div class="category-pill ripple-target" data-category="survival" onclick="setCategoryFilter('survival')">Survival</div>
+                <div class="category-pill" data-category="action" onclick="setCategoryFilter('action')">Action</div>
+                <div class="category-pill" data-category="racing" onclick="setCategoryFilter('racing')">Driving</div>
+                <div class="category-pill" data-category="sports" onclick="setCategoryFilter('sports')">Sports</div>
+                <div class="category-pill" data-category="arcade" onclick="setCategoryFilter('arcade')">Arcade</div>
+                <div class="category-pill" data-category="puzzle" onclick="setCategoryFilter('puzzle')">Puzzle</div>
+                <div class="category-pill" data-category="survival" onclick="setCategoryFilter('survival')">Survival</div>
             </div>
 
             <div class="game-grid" id="full-library-list"></div>
@@ -1872,14 +2081,15 @@ kbd {
         <div class="hud-container">
             <div class="hud-menu">
                 <div id="hud-name" class="hud-btn" style="pointer-events: none; border-color: transparent; background: transparent; color: #fafafa; font-weight: 700;">GAME SESSION</div>
+                <div id="hud-fps-counter" class="hud-btn" style="pointer-events: none; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; color: #34d399; border-color: rgba(52, 211, 153, 0.35); background: rgba(52, 211, 153, 0.12);" title="Live Framerate">-- FPS</div>
                 
-                <button class="hud-btn hud-icon-btn fav-action ripple-target" id="hud-fav-btn" onclick="toggleHudFavorite()" title="Pin to Favorites">
+                <button class="hud-btn hud-icon-btn fav-action" id="hud-fav-btn" onclick="toggleHudFavorite()" title="Pin to Favorites">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
                 </button>
 
-                <button class="hud-btn hud-icon-btn ripple-target" id="hud-save-btn" onclick="triggerManualGameSave()" title="Save Progress Now">
+                <button class="hud-btn hud-icon-btn" id="hud-save-btn" onclick="triggerManualGameSave()" title="Save Progress Now">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                         <polyline points="17 21 17 13 7 13 7 21"/>
@@ -1887,7 +2097,7 @@ kbd {
                     </svg>
                 </button>
 
-                <button class="hud-btn hud-icon-btn ripple-target" onclick="reloadGameSession()" title="Restart Game">
+                <button class="hud-btn hud-icon-btn" onclick="reloadGameSession()" title="Restart Game">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
                         <path d="M21 3v5h-5"/>
@@ -1896,7 +2106,7 @@ kbd {
                     </svg>
                 </button>
 
-                <button class="hud-btn hud-icon-btn ripple-target" id="hud-fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
+                <button class="hud-btn hud-icon-btn" id="hud-fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
                     </svg>
@@ -1910,10 +2120,10 @@ kbd {
                     <input type="range" id="game-volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateGameVolume(this.value)">
                 </div>
 
-                <button class="hud-btn danger-action ripple-target" onclick="requestExit()">Exit</button>
+                <button class="hud-btn danger-action" onclick="requestExit()">Exit</button>
             </div>
             
-            <div class="hud-grip" title="Game Controls (Hover or Click)">
+            <div class="hud-grip" id="hud-grip" title="Game Controls (Hover or Click)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="6 9 12 15 18 9"/>
                 </svg>
@@ -1927,7 +2137,7 @@ kbd {
             <span id="hud-toast-text">Progress Saved Safely</span>
         </div>
         
-        <iframe id="game-frame" src="about:blank" scrolling="no" allow="cross-origin-isolated; autoplay; fullscreen; gamepad; pointer-lock; keyboard-map; clipboard-read; clipboard-write" allowfullscreen></iframe>
+        <iframe id="game-frame" src="about:blank" scrolling="no" allow="cross-origin-isolated; autoplay; fullscreen; gamepad; keyboard-map; clipboard-read; clipboard-write"></iframe>
     </div>
 
     <div id="exit-modal" class="modal-wrapper">
@@ -1936,8 +2146,8 @@ kbd {
             <h3>Exit Game Session?</h3>
             <p>Closing the session unloads the active game window. Any unsaved progress in this session will be lost.</p>
             <div class="modal-actions">
-                <button class="btn-cancel ripple-target" onclick="cancelExit()" style="flex: 1;">Continue Playing</button>
-                <button class="btn-danger ripple-target" onclick="confirmExit()" style="flex: 1;">Exit Session</button>
+                <button class="btn-cancel" onclick="cancelExit()" style="flex: 1;">Continue Playing</button>
+                <button class="btn-danger" onclick="confirmExit()" style="flex: 1;">Exit Session</button>
             </div>
         </div>
     </div>
@@ -2009,7 +2219,7 @@ kbd {
                         <div>Clear Recent History</div>
                         <div class="setting-subtext">Clears the jump-back-in shelf on discover</div>
                     </div>
-                    <button class="settings-action-btn ripple-target" onclick="clearRecentHistory()">Clear</button>
+                    <button class="settings-action-btn" onclick="clearRecentHistory()">Clear</button>
                 </div>
 
                 <div class="setting-row">
@@ -2017,7 +2227,7 @@ kbd {
                         <div>Reset Pinned Favorites</div>
                         <div class="setting-subtext">Unpins all saved favorite titles</div>
                     </div>
-                    <button class="settings-action-btn danger ripple-target" onclick="clearFavorites()">Reset</button>
+                    <button class="settings-action-btn danger" onclick="clearFavorites()">Reset</button>
                 </div>
 
                 <div class="setting-row" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
@@ -2033,7 +2243,7 @@ kbd {
                         <div>Backup All Game Saves</div>
                         <div class="setting-subtext">Export your entire game save vault to a JSON file</div>
                     </div>
-                    <button class="settings-action-btn ripple-target" onclick="exportAllGameSaves()">Export Saves</button>
+                    <button class="settings-action-btn" onclick="exportAllGameSaves()">Export Saves</button>
                 </div>
 
                 <div class="setting-row">
@@ -2041,7 +2251,7 @@ kbd {
                         <div>Restore Game Saves</div>
                         <div class="setting-subtext">Restore all progress and game saves from a backup file</div>
                     </div>
-                    <label class="settings-action-btn ripple-target" style="display: inline-flex; align-items: center; justify-content: center; margin: 0; cursor: pointer;">
+                    <label class="settings-action-btn" style="display: inline-flex; align-items: center; justify-content: center; margin: 0; cursor: pointer;">
                         Restore
                         <input type="file" id="restore-saves-input" accept=".json" style="display: none;" onchange="handleRestoreFile(this)">
                     </label>
@@ -2052,7 +2262,7 @@ kbd {
                         <div>Emergency Vault Restore</div>
                         <div class="setting-subtext">Recover latest automated save snapshot from local vault</div>
                     </div>
-                    <button class="settings-action-btn ripple-target" onclick="restoreFromInternalVault()">Recover</button>
+                    <button class="settings-action-btn" onclick="restoreFromInternalVault()">Recover</button>
                 </div>
             </div>
 
@@ -2061,7 +2271,7 @@ kbd {
             </div>
 
             <div class="modal-actions">
-                <button class="btn-cancel ripple-target" onclick="toggleSettings(false)" style="flex: 1;">Close</button>
+                <button class="btn-cancel" onclick="toggleSettings(false)" style="flex: 1;">Close</button>
             </div>
         </div>
     </div>
@@ -2104,12 +2314,12 @@ kbd {
             </div>
 
             <div class="modal-actions">
-                <button class="btn-cancel ripple-target" onclick="toggleShortcutsModal(false)" style="flex: 1;">Close</button>
+                <button class="btn-cancel" onclick="toggleShortcutsModal(false)" style="flex: 1;">Close</button>
             </div>
         </div>
     </div>
 
-    <button id="back-to-top" class="back-to-top-btn ripple-target" onclick="scrollToTop()" title="Back to top">
+    <button id="back-to-top" class="back-to-top-btn" onclick="scrollToTop()" title="Back to top">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"/>
         </svg>
@@ -2177,6 +2387,12 @@ kbd {
                     osc.start(now);
                     osc.stop(now + 0.14);
                 }
+                osc.onended = () => {
+                    try {
+                        osc.disconnect();
+                        gain.disconnect();
+                    } catch (e) {}
+                };
             } catch (e) {}
         }
 
@@ -2199,11 +2415,20 @@ kbd {
             playUiSound("click");
         }
 
+        function updateThemeButton(theme) {
+            const btn = document.getElementById("theme-toggle-btn");
+            if (!btn) return;
+            const isDark = theme === "dark";
+            btn.setAttribute("title", isDark ? "Switch to Light Mode (T)" : "Switch to Dark Mode (T)");
+            btn.setAttribute("aria-label", isDark ? "Switch to Light Mode" : "Switch to Dark Mode");
+        }
+
         function toggleTheme() {
             const active = document.documentElement.getAttribute("data-theme") || "dark";
             const target = active === "dark" ? "light" : "dark";
             document.documentElement.setAttribute("data-theme", target);
             localStorage.setItem("hh-theme", target);
+            updateThemeButton(target);
             playUiSound("click");
         }
 
@@ -2505,7 +2730,10 @@ kbd {
             if (!storageDaemonInterval) {
                 storageDaemonInterval = setInterval(async () => {
                     await migrateAndSnapshotLocalStorage();
-                    updateStorageStatusUI();
+                    const modal = document.getElementById("settings-modal");
+                    if (modal && modal.style.display === "flex") {
+                        updateStorageStatusUI();
+                    }
                 }, 30000);
             }
         }
@@ -2952,7 +3180,7 @@ kbd {
                 .replace(/[-_]/g, " ");
 
             return `
-                <div class="game-card ripple-target" style="--cat-color: var(--cat-${cat}); --cat-bg: var(--cat-${cat}-bg);" onclick="launchGame('${esc(game.file)}', '${esc(game.name)}')">
+                <div class="game-card" style="--cat-color: var(--cat-${cat}); --cat-bg: var(--cat-${cat}-bg);" onclick="launchGame('${esc(game.file)}', '${esc(game.name)}')">
                     <div class="card-visual" style="--cat-grad: var(--cat-${cat}-grad);">
                         <div class="card-visual-accent"></div>
                         <div class="card-visual-glow"></div>
@@ -3194,6 +3422,7 @@ kbd {
             overlay.style.display = "block";
             document.documentElement.style.overflow = "hidden";
             document.body.style.overflow = "hidden";
+            startFpsMonitoring();
 
             const hudFav = document.getElementById("hud-fav-btn");
             if (hudFav) hudFav.classList.toggle("active", isFavorite(file));
@@ -3208,8 +3437,7 @@ kbd {
 
             const finalUrl = await resolveGameUrl(file);
             hudName.textContent = name.toUpperCase();
-            frame.setAttribute("allow", "cross-origin-isolated; autoplay; fullscreen; gamepad; pointer-lock; keyboard-map; clipboard-read; clipboard-write");
-            frame.setAttribute("allowfullscreen", "true");
+            frame.setAttribute("allow", "cross-origin-isolated; autoplay; fullscreen; gamepad; keyboard-map; clipboard-read; clipboard-write");
             frame.src = finalUrl;
 
             if (autoSaveInterval) clearInterval(autoSaveInterval);
@@ -3258,7 +3486,53 @@ kbd {
             }
         }
 
+        let fpsAnimId = null;
+        let fpsFrames = 0;
+        let fpsLastTime = performance.now();
+
+        function startFpsMonitoring() {
+            stopFpsMonitoring();
+            const fpsBadge = document.getElementById("hud-fps-counter");
+            if (!fpsBadge) return;
+            fpsBadge.textContent = "-- FPS";
+            fpsFrames = 0;
+            fpsLastTime = performance.now();
+            function loop(now) {
+                fpsFrames++;
+                const delta = now - fpsLastTime;
+                if (delta >= 400) {
+                    const currentFps = Math.min(144, Math.round((fpsFrames * 1000) / delta));
+                    fpsBadge.textContent = currentFps + " FPS";
+                    if (currentFps >= 55) {
+                        fpsBadge.style.color = "#34d399";
+                        fpsBadge.style.borderColor = "rgba(52, 211, 153, 0.35)";
+                        fpsBadge.style.background = "rgba(52, 211, 153, 0.12)";
+                    } else if (currentFps >= 35) {
+                        fpsBadge.style.color = "#fbbf24";
+                        fpsBadge.style.borderColor = "rgba(251, 191, 36, 0.35)";
+                        fpsBadge.style.background = "rgba(251, 191, 36, 0.12)";
+                    } else {
+                        fpsBadge.style.color = "#f87171";
+                        fpsBadge.style.borderColor = "rgba(248, 113, 113, 0.35)";
+                        fpsBadge.style.background = "rgba(248, 113, 113, 0.12)";
+                    }
+                    fpsFrames = 0;
+                    fpsLastTime = now;
+                }
+                fpsAnimId = requestAnimationFrame(loop);
+            }
+            fpsAnimId = requestAnimationFrame(loop);
+        }
+
+        function stopFpsMonitoring() {
+            if (fpsAnimId) {
+                cancelAnimationFrame(fpsAnimId);
+                fpsAnimId = null;
+            }
+        }
+
         async function confirmExit() {
+            stopFpsMonitoring();
             const frame = document.getElementById("game-frame");
             if (autoSaveInterval) {
                 clearInterval(autoSaveInterval);
@@ -3499,13 +3773,9 @@ kbd {
 
         document.addEventListener("DOMContentLoaded", () => {
             initHudInteractions();
-            const themeBtn = document.getElementById("theme-toggle-btn");
             const currentTheme = localStorage.getItem("hh-theme") || "dark";
             document.documentElement.setAttribute("data-theme", currentTheme);
-
-            if (themeBtn) {
-                themeBtn.addEventListener("click", toggleTheme);
-            }
+            updateThemeButton(currentTheme);
 
             const searchInput = document.getElementById("lib-search");
             if (searchInput) {
@@ -3541,34 +3811,37 @@ kbd {
             });
 
             document.addEventListener("click", () => dropdown.classList.remove("open"));
-
-            document.addEventListener("click", e => {
-                const target = e.target.closest(".ripple-target");
-                if (!target) return;
-
-                const rect = target.getBoundingClientRect();
-                const ripple = document.createElement("span");
-                ripple.classList.add("click-ripple");
-
-                const maxDim = Math.max(rect.width, rect.height) * 2.2;
-                ripple.style.width = ripple.style.height = `${maxDim}px`;
-                ripple.style.left = `${e.clientX - rect.left}px`;
-                ripple.style.top = `${e.clientY - rect.top}px`;
-
-                target.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 500);
-            });
         });
 
+        let backToTopVisible = false;
         window.addEventListener("scroll", () => {
             const btn = document.getElementById("back-to-top");
             if (!btn) return;
             const overlay = document.getElementById("launcher-overlay");
             if (overlay && overlay.style.display === "block") {
-                btn.classList.remove("visible");
+                if (backToTopVisible) {
+                    btn.classList.remove("visible");
+                    backToTopVisible = false;
+                }
                 return;
             }
-            btn.classList.toggle("visible", window.scrollY > 350);
+            const shouldShow = window.scrollY > 350;
+            if (shouldShow !== backToTopVisible) {
+                btn.classList.toggle("visible", shouldShow);
+                backToTopVisible = shouldShow;
+            }
+        }, { passive: true });
+
+        let shineRaf = null;
+        document.addEventListener("pointermove", e => {
+            const target = e.target.closest(".game-card, .cinematic-hero");
+            if (!target) return;
+            if (shineRaf) cancelAnimationFrame(shineRaf);
+            shineRaf = requestAnimationFrame(() => {
+                const rect = target.getBoundingClientRect();
+                target.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+                target.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+            });
         }, { passive: true });
 
         const animToggle = document.getElementById("setting-animations");

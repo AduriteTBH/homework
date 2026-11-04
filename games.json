@@ -321,5 +321,6 @@
   { "name": "People Playground", "file": "people-playground", "icon": "" },
   { "name": "Among US", "file": "among-us", "icon": "" },
   { "name": "BlockCraft", "file": "blockcraft.html", "icon": "❤️" },
-  { "name": "Madalin Stunt Cars 3", "file": "madalinstuntcars3", "icon": "" }
+  { "name": "Madalin Stunt Cars 3", "file": "madalinstuntcars3", "icon": "" }.
+  { "name": "Redcoats IO", "file": "redcoatsio", "icon": "" }
 ]

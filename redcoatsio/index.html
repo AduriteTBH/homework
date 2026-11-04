@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="manifest" href="manifest.json"/>
+  <title>Redcoats.io - Custom Embed Client</title>
+  <style>
+    body {
+      overflow: hidden;
+      background: black;
+      margin: 0;
+    }
+
+    @keyframes tanks3d-loading {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .tanks3d-background {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 16% 22%, rgba(84, 168, 212, 0.55), transparent 45%),
+        radial-gradient(circle at 82% 20%, rgba(245, 170, 98, 0.46), transparent 38%),
+        radial-gradient(circle at 60% 86%, rgba(138, 214, 165, 0.3), transparent 40%),
+        linear-gradient(160deg, #0b1730 0%, #173456 52%, #325d8c 100%);
+    }
+
+    .tanks3d-dark-overlay {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.60);
+      pointer-events: none;
+    }
+
+    .tanks3d-title {
+      font-size: 30px;
+      font-family: sans-serif;
+    }
+
+    .tanks3d-small-text {
+      font-size: 17px;
+    }
+
+    @media (max-width: 600px), (max-height: 600px) {
+      .tanks3d-title { font-size: 20px; }
+      .tanks3d-small-text { font-size: 13px; }
+    }
+  </style>
+
+  <script src="shim.js"></script>
+  <script defer="defer" src="vendors.0d7c731f.js"></script>
+  <script defer="defer" src="main.d1739e8c.js"></script>
+</head>
+<body style="background: black; margin: 0;">
+  <script>
+    let tanks3dHasScheduledReload = false;
+    const tanks3dIsBooting = () => {
+      const root = document.getElementById("root");
+      return !!root && root.childElementCount === 0;
+    };
+    const tanks3dReloadIfStillBooting = () => {
+      if (!tanks3dIsBooting() || tanks3dHasScheduledReload) return;
+      tanks3dHasScheduledReload = true;
+      const loadingElement = document.getElementById("loadingtext");
+      if (loadingElement) loadingElement.textContent = "Loading for too long. Refreshing now...";
+      location.reload();
+    };
+    setTimeout(tanks3dReloadIfStillBooting, 480000);
+  </script>
+  <div class="tanks3d-background"></div>
+  <div class="tanks3d-dark-overlay"></div>
+  <div id="root"></div>
+  <div id="loadingtext" class="tanks3d-title" style="color:white; margin:20px; position:absolute; z-index:100;">
+    Redcoats.io is loading...
+    <p class="tanks3d-small-text">Works best on Chromium (Chrome, Edge, Brave)</p>
+    <div style="background-color: white; height: 30px; margin-top: 10px; border-radius: 10px; animation: tanks3d-loading 120s forwards cubic-bezier(.12,.9,0,.88);"></div>
+  </div>
+</body>
+</html>

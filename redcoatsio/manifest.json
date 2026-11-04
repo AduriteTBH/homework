@@ -1,0 +1,25 @@
+{
+  "background_color": "#000000",
+  "dir": "ltr",
+  "display": "standalone",
+  "ms_start_compatible": true,
+  "name": "Redcoats.io",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Redcoats.io",
+  "start_url": "/",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "https://redcoats.io/app/redcoats-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "https://redcoats.io/app/redcoats-icon-1080.png",
+      "type": "image/png",
+      "sizes": "1920x1080"
+    }
+  ],
+  "id": "yp3d.Redcoats.io"
+}

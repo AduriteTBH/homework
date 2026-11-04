@@ -187,8 +187,9 @@ body {
     -webkit-tap-highlight-color: transparent !important;
 }
 
-code, kbd, .mono-font {
+code, kbd, .mono-font, .card-cat-label, .section-meta, .search-kbd-hint, #hud-fps-counter {
     font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
 }
 
 input, button {
@@ -685,7 +686,7 @@ button {
 .game-card:hover {
     border-color: var(--cat-color);
     transform: translateY(-4px);
-    box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.6), 0 0 18px -4px var(--cat-color);
+    box-shadow: 0 14px 28px -4px rgba(0, 0, 0, 0.65), 0 4px 10px -2px rgba(0, 0, 0, 0.35);
     background: var(--bg-card-hover);
 }
 
@@ -783,7 +784,7 @@ button {
 .card-fav-btn.active svg {
     fill: #facc15;
     transform: scale(1.15);
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-emblem {
@@ -794,23 +795,49 @@ button {
 }
 
 .emblem-token {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     border-radius: var(--radius-md);
-    background: rgba(12, 14, 20, 0.75);
+    background: rgba(12, 14, 20, 0.85);
     border: 1.5px solid var(--cat-color);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
     font-family: 'JetBrains Mono', monospace;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-    transition: transform var(--transition-smooth);
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+    overflow: hidden;
+    position: relative;
+}
+
+.emblem-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: calc(var(--radius-md) - 1.5px);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    pointer-events: none;
+}
+
+.emblem-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 .game-card:hover .emblem-token {
+    transform: scale(1.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.game-card:hover .emblem-img {
     transform: scale(1.1);
 }
 
@@ -3179,6 +3206,11 @@ kbd {
                 .replace(/\.html?$/i, "")
                 .replace(/[-_]/g, " ");
 
+            const emblemContent = game.icon ? `
+                <img class="emblem-img" src="${esc(game.icon)}" alt="${esc(game.name)}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span class="emblem-initials" style="display: none;">${esc(initials)}</span>
+            ` : `<span class="emblem-initials">${esc(initials)}</span>`;
+
             return `
                 <div class="game-card" style="--cat-color: var(--cat-${cat}); --cat-bg: var(--cat-${cat}-bg);" onclick="launchGame('${esc(game.file)}', '${esc(game.name)}')">
                     <div class="card-visual" style="--cat-grad: var(--cat-${cat}-grad);">
@@ -3196,7 +3228,7 @@ kbd {
                             </div>
                         </div>
                         <div class="card-emblem">
-                            <div class="emblem-token">${esc(initials)}</div>
+                            <div class="emblem-token">${emblemContent}</div>
                         </div>
                         <div class="play-overlay">
                             <div class="play-btn-mini">

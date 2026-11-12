@@ -222,7 +222,39 @@ button {
 }
 
 .ambient-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+    opacity: 0.5;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.036) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.036) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+[data-theme="light"] .ambient-layer {
+    background-image:
+        linear-gradient(to right, rgba(9, 9, 11, 0.044) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(9, 9, 11, 0.044) 1px, transparent 1px);
+}
+
+#bg-pixel-grid {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.reduce-animations #bg-pixel-grid {
     display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #bg-pixel-grid {
+        display: none;
+    }
 }
 
 .app-header {
@@ -457,6 +489,162 @@ button {
 
 #error-banner.visible {
     display: flex;
+}
+
+.owner-notice {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 16px;
+    margin-bottom: 18px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(125deg, rgba(34, 197, 94, 0.16) 0%, rgba(16, 185, 129, 0.08) 54%, rgba(22, 163, 74, 0.14) 100%), var(--card);
+    border: 1px solid rgba(34, 197, 94, 0.28);
+    box-shadow: inset 0 1px 0 rgba(134, 239, 172, 0.14), 0 4px 16px -6px rgba(0, 0, 0, 0.45);
+    color: var(--foreground);
+    transform-origin: top center;
+}
+
+[data-theme="light"] .owner-notice {
+    background: linear-gradient(125deg, rgba(22, 163, 74, 0.11) 0%, rgba(16, 185, 129, 0.05) 54%, rgba(34, 197, 94, 0.1) 100%), var(--card);
+    border-color: rgba(22, 163, 74, 0.26);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 4px 14px -6px rgba(22, 163, 74, 0.14);
+}
+
+.owner-notice.visible {
+    display: flex;
+    animation: owner-notice-enter 0.24s var(--ease-spring) both;
+}
+
+.owner-notice.closing {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.985);
+    transition: opacity 0.16s var(--ease-out), transform 0.18s var(--ease-out);
+    pointer-events: none;
+}
+
+@keyframes owner-notice-enter {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -8px, 0) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+.owner-notice-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+}
+
+.owner-notice-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    background: rgba(34, 197, 94, 0.16);
+    border: 1px solid rgba(34, 197, 94, 0.28);
+    color: #4ade80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+[data-theme="light"] .owner-notice-icon {
+    background: rgba(22, 163, 74, 0.12);
+    border-color: rgba(22, 163, 74, 0.24);
+    color: #15803d;
+}
+
+.owner-notice-body {
+    min-width: 0;
+    flex: 1;
+}
+
+.owner-notice-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 3px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #4ade80;
+}
+
+[data-theme="light"] .owner-notice-head {
+    color: #15803d;
+}
+
+.owner-notice-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.owner-notice-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--foreground-secondary);
+}
+
+.owner-notice-sign {
+    color: var(--foreground);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.owner-notice-close {
+    height: 30px;
+    padding: 0 11px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(34, 197, 94, 0.28);
+    background: rgba(34, 197, 94, 0.12);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), transform 0.12s var(--ease-press);
+}
+
+[data-theme="light"] .owner-notice-close {
+    border-color: rgba(22, 163, 74, 0.28);
+    background: rgba(22, 163, 74, 0.1);
+    color: #14532d;
+}
+
+.owner-notice-close:hover {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.42);
+}
+
+.owner-notice-close:active {
+    transform: scale(0.96);
+}
+
+@media (max-width: 640px) {
+    .owner-notice {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 13px 14px;
+    }
+    .owner-notice-close {
+        align-self: flex-end;
+    }
 }
 
 .cinematic-hero {
@@ -2279,7 +2467,9 @@ html.reduce-animations {
 </head>
 <body>
 
-    <div class="ambient-layer"></div>
+    <div class="ambient-layer" aria-hidden="true">
+        <canvas id="bg-pixel-grid"></canvas>
+    </div>
 
     <div class="visually-hidden">
         <div id="status-dot"></div>
@@ -2299,7 +2489,7 @@ html.reduce-animations {
             <div>
                 <span class="brand-title">H&amp;H Launcher</span>
             </div>
-            <span class="brand-tag">v2.0.0</span>
+            <span class="brand-tag">v2.0.1</span>
         </div>
 
         <nav class="nav-controls" id="nav-controls">
@@ -2344,6 +2534,30 @@ html.reduce-animations {
             </svg>
             <span id="error-message">Failed to load games.json. Verify the file exists in the folder.</span>
         </div>
+
+        <aside id="owner-notice" class="owner-notice" role="status" aria-live="polite" hidden>
+            <div class="owner-notice-left">
+                <div class="owner-notice-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H11l-4.2 3.4c-.5.4-1.3.05-1.3-.6V16A2.5 2.5 0 0 1 5 13.5v-7Z" fill="currentColor" fill-opacity="0.1"/>
+                        <path d="M9 8.8h6M9 11.8h4"/>
+                    </svg>
+                </div>
+                <div class="owner-notice-body">
+                    <div class="owner-notice-head">
+                        <span class="owner-notice-dot" aria-hidden="true"></span>
+                        <span>Message from Owner of H&amp;H Launcher</span>
+                    </div>
+                    <p class="owner-notice-text">Hey everyone! I fixed some backend logic and server stuff, so the games that were getting blocked should work again now. Thanks for hanging tight while I got it sorted out, and have fun playing! <span class="owner-notice-sign">- Haris</span></p>
+                </div>
+            </div>
+            <button type="button" class="owner-notice-close" id="owner-notice-dismiss" aria-label="Dismiss announcement">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M6 12.5l4 4L18 8"/>
+                </svg>
+                Got it
+            </button>
+        </aside>
 
         <section id="discovery" class="view active">
             <div class="cinematic-hero" id="hero-spotlight">
@@ -2513,7 +2727,7 @@ html.reduce-animations {
                 <span class="footer-separator">&middot;</span>
                 <span>Engineered by Haris Abid</span>
                 <span class="footer-separator">&middot;</span>
-                <span>v2.0.0</span>
+                <span>v2.0.1</span>
             </div>
             <div class="footer-inner">
                 <button class="footer-shortcut-btn" onclick="toggleShortcutsModal(true)">
@@ -3011,8 +3225,260 @@ html.reduce-animations {
             playUiSound("click");
         }
 
+        let bgGridThemeColors = [];
+        let bgGridPaused = false;
+        let bgGridSetPaused = null;
+
+        function syncBgPixelGridTheme(theme) {
+            const active = theme || document.documentElement.getAttribute("data-theme") || "dark";
+            const isLight = active === "light";
+            bgGridThemeColors = [];
+            for (let b = 0; b < 8; b++) {
+                const t = (b + 1) / 8;
+                if (isLight) {
+                    const alpha = (0.064 + t * 0.448).toFixed(3);
+                    bgGridThemeColors.push(`rgba(24, 24, 27, ${alpha})`);
+                } else {
+                    const alpha = (0.08 + t * 0.62).toFixed(3);
+                    bgGridThemeColors.push(`rgba(212, 212, 216, ${alpha})`);
+                }
+            }
+        }
+
+        function initBgPixelGrid() {
+            const canvas = document.getElementById("bg-pixel-grid");
+            if (!canvas || !canvas.getContext) return;
+            const ctx = canvas.getContext("2d", { alpha: true, desynchronized: true }) || canvas.getContext("2d");
+            if (!ctx) return;
+
+            const CELL = 24;
+            const PAD = 2;
+            const CUBE = 21;
+            const MAX_CELLS = 200;
+            const BUCKET_COUNT = 8;
+            const buckets = Array.from({ length: BUCKET_COUNT }, () => []);
+            const activeCells = new Map();
+
+            let width = 0;
+            let height = 0;
+            let rafId = null;
+            let lastTs = 0;
+            let hasPointer = false;
+            let targetX = 0;
+            let targetY = 0;
+            let curX = 0;
+            let curY = 0;
+            let lastStampX = 0;
+            let lastStampY = 0;
+            let prevDirty = null;
+
+            syncBgPixelGridTheme();
+
+            function resizeCanvas() {
+                const w = Math.max(1, window.innerWidth);
+                const h = Math.max(1, window.innerHeight);
+                if (w === width && h === height) return;
+                width = w;
+                height = h;
+                canvas.width = w;
+                canvas.height = h;
+                prevDirty = null;
+                activeCells.clear();
+            }
+
+            function clearCanvas() {
+                if (prevDirty) {
+                    ctx.clearRect(prevDirty.x, prevDirty.y, prevDirty.w, prevDirty.h);
+                    prevDirty = null;
+                } else if (width > 0 && height > 0) {
+                    ctx.clearRect(0, 0, width, height);
+                }
+                activeCells.clear();
+            }
+
+            function cellHash(gx, gy) {
+                let h = ((gx * 374761393) + (gy * 668265263)) | 0;
+                h = ((h ^ (h >> 13)) * 1274126177) | 0;
+                return ((h ^ (h >> 16)) >>> 0) & 255;
+            }
+
+            function touchCell(gx, gy, strength) {
+                if (gx < -1 || gy < -1 || gx * CELL > width || gy * CELL > height) return;
+                const key = (gy + 512) * 8192 + (gx + 512);
+                const existing = activeCells.get(key);
+                if (existing) {
+                    if (strength > existing.life) existing.life = strength;
+                    return;
+                }
+                if (activeCells.size >= MAX_CELLS) {
+                    const oldestKey = activeCells.keys().next().value;
+                    if (oldestKey !== undefined) activeCells.delete(oldestKey);
+                }
+                const rate = 1.25 + (cellHash(gx, gy) / 255) * 0.85;
+                activeCells.set(key, { gx, gy, life: strength, rate });
+            }
+
+            function stampCluster(x, y) {
+                const cgx = Math.floor(x / CELL);
+                const cgy = Math.floor(y / CELL);
+                for (let dy = -3; dy <= 3; dy++) {
+                    for (let dx = -3; dx <= 3; dx++) {
+                        const d2 = dx * dx + dy * dy;
+                        if (d2 > 9) continue;
+                        const gx = cgx + dx;
+                        const gy = cgy + dy;
+                        const h = cellHash(gx, gy);
+                        if (d2 === 0) {
+                            touchCell(gx, gy, 1.0);
+                        } else if (d2 <= 2) {
+                            touchCell(gx, gy, 0.58 + (h / 255) * 0.2);
+                        } else if (d2 <= 5) {
+                            if ((h & 3) !== 0) touchCell(gx, gy, 0.36 + (h / 255) * 0.18);
+                        } else if ((h & 7) < 3) {
+                            touchCell(gx, gy, 0.16 + (h / 255) * 0.14);
+                        }
+                    }
+                }
+            }
+
+            function tick(now) {
+                rafId = null;
+                if (bgGridPaused || document.hidden || shouldReduceMotion()) {
+                    clearCanvas();
+                    return;
+                }
+
+                const dt = Math.min(0.05, Math.max(0.001, (now - lastTs) / 1000));
+                lastTs = now;
+
+                if (prevDirty) {
+                    ctx.clearRect(prevDirty.x, prevDirty.y, prevDirty.w, prevDirty.h);
+                    prevDirty = null;
+                }
+
+                if (hasPointer) {
+                    const smooth = 1 - Math.exp(-20 * dt);
+                    curX += (targetX - curX) * smooth;
+                    curY += (targetY - curY) * smooth;
+
+                    const dx = curX - lastStampX;
+                    const dy = curY - lastStampY;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist >= 3) {
+                        const steps = Math.min(4, Math.max(1, Math.ceil(dist / 12)));
+                        for (let s = 1; s <= steps; s++) {
+                            const t = s / steps;
+                            stampCluster(lastStampX + dx * t, lastStampY + dy * t);
+                        }
+                        lastStampX = curX;
+                        lastStampY = curY;
+                    }
+                }
+
+                for (let b = 0; b < BUCKET_COUNT; b++) {
+                    buckets[b].length = 0;
+                }
+
+                let minX = width;
+                let minY = height;
+                let maxX = 0;
+                let maxY = 0;
+
+                activeCells.forEach((cell, key) => {
+                    cell.life -= cell.rate * dt;
+                    if (cell.life <= 0.02) {
+                        activeCells.delete(key);
+                        return;
+                    }
+                    const px = cell.gx * CELL + PAD;
+                    const py = cell.gy * CELL + PAD;
+                    if (px < minX) minX = px;
+                    if (py < minY) minY = py;
+                    if (px + CUBE > maxX) maxX = px + CUBE;
+                    if (py + CUBE > maxY) maxY = py + CUBE;
+
+                    const b = Math.min(BUCKET_COUNT - 1, Math.max(0, Math.floor(cell.life * BUCKET_COUNT)));
+                    buckets[b].push(px, py);
+                });
+
+                for (let b = 0; b < BUCKET_COUNT; b++) {
+                    const coords = buckets[b];
+                    if (coords.length === 0) continue;
+                    ctx.fillStyle = bgGridThemeColors[b];
+                    for (let i = 0; i < coords.length; i += 2) {
+                        ctx.fillRect(coords[i], coords[i + 1], CUBE, CUBE);
+                    }
+                }
+
+                if (activeCells.size > 0 && maxX > minX && maxY > minY) {
+                    const cx = Math.max(0, Math.floor(minX - 2));
+                    const cy = Math.max(0, Math.floor(minY - 2));
+                    const cw = Math.min(width - cx, Math.ceil(maxX - cx + 2));
+                    const ch = Math.min(height - cy, Math.ceil(maxY - cy + 2));
+                    if (cw > 0 && ch > 0) {
+                        prevDirty = { x: cx, y: cy, w: cw, h: ch };
+                    }
+                }
+
+                const moving = hasPointer && (Math.abs(targetX - curX) > 0.75 || Math.abs(targetY - curY) > 0.75);
+                if (activeCells.size > 0 || moving) {
+                    rafId = requestAnimationFrame(tick);
+                } else {
+                    hasPointer = false;
+                }
+            }
+
+            function scheduleTick() {
+                if (rafId !== null || bgGridPaused || document.hidden || shouldReduceMotion()) return;
+                lastTs = performance.now();
+                rafId = requestAnimationFrame(tick);
+            }
+
+            bgGridSetPaused = paused => {
+                bgGridPaused = !!paused;
+                if (bgGridPaused) {
+                    if (rafId !== null) {
+                        cancelAnimationFrame(rafId);
+                        rafId = null;
+                    }
+                    hasPointer = false;
+                    clearCanvas();
+                }
+            };
+
+            resizeCanvas();
+            window.addEventListener("resize", resizeCanvas, { passive: true });
+            window.addEventListener("pointermove", e => {
+                if (e.pointerType === "touch") return;
+                if (bgGridPaused || document.hidden || shouldReduceMotion()) return;
+                targetX = e.clientX;
+                targetY = e.clientY;
+                if (!hasPointer) {
+                    curX = targetX;
+                    curY = targetY;
+                    lastStampX = targetX;
+                    lastStampY = targetY;
+                    hasPointer = true;
+                    stampCluster(curX, curY);
+                }
+                scheduleTick();
+            }, { passive: true });
+
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden && bgGridSetPaused) {
+                    if (rafId !== null) {
+                        cancelAnimationFrame(rafId);
+                        rafId = null;
+                    }
+                    hasPointer = false;
+                    clearCanvas();
+                }
+            });
+        }
+
         function updateThemeButton(theme) {
             const btn = document.getElementById("theme-toggle-btn");
+            syncBgPixelGridTheme(theme);
             if (!btn) return;
             const isDark = theme === "dark";
             btn.setAttribute("title", isDark ? "Switch to Light Mode (T)" : "Switch to Dark Mode (T)");
@@ -3628,9 +4094,81 @@ html.reduce-animations {
             } catch (e) {}
         });
 
+        const OWNER_NOTICE_KEY = "hh-owner-notice-v2-0-1-seen";
+
+        function markOwnerNoticeSeen() {
+            try {
+                localStorage.setItem(OWNER_NOTICE_KEY, "1");
+            } catch (e) {}
+        }
+
+        function dismissOwnerNotice(withSound) {
+            const notice = document.getElementById("owner-notice");
+            markOwnerNoticeSeen();
+            if (!notice || notice.hidden || !notice.classList.contains("visible")) return;
+            if (withSound) playUiSound("click");
+            if (notice.classList.contains("closing")) return;
+            notice.classList.add("closing");
+            let finalized = false;
+            const finalize = () => {
+                if (finalized) return;
+                finalized = true;
+                notice.classList.remove("visible", "closing");
+                notice.hidden = true;
+            };
+            notice.addEventListener("transitionend", finalize, { once: true });
+            setTimeout(finalize, 220);
+        }
+
+        function initOwnerNotice() {
+            const notice = document.getElementById("owner-notice");
+            const dismissBtn = document.getElementById("owner-notice-dismiss");
+            if (!notice) return;
+
+            try {
+                if (localStorage.getItem(OWNER_NOTICE_KEY) === "1") return;
+            } catch (e) {
+                return;
+            }
+
+            if (dismissBtn) {
+                dismissBtn.addEventListener("click", () => dismissOwnerNotice(true));
+            }
+
+            const revealNotice = () => {
+                try {
+                    if (localStorage.getItem(OWNER_NOTICE_KEY) === "1") return;
+                } catch (e) {}
+                notice.hidden = false;
+                notice.classList.add("visible");
+                setTimeout(() => {
+                    if (document.visibilityState !== "hidden") {
+                        markOwnerNoticeSeen();
+                    }
+                }, 1500);
+                window.addEventListener("pagehide", markOwnerNoticeSeen, { once: true });
+            };
+
+            let coiPending = false;
+            try {
+                coiPending =
+                    window.isSecureContext &&
+                    "serviceWorker" in navigator &&
+                    window.crossOriginIsolated === false &&
+                    sessionStorage.getItem("coi-reloaded") !== "1";
+            } catch (e) {}
+
+            if (coiPending) {
+                setTimeout(revealNotice, 750);
+            } else {
+                revealNotice();
+            }
+        }
+
         async function bootstrap() {
             showLoadingSkeletons();
             await initDataPreservationProtocol();
+            initOwnerNotice();
 
             try {
                 const url = BASE_URL + "games.json?_=" + Date.now();
@@ -4120,6 +4658,7 @@ html.reduce-animations {
 
             hudName.textContent = "Loading...";
             overlay.style.display = "block";
+            if (bgGridSetPaused) bgGridSetPaused(true);
             document.documentElement.style.overflow = "hidden";
             document.body.style.overflow = "hidden";
             startFpsMonitoring();
@@ -4245,6 +4784,7 @@ html.reduce-animations {
             await safeFlushGameData(true);
             frame.src = "about:blank";
             document.getElementById("launcher-overlay").style.display = "none";
+            if (bgGridSetPaused) bgGridSetPaused(false);
             closeModal(document.getElementById("exit-modal"));
             document.documentElement.style.overflow = "";
             document.body.style.overflow = "";
@@ -4479,6 +5019,7 @@ html.reduce-animations {
 
         document.addEventListener("DOMContentLoaded", () => {
             initHudInteractions();
+            initBgPixelGrid();
             const currentTheme = localStorage.getItem("hh-theme") || "dark";
             document.documentElement.setAttribute("data-theme", currentTheme);
             updateThemeButton(currentTheme);
@@ -4583,6 +5124,7 @@ html.reduce-animations {
             document.body.classList.toggle("reduce-animations", reduced);
             document.body.classList.toggle("hide-badges", !badgesToggle.checked);
             if (reduced) observeRevealCards(document, true);
+            if (bgGridSetPaused) bgGridSetPaused(reduced);
             
             const grids = document.querySelectorAll(".game-grid");
             grids.forEach(grid => grid.classList.toggle("compact-mode", compactToggle.checked));

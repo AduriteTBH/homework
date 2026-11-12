@@ -5,7 +5,47 @@
     <meta content="utf-8" http-equiv="encoding">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
     <title>8 Ball Billiards Classic</title>
-    <style>html,body{background:#000;margin:0;padding:0;overflow:hidden;width:100%;height:100%}#mygame{width:100%;height:100%}</style>
+    <style>
+        html, body {
+            background: #000;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            font-family: system-ui, -apple-system, sans-serif;
+            color: #e4e4e7;
+        }
+        #mygame {
+            width: 100%;
+            height: 100%;
+        }
+        #status-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #09090b;
+            text-align: center;
+            padding: 24px;
+            z-index: 20;
+        }
+        #status-overlay[hidden] {
+            display: none;
+        }
+        #status-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        #status-detail {
+            font-size: 13px;
+            color: #a1a1aa;
+            max-width: 440px;
+        }
+    </style>
     <script>
        window.famobi_analytics = new Proxy({}, { get: function() { return function() { return Promise.resolve(); }; } });
        var famobiBase = {
@@ -24,27 +64,121 @@
 </head>
 <body>
 <div id="mygame"></div>
-<script src="https://cdn.jsdelivr.net/gh/thirstygithub/shiny-disco@main/src/01phaser.js"></script>
+<div id="status-overlay">
+    <div id="status-title">Loading 8 Ball Pool...</div>
+    <div id="status-detail">Connecting to asset mirror</div>
+</div>
 <script>
-(function(){
-    var originals={
-      image:Phaser.Loader.prototype.image,audio:Phaser.Loader.prototype.audio,spritesheet:Phaser.Loader.prototype.spritesheet,
-      bitmapFont:Phaser.Loader.prototype.bitmapFont,atlasJSONHash:Phaser.Loader.prototype.atlasJSONHash,
-      atlasJSONArray:Phaser.Loader.prototype.atlasJSONArray,atlas:Phaser.Loader.prototype.atlas,json:Phaser.Loader.prototype.json,
-      xml:Phaser.Loader.prototype.xml,text:Phaser.Loader.prototype.text
+(function () {
+    var WORKER_CDN_PROXY = "https://homework-socket.hnhai.workers.dev/cdn/";
+    var MIRRORS = [
+        "https://cdn.jsdelivr.net/gh/thirstygithub/shiny-disco@main/",
+        "https://fastly.jsdelivr.net/gh/thirstygithub/shiny-disco@main/",
+        "https://raw.githubusercontent.com/thirstygithub/shiny-disco/main/",
+        WORKER_CDN_PROXY + "cdn.jsdelivr.net/gh/thirstygithub/shiny-disco@main/",
+        WORKER_CDN_PROXY + "raw.githubusercontent.com/thirstygithub/shiny-disco/main/"
+    ];
+    var overlay = document.getElementById("status-overlay");
+    var titleEl = document.getElementById("status-title");
+    var detailEl = document.getElementById("status-detail");
+    var activeBase = MIRRORS[0];
+
+    function showError(msg) {
+        titleEl.textContent = "Unable to load 8 Ball Pool";
+        detailEl.textContent = msg;
+        overlay.hidden = false;
+    }
+
+    function rewriteAssetUrl(url) {
+        if (typeof url !== "string") return url;
+        if (url.startsWith("assets/")) return activeBase + url.slice("assets/".length);
+        for (var i = 0; i < MIRRORS.length; i++) {
+            if (url.startsWith(MIRRORS[i])) return activeBase + url.slice(MIRRORS[i].length);
+        }
+        return url;
+    }
+
+    function patchPhaserLoader() {
+        if (typeof Phaser === "undefined" || !Phaser.Loader || Phaser.Loader.prototype._hhPatched) return;
+        Phaser.Loader.prototype._hhPatched = true;
+        var p = Phaser.Loader.prototype;
+        var originals = {
+            image: p.image,
+            audio: p.audio,
+            spritesheet: p.spritesheet,
+            bitmapFont: p.bitmapFont,
+            atlasJSONHash: p.atlasJSONHash,
+            atlasJSONArray: p.atlasJSONArray,
+            atlas: p.atlas,
+            json: p.json,
+            xml: p.xml,
+            text: p.text
+        };
+        p.image = function (k, u) { return originals.image.call(this, k, rewriteAssetUrl(u)); };
+        p.audio = function (k, u) { return originals.audio.call(this, k, Array.isArray(u) ? u.map(rewriteAssetUrl) : rewriteAssetUrl(u)); };
+        p.spritesheet = function (k, u, w, h, f, m, s) { return originals.spritesheet.call(this, k, rewriteAssetUrl(u), w, h, f, m, s); };
+        p.bitmapFont = function (k, t, a, d, x, y) { return originals.bitmapFont.call(this, k, rewriteAssetUrl(t), rewriteAssetUrl(a), d, x, y); };
+        p.atlasJSONHash = function (k, t, a, d) { return originals.atlasJSONHash.call(this, k, rewriteAssetUrl(t), rewriteAssetUrl(a), d); };
+        if (originals.atlasJSONArray) p.atlasJSONArray = function (k, t, a, d) { return originals.atlasJSONArray.call(this, k, rewriteAssetUrl(t), rewriteAssetUrl(a), d); };
+        if (originals.atlas) p.atlas = function (k, t, a, d, f) { return originals.atlas.call(this, k, rewriteAssetUrl(t), rewriteAssetUrl(a), d, f); };
+        if (originals.json) p.json = function (k, u, o) { return originals.json.call(this, k, rewriteAssetUrl(u), o); };
+        if (originals.xml) p.xml = function (k, u, o) { return originals.xml.call(this, k, rewriteAssetUrl(u), o); };
+        if (originals.text) p.text = function (k, u, o) { return originals.text.call(this, k, rewriteAssetUrl(u), o); };
+    }
+
+    var origXhrOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url) {
+        var args = Array.prototype.slice.call(arguments);
+        args[1] = rewriteAssetUrl(String(url));
+        return origXhrOpen.apply(this, args);
     };
-    var CDN="https://cdn.jsdelivr.net/gh/thirstygithub/shiny-disco@main/";
-    function rewrite(url){ return typeof url==='string' && url.startsWith('assets/') ? CDN+url.replace('assets/','') : url; }
-    Phaser.Loader.prototype.image=function(k,u){return originals.image.call(this,k,rewrite(u));};
-    Phaser.Loader.prototype.audio=function(k,u){return originals.audio.call(this,k,Array.isArray(u)?u.map(rewrite):rewrite(u));};
-    Phaser.Loader.prototype.spritesheet=function(k,u,w,h,f,m,s){return originals.spritesheet.call(this,k,rewrite(u),w,h,f,m,s);};
-    Phaser.Loader.prototype.bitmapFont=function(k,t,a,d,x,y){return originals.bitmapFont.call(this,k,rewrite(t),rewrite(a),d,x,y);};
-    Phaser.Loader.prototype.atlasJSONHash=function(k,t,a,d){return originals.atlasJSONHash.call(this,k,rewrite(t),rewrite(a),d);};
-    if(originals.atlasJSONArray)Phaser.Loader.prototype.atlasJSONArray=function(k,t,a,d){return originals.atlasJSONArray.call(this,k,rewrite(t),rewrite(a),d);};
-    if(originals.atlas)Phaser.Loader.prototype.atlas=function(k,t,a,d,f){return originals.atlas.call(this,k,rewrite(t),rewrite(a),d,f);};
-    if(originals.json)Phaser.Loader.prototype.json=function(k,u,o){return originals.json.call(this,k,rewrite(u),o);};
-    if(originals.xml)Phaser.Loader.prototype.xml=function(k,u,o){return originals.xml.call(this,k,rewrite(u),o);};
-    if(originals.text)Phaser.Loader.prototype.text=function(k,u,o){return originals.text.call(this,k,rewrite(u),o);};
+
+    var origFetch = window.fetch.bind(window);
+    window.fetch = function (resource, init) {
+        if (typeof resource === "string") {
+            return origFetch(rewriteAssetUrl(resource), init);
+        }
+        return origFetch(resource, init);
+    };
+
+    async function fetchScriptFromMirrors() {
+        for (var i = 0; i < MIRRORS.length; i++) {
+            var base = MIRRORS[i];
+            var scriptUrl = base + "src/01phaser.js";
+            try {
+                detailEl.textContent = "Trying mirror " + (i + 1) + " of " + MIRRORS.length + "...";
+                var res = await origFetch(scriptUrl, { mode: "cors", credentials: "omit" });
+                if (!res.ok) continue;
+                if (base.indexOf(WORKER_CDN_PROXY) === 0 && res.headers.get("x-hh-proxy") !== "1") continue;
+                var ct = (res.headers.get("content-type") || "").toLowerCase();
+                if (ct.includes("text/html")) continue;
+                var code = await res.text();
+                if (!code || code.trimStart().startsWith("<") || code.indexOf("Redcoats WebSocket Proxy Online") === 0) continue;
+                activeBase = base;
+                return code;
+            } catch (e) {}
+        }
+        throw new Error("All game asset mirrors are blocked or unreachable on this network.");
+    }
+
+    fetchScriptFromMirrors().then(function (code) {
+        var patchedCode = code.replace(/url\(assets\/img\/bgLarge\.png\)/g, "url(" + activeBase + "img/bgLarge.png)");
+        var blobUrl = URL.createObjectURL(new Blob([patchedCode], { type: "application/javascript" }));
+        var script = document.createElement("script");
+        script.src = blobUrl;
+        script.onload = function () {
+            URL.revokeObjectURL(blobUrl);
+            patchPhaserLoader();
+            overlay.hidden = true;
+        };
+        script.onerror = function () {
+            URL.revokeObjectURL(blobUrl);
+            showError("Failed to execute game engine script.");
+        };
+        document.body.appendChild(script);
+    }).catch(function (err) {
+        showError(err && err.message ? err.message : "Network error loading game.");
+    });
 })();
 </script>
 </body>

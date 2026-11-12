@@ -1,2 +1,182 @@
-<html lang="en-us"><base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/drift-hunters/"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Drift Hunters</title><meta name="robots" content="noindex,nofollow"><style>html,body{width:100%;height:100%;margin:0;padding:0;overflow:hidden;background:#000}.webgl-content,#gameContainer,canvas{width:100%!important;height:100%!important}.webgl-content{position:absolute}</style></head><body><div class="webgl-content"><div id="gameContainer"></div></div><script src="UnityLoader2019.js"></script><script>var gameInstance=UnityLoader.instantiate("gameContainer","dh.json");function UnityProgress(gameInstance,progress){}</script></body></html>
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Drift Hunters</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #09090b;
+    color: #e4e4e7;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .webgl-content, #gameContainer, canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .webgl-content {
+    position: absolute;
+  }
+  #status-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #09090b;
+    text-align: center;
+    padding: 24px;
+    z-index: 20;
+  }
+  #status-overlay[hidden] {
+    display: none;
+  }
+  #status-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  #status-detail {
+    font-size: 13px;
+    color: #a1a1aa;
+    max-width: 440px;
+  }
+</style>
+</head>
+<body>
+<div class="webgl-content"><div id="gameContainer"></div></div>
+<div id="status-overlay">
+  <div id="status-title">Loading Drift Hunters...</div>
+  <div id="status-detail">Connecting to game asset mirror</div>
+</div>
+<script>
+(function () {
+  var WORKER_CDN_PROXY = "https://homework-socket.hnhai.workers.dev/cdn/";
+  var MIRRORS = [
+    "https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/drift-hunters/",
+    "https://fastly.jsdelivr.net/gh/bubbls/UGS-Assets@main/drift-hunters/",
+    "https://raw.githubusercontent.com/bubbls/UGS-Assets/main/drift-hunters/",
+    WORKER_CDN_PROXY + "cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/drift-hunters/",
+    WORKER_CDN_PROXY + "raw.githubusercontent.com/bubbls/UGS-Assets/main/drift-hunters/"
+  ];
+  var overlay = document.getElementById("status-overlay");
+  var titleEl = document.getElementById("status-title");
+  var detailEl = document.getElementById("status-detail");
+  var activeBase = MIRRORS[0];
+
+  function showError(msg) {
+    titleEl.textContent = "Unable to load Drift Hunters";
+    detailEl.textContent = msg;
+    overlay.hidden = false;
+  }
+
+  function rewriteUrl(url) {
+    if (typeof url !== "string") return url;
+    if (url.startsWith("blob:") || url.startsWith("data:") || url.startsWith("http://") || url.startsWith("https://")) {
+      for (var i = 0; i < MIRRORS.length; i++) {
+        if (url.startsWith(MIRRORS[i])) return activeBase + url.slice(MIRRORS[i].length);
+      }
+      return url;
+    }
+    var clean = url.replace(/^\.\//, "");
+    if (/^dh\.(data|asm|json)/i.test(clean) || /^UnityLoader/i.test(clean)) {
+      return activeBase + clean;
+    }
+    return url;
+  }
+
+  var origXhrOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function (method, url) {
+    var args = Array.prototype.slice.call(arguments);
+    args[1] = rewriteUrl(String(url));
+    return origXhrOpen.apply(this, args);
+  };
+
+  var origFetch = window.fetch.bind(window);
+  window.fetch = function (resource, init) {
+    if (typeof resource === "string") {
+      return origFetch(rewriteUrl(resource), init);
+    }
+    return origFetch(resource, init);
+  };
+
+  async function fetchMirrorText(base, path) {
+    var res = await origFetch(base + path, { mode: "cors", credentials: "omit" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    if (base.indexOf(WORKER_CDN_PROXY) === 0 && res.headers.get("x-hh-proxy") !== "1") {
+      throw new Error("Worker CDN proxy not active");
+    }
+    var ct = (res.headers.get("content-type") || "").toLowerCase();
+    if (ct.includes("text/html")) throw new Error("Blocked HTML response");
+    var txt = await res.text();
+    if (!txt || txt.trimStart().startsWith("<") || txt.indexOf("Redcoats WebSocket Proxy Online") === 0) throw new Error("Invalid payload");
+    return txt;
+  }
+
+  async function boot() {
+    var loaderCode = null;
+    var dhJson = null;
+    for (var i = 0; i < MIRRORS.length; i++) {
+      var base = MIRRORS[i];
+      try {
+        detailEl.textContent = "Trying mirror " + (i + 1) + " of " + MIRRORS.length + "...";
+        var results = await Promise.all([
+          fetchMirrorText(base, "dh.json"),
+          fetchMirrorText(base, "UnityLoader2019.js")
+        ]);
+        JSON.parse(results[0]);
+        dhJson = results[0];
+        loaderCode = results[1];
+        activeBase = base;
+        break;
+      } catch (e) {}
+    }
+    if (!loaderCode || !dhJson) {
+      throw new Error("All game asset mirrors are blocked or unreachable on this network.");
+    }
+
+    var manifest = JSON.parse(dhJson);
+    ["asmCodeUrl", "asmMemoryUrl", "asmFrameworkUrl"].forEach(function (k) {
+      if (manifest[k] && !/^https?:|^blob:/.test(manifest[k])) {
+        manifest[k] = new URL(manifest[k], location.href).href;
+      }
+    });
+    if (manifest.dataUrl && !/^https?:|^blob:/.test(manifest.dataUrl)) {
+      manifest.dataUrl = activeBase + manifest.dataUrl;
+    }
+
+    var loaderBlobUrl = URL.createObjectURL(new Blob([loaderCode], { type: "application/javascript" }));
+    var jsonBlobUrl = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: "application/json" }));
+
+    var script = document.createElement("script");
+    script.src = loaderBlobUrl;
+    script.onload = function () {
+      URL.revokeObjectURL(loaderBlobUrl);
+      if (typeof UnityLoader === "undefined") {
+        showError("UnityLoader failed to initialize.");
+        return;
+      }
+      overlay.hidden = true;
+      window.gameInstance = UnityLoader.instantiate("gameContainer", jsonBlobUrl);
+    };
+    script.onerror = function () {
+      URL.revokeObjectURL(loaderBlobUrl);
+      showError("Failed to load Unity engine.");
+    };
+    document.body.appendChild(script);
+  }
+
+  boot().catch(function (err) {
+    showError(err && err.message ? err.message : "Network error loading game.");
+  });
+})();
+</script>
+</body>
+</html>

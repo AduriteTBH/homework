@@ -26,7 +26,7 @@
 		/* MORE Settings */
 		try{
 				// GAME.src = 'http://localhost:5000/swf/LearnToFly3.swf';
-				GAME.src = 'https://learntofly3.github.io/swf/LearnToFly3.swf';
+				GAME.src = './swf/LearnToFly3.swf';
 				GAME.fileType = 1;
 		}catch(e){
 			console.warn(e);
@@ -116,6 +116,7 @@
 		import {
 			createWaflash
 		} from './waflash/waflash-player.min.js';
+		window.createWaflash = createWaflash;
 		// Dose check flash player installed yet?
 		if(!FlashDetect.installed || GAME.reqEmulator == 'waflash'){
 			var _csrfToken = $('meta[name="csrf-token"]').attr('content');

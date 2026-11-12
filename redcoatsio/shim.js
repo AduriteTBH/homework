@@ -81,44 +81,130 @@
     weapon6: 'Digit6'
   };
 
-  const activeServers = [
-    {
-      apiHost: 'https://api-eu-1.redcoats.io/shipwrecked3d-game/server-1',
-      maxPlayerCount: 650,
-      playerCount: 120,
-      serverId: 1,
-      serverName: 'Official Server 1 (EU)',
-      version: 1,
-      websocketHost: 'wss://api-eu-1.redcoats.io/shipwrecked3d-game/server-1'
-    },
-    {
-      apiHost: 'https://api-eu-1.redcoats.io/shipwrecked3d-game/server-2',
-      maxPlayerCount: 650,
-      playerCount: 5,
-      serverId: 2,
-      serverName: 'Official Server 2 (EU)',
-      version: 1,
-      websocketHost: 'wss://api-eu-1.redcoats.io/shipwrecked3d-game/server-2'
-    },
-    {
-      apiHost: 'https://api-eu-1.redcoats.io/shipwrecked3d-game/server-3',
-      maxPlayerCount: 650,
-      playerCount: 0,
-      serverId: 3,
-      serverName: 'Official Server 3 (EU)',
-      version: 1,
-      websocketHost: 'wss://api-eu-1.redcoats.io/shipwrecked3d-game/server-3'
-    },
-    {
-      apiHost: 'https://api-eu-1.redcoats.io/shipwrecked3d-game/server-4',
-      maxPlayerCount: 650,
-      playerCount: 0,
-      serverId: 4,
-      serverName: 'Official Server 4 (EU)',
-      version: 1,
-      websocketHost: 'wss://api-eu-1.redcoats.io/shipwrecked3d-game/server-4'
-    }
+  const WORKER_ORIGIN = 'https://homework-socket.hnhai.workers.dev';
+  const WORKER_WS_ORIGIN = 'wss://homework-socket.hnhai.workers.dev';
+
+  const activeServers = [1, 2, 3, 4].map((id, idx) => ({
+    apiHost: `${WORKER_ORIGIN}/shipwrecked3d-game/server-${id}`,
+    maxPlayerCount: 650,
+    playerCount: id === 1 ? 120 : id === 2 ? 5 : 0,
+    serverId: id,
+    serverName: `Official Server ${id} (EU)`,
+    version: 1,
+    websocketHost: `${WORKER_WS_ORIGIN}/shipwrecked3d-game/server-${id}`
+  }));
+
+  const BLOCKED_SCRIPT_HOSTS = [
+    'cdn.intergient.com',
+    'api.adinplay.com',
+    'googletagmanager.com',
+    'google-analytics.com',
+    'googlesyndication.com',
+    'doubleclick.net',
+    'accounts.google.com',
+    'assets.msn.com',
+    'sdk.crazygames.com',
+    'game-cdn.poki.com'
   ];
+
+  function isBlockedExternalUrl(rawUrl) {
+    if (!rawUrl) return false;
+    const str = String(rawUrl);
+    return BLOCKED_SCRIPT_HOSTS.some(host => str.includes(host));
+  }
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  window.ramp = window.ramp || { que: [], passiveMode: true, addUnits: () => Promise.resolve(), displayUnits: () => {}, destroyUnits: () => Promise.resolve() };
+  window.aiptag = window.aiptag || { cmd: { display: [], player: [] }, cmp: { show: () => {} } };
+
+  function neutralizeBlockedScriptNode(node) {
+    if (!node || node.nodeType !== 1 || node.tagName !== 'SCRIPT') return false;
+    const rawSrc = node.getAttribute('src') || node.src || '';
+    if (!isBlockedExternalUrl(rawSrc)) return false;
+    node.removeAttribute('src');
+    node.type = 'text/plain';
+    node.dataset.blockedSrc = rawSrc;
+    queueMicrotask(() => {
+      try {
+        if (typeof node.onload === 'function') node.onload(new Event('load'));
+        node.dispatchEvent(new Event('load'));
+      } catch {}
+    });
+    return true;
+  }
+
+  for (const protoMethod of [
+    [Node.prototype, 'appendChild'],
+    [Node.prototype, 'insertBefore'],
+    [Element.prototype, 'append']
+  ]) {
+    const [proto, name] = protoMethod;
+    const orig = proto && proto[name];
+    if (typeof orig !== 'function') continue;
+    proto[name] = function (...args) {
+      for (const item of args) {
+        if (item && item.nodeType === 1) neutralizeBlockedScriptNode(item);
+      }
+      return orig.apply(this, args);
+    };
+  }
+
+  if (typeof window.WebSocket === 'function') {
+    const NativeWebSocket = window.WebSocket;
+    let consecutiveQuickFailures = 0;
+    let lastNoticeAt = 0;
+    const origConsoleLog = console.log.bind(console);
+    console.log = function (...args) {
+      if (consecutiveQuickFailures >= 4 && typeof args[0] === 'string' && args[0].includes('error socket not defined')) {
+        return;
+      }
+      return origConsoleLog(...args);
+    };
+
+    const PatchedWebSocket = function (url, protocols) {
+      const targetUrl = String(url || '');
+      const ws = protocols !== undefined ? new NativeWebSocket(targetUrl, protocols) : new NativeWebSocket(targetUrl);
+      const isGameSocket = targetUrl.includes('/shipwrecked3d-game/');
+      if (!isGameSocket) return ws;
+
+      const createdAt = Date.now();
+      let openedOnce = false;
+      ws.addEventListener('open', () => {
+        openedOnce = true;
+        consecutiveQuickFailures = 0;
+      });
+      ws.addEventListener('close', ev => {
+        if (!openedOnce && Date.now() - createdAt < 2500) {
+          consecutiveQuickFailures++;
+          if (consecutiveQuickFailures >= 5 && Date.now() - lastNoticeAt > 15000) {
+            lastNoticeAt = Date.now();
+            console.warn('[Redcoats Shim] Game WebSocket unreachable on current network; slowing reconnect attempts.');
+          }
+        }
+      });
+
+      if (consecutiveQuickFailures >= 4) {
+        const delay = Math.min(8000, 500 * Math.pow(2, Math.min(4, consecutiveQuickFailures - 4)));
+        const origAddEventListener = ws.addEventListener.bind(ws);
+        ws.addEventListener = function (type, listener, options) {
+          if (type === 'close' && typeof listener === 'function') {
+            return origAddEventListener(type, ev => {
+              setTimeout(() => listener(ev), delay);
+            }, options);
+          }
+          return origAddEventListener(type, listener, options);
+        };
+      }
+      return ws;
+    };
+    PatchedWebSocket.prototype = NativeWebSocket.prototype;
+    PatchedWebSocket.CONNECTING = NativeWebSocket.CONNECTING;
+    PatchedWebSocket.OPEN = NativeWebSocket.OPEN;
+    PatchedWebSocket.CLOSING = NativeWebSocket.CLOSING;
+    PatchedWebSocket.CLOSED = NativeWebSocket.CLOSED;
+    window.WebSocket = PatchedWebSocket;
+  }
 
   const originalFetch = window.fetch;
 
@@ -220,12 +306,24 @@
         });
       }
 
-      if (urlStr.includes('/api/error')) {
-        return new Response(JSON.stringify({ success: true }), {
+      if (urlStr.includes('/api/error') || urlStr.includes('/api/sign')) {
+        return new Response(JSON.stringify({ success: true, user: userMe }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
       }
+
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (isBlockedExternalUrl(urlStr)) {
+      return new Response('', {
+        status: 200,
+        headers: { 'Content-Type': 'application/javascript' }
+      });
     }
 
     return originalFetch.apply(this, arguments);

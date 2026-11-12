@@ -30,11 +30,25 @@
     </div>
   </div>
   <script>
-    const JSDELIVR = "https://cdn.jsdelivr.net/gh/wasmdotrip/AmongUsPort@7b6881186a73a3165ad7274b5e5dd31e3290cbfc";
+    const REPO_PATH = "wasmdotrip/AmongUsPort";
+    const REPO_REF = "7b6881186a73a3165ad7274b5e5dd31e3290cbfc";
+    const JSDELIVR = "https://cdn.jsdelivr.net/gh/" + REPO_PATH + "@" + REPO_REF;
+    const WORKER_CDN_PROXY = "https://homework-socket.hnhai.workers.dev/cdn/";
+    const CDN_MIRRORS = [
+      "https://cdn.jsdelivr.net/gh/" + REPO_PATH + "@" + REPO_REF,
+      "https://fastly.jsdelivr.net/gh/" + REPO_PATH + "@" + REPO_REF,
+      "https://raw.githubusercontent.com/" + REPO_PATH + "/" + REPO_REF,
+      WORKER_CDN_PROXY + "cdn.jsdelivr.net/gh/" + REPO_PATH + "@" + REPO_REF,
+      WORKER_CDN_PROXY + "raw.githubusercontent.com/" + REPO_PATH + "/" + REPO_REF
+    ];
     const BUILD = JSDELIVR + "/Build";
     const STREAMING_ASSETS = JSDELIVR + "/StreamingAssets";
     const LARGE_BUNDLE = "defaultlocalgroup_assets__db69efd6d6015cdfb90e3e77a7544e5b.bundle";
-    const CACHE_REVISION = "7b6881186a73a3165ad7274b5e5dd31e3290cbfc-catalog1";
+    const CACHE_REVISION = "7b6881186a73a3165ad7274b5e5dd31e3290cbfc-catalog2";
+    const EXPECTED_DATA_BYTES = 106373377;
+    const EXPECTED_WASM_BYTES = 166806921;
+    const EXPECTED_BUNDLE_BYTES = 589939296;
+    const MAX_CONCURRENT_DOWNLOADS = 4;
     const STREAMING_FILES = [
       ["aa/AddressablesLink/link.xml",28453,"application/xml"],
       ["aa/catalog.json",1099514,"application/json"],
@@ -83,10 +97,10 @@
     }
     function recordBytes(bytes,url){
       if(loadingFailed)return;
-      downloadedBytes+=bytes;
+      downloadedBytes=Math.max(0,downloadedBytes+bytes);
       const path=new URL(url,location.href).pathname;
       const name=path.includes("/StreamingAssets/")?"assets":path.endsWith(".data")||/\.data\.part\d+$/.test(path)?"data":path.endsWith(".wasm")||/\.wasm\.part\d+$/.test(path)?"wasm":null;
-      if(name)downloadGroups[name].bytes+=bytes;
+      if(name)downloadGroups[name].bytes=Math.max(0,downloadGroups[name].bytes+bytes);
       if(progressFrame!==null)return;
       progressFrame=requestAnimationFrame(()=>{progressFrame=null;renderDownloadProgress()});
     }
@@ -160,45 +174,153 @@
       headers.delete("Content-Type");
       return browserFetch(url,Object.assign({},options||{},{method:(options&&options.method)||(typeof Request!=="undefined"&&resource instanceof Request?resource.method:"GET"),headers,credentials:"omit"}));
     }
-    function fetchWithFallback(resource,options){
+    async function cacheDelete(url){
+      const db=await openCacheDb();
+      if(!db)return;
+      return new Promise(resolve=>{
+        try{
+          const tx=db.transaction(CACHE_STORE,"readwrite");
+          tx.objectStore(CACHE_STORE).delete(CACHE_REVISION+":"+url);
+          tx.oncomplete=tx.onerror=tx.onabort=()=>resolve();
+        }catch(error){resolve()}
+      });
+    }
+    function toMirrorUrls(url){
+      const s=String(url);
+      if(!s.startsWith(JSDELIVR+"/"))return [s];
+      const suffix=s.slice(JSDELIVR.length);
+      return CDN_MIRRORS.map(base=>base+suffix);
+    }
+    function isHtmlContentType(res){
+      const ct=(res.headers.get("content-type")||"").toLowerCase();
+      return ct.includes("text/html")||ct.includes("application/xhtml");
+    }
+    function isValidMirrorResponse(targetUrl,res){
+      if(!res||!res.ok||isHtmlContentType(res))return false;
+      if(targetUrl.startsWith(WORKER_CDN_PROXY)&&res.headers.get("x-hh-proxy")!=="1")return false;
+      return true;
+    }
+    async function fetchWithFallback(resource,options){
       const url=resourceUrl(resource);
       const rewritten=rewriteToServer(url,false);
       if(rewritten!==url)return browserFetch(rewritten,options);
-      return url.startsWith(JSDELIVR+"/")||url.startsWith("blob:")?externalFetch(url,resource,options):browserFetch(resource,options);
-    }
-    async function fetchDownload(url){
-      let lastError;
-      for(let attempt=0;attempt<3;attempt++){
-        let response;
-        try{response=await fetchWithFallback(url,{signal:preloadAbort.signal,cache:"reload"})}
-        catch(error){if(preloadAbort.signal.aborted)throw error;lastError=error}
-        if(response){
-          if(response.ok)return response;
-          lastError=new Error("Failed to load "+url+" (HTTP "+response.status+")");
-          if(![404,408,429].includes(response.status)&&response.status<500)throw lastError;
+      if(url.startsWith(JSDELIVR+"/")){
+        const candidates=toMirrorUrls(url);
+        let lastErr;
+        for(const candidate of candidates){
+          try{
+            const res=await externalFetch(candidate,resource,options);
+            if(isValidMirrorResponse(candidate,res))return res;
+            lastErr=new Error("HTTP "+res.status);
+          }catch(e){lastErr=e}
         }
-        if(attempt<2)await new Promise(resolve=>setTimeout(resolve,750*(attempt+1)));
+        if(lastErr)throw lastErr;
       }
-      throw lastError;
+      return url.startsWith("blob:")?externalFetch(url,resource,options):browserFetch(resource,options);
     }
-    async function downloadBlob(url,mimeType){
+    async function mapWithConcurrency(items,limit,worker){
+      const results=new Array(items.length);
+      let cursor=0;
+      const runners=Array.from({length:Math.min(limit,items.length)},async()=>{
+        while(cursor<items.length){
+          const idx=cursor++;
+          results[idx]=await worker(items[idx],idx);
+        }
+      });
+      await Promise.all(runners);
+      return results;
+    }
+    async function validateDownloadedBlob(url,blob,expectedBytes){
+      if(!(blob instanceof Blob)||blob.size===0)return false;
+      if(typeof expectedBytes==="number"&&blob.size!==expectedBytes)return false;
+      const clean=url.split("?")[0].toLowerCase();
+      if(clean.endsWith(".wasm.part1")||clean.endsWith(".wasm")){
+        const head=new Uint8Array(await blob.slice(0,4).arrayBuffer());
+        if(head[0]!==0x00||head[1]!==0x61||head[2]!==0x73||head[3]!==0x6d)return false;
+      }
+      if(!clean.endsWith(".html")&&!clean.endsWith(".htm")&&blob.size<65536){
+        const headText=(await blob.slice(0,256).text()).trimStart().toLowerCase();
+        if(headText.startsWith("<!doctype")||headText.startsWith("<html"))return false;
+      }
+      return true;
+    }
+    async function downloadBlob(url,mimeType,expectedBytes){
       const cached=await cacheGet(url);
-      if(cached instanceof Blob){recordBytes(cached.size,url);return cached}
-      const response=await fetchDownload(url);
-      let blob;
-      if(!response.body||!response.body.getReader){const buffer=await response.arrayBuffer();recordBytes(buffer.byteLength,url);blob=new Blob([buffer],{type:mimeType})}
-      else{
-        const reader=response.body.getReader();
-        const chunks=[];
-        try{while(true){const chunk=await reader.read();if(chunk.done)break;chunks.push(chunk.value);recordBytes(chunk.value.byteLength,url)}}finally{reader.releaseLock()}
-        blob=new Blob(chunks,{type:mimeType});
+      if(cached instanceof Blob){
+        if(await validateDownloadedBlob(url,cached,expectedBytes)){
+          recordBytes(cached.size,url);
+          return cached;
+        }
+        await cacheDelete(url);
       }
-      await cacheSet(url,blob);
-      return blob;
+      const candidates=toMirrorUrls(url);
+      let lastError;
+      for(let round=0;round<2;round++){
+        for(const targetUrl of candidates){
+          try{
+            const response=await externalFetch(targetUrl,targetUrl,{signal:preloadAbort.signal,cache:"no-store"});
+            if(!response.ok){lastError=new Error("Failed to load "+targetUrl+" (HTTP "+response.status+")");continue}
+            if(!isValidMirrorResponse(targetUrl,response)){lastError=new Error("Blocked response from "+new URL(targetUrl).hostname);continue}
+            const enc=(response.headers.get("content-encoding")||"").toLowerCase();
+            const headerLen=Number(response.headers.get("content-length")||0);
+            let blob;
+            let chunkBytes=0;
+            if(!response.body||!response.body.getReader){
+              const buffer=await response.arrayBuffer();
+              chunkBytes=buffer.byteLength;
+              recordBytes(chunkBytes,url);
+              blob=new Blob([buffer],{type:mimeType});
+            }else{
+              const reader=response.body.getReader();
+              const chunks=[];
+              try{
+                while(true){
+                  const chunk=await reader.read();
+                  if(chunk.done)break;
+                  chunks.push(chunk.value);
+                  chunkBytes+=chunk.value.byteLength;
+                  recordBytes(chunk.value.byteLength,url);
+                }
+              }finally{reader.releaseLock()}
+              blob=new Blob(chunks,{type:mimeType});
+            }
+            if(typeof expectedBytes!=="number"&&chunkBytes>0&&(!enc||enc==="identity")&&headerLen>0&&chunkBytes<headerLen){
+              recordBytes(-chunkBytes,url);
+              lastError=new Error("Truncated chunk "+url+" ("+chunkBytes+" of "+headerLen+" bytes)");
+              continue;
+            }
+            if(!(await validateDownloadedBlob(url,blob,expectedBytes))){
+              recordBytes(-chunkBytes,url);
+              lastError=new Error("Corrupted or blocked payload for "+url);
+              continue;
+            }
+            await cacheSet(url,blob);
+            return blob;
+          }catch(error){
+            if(preloadAbort.signal.aborted)throw error;
+            lastError=error;
+          }
+        }
+        if(round===0)await new Promise(resolve=>setTimeout(resolve,600));
+      }
+      throw lastError||new Error("Unable to download "+url);
     }
-    async function combineParts(baseUrl,count,mimeType,numberWidth=0){
-      const blobs=await Promise.all(Array.from({length:count},(_,index)=>downloadBlob(baseUrl+".part"+String(index+1).padStart(numberWidth,"0"),mimeType)));
-      return new Blob(blobs,{type:mimeType});
+    async function combineParts(baseUrl,count,mimeType,numberWidth=0,expectedTotalBytes=null){
+      const partUrls=Array.from({length:count},(_,index)=>baseUrl+".part"+String(index+1).padStart(numberWidth,"0"));
+      const blobs=await mapWithConcurrency(partUrls,MAX_CONCURRENT_DOWNLOADS,partUrl=>downloadBlob(partUrl,mimeType));
+      const merged=new Blob(blobs,{type:mimeType});
+      if(typeof expectedTotalBytes==="number"&&merged.size!==expectedTotalBytes){
+        await Promise.all(partUrls.map(cacheDelete));
+        throw new Error("Downloaded "+baseUrl.split("/").pop()+" size mismatch ("+merged.size+" vs "+expectedTotalBytes+" bytes)");
+      }
+      if(mimeType==="application/wasm"){
+        const head=new Uint8Array(await merged.slice(0,4).arrayBuffer());
+        if(head[0]!==0x00||head[1]!==0x61||head[2]!==0x73||head[3]!==0x6d){
+          await Promise.all(partUrls.map(cacheDelete));
+          throw new Error("Invalid WebAssembly binary received for "+baseUrl.split("/").pop());
+        }
+      }
+      return merged;
     }
     async function validateAssetCatalog(blob){
       const catalog=JSON.parse(await blob.text());
@@ -207,14 +329,14 @@
       if(actual.length!==expected.size||actual.some(name=>!expected.has(name)))throw new Error("The asset catalog belongs to a different build. Update the loader and game files together.");
     }
     async function preloadStreamingAssets(){
-      const regularFiles=STREAMING_FILES.map(async file=>{
+      await mapWithConcurrency(STREAMING_FILES,MAX_CONCURRENT_DOWNLOADS,async file=>{
         const url=STREAMING_ASSETS+"/"+file[0];
-        const blob=await downloadBlob(url,file[2]);
+        const blob=await downloadBlob(url,file[2],file[1]);
         if(file[0]==="aa/catalog.json")await validateAssetCatalog(blob);
         assetUrls.set(assetKey(url),URL.createObjectURL(blob));
       });
-      const bundle=combineParts(STREAMING_ASSETS+"/aa/WebGL/"+LARGE_BUNDLE,34,"application/octet-stream",2).then(blob=>assetUrls.set(assetKey(STREAMING_ASSETS+"/aa/WebGL/"+LARGE_BUNDLE),URL.createObjectURL(blob)));
-      await Promise.all(regularFiles.concat(bundle));
+      const bundle=await combineParts(STREAMING_ASSETS+"/aa/WebGL/"+LARGE_BUNDLE,34,"application/octet-stream",2,EXPECTED_BUNDLE_BYTES);
+      assetUrls.set(assetKey(STREAMING_ASSETS+"/aa/WebGL/"+LARGE_BUNDLE),URL.createObjectURL(bundle));
     }
     window.fetch=function(resource,options){const cachedUrl=assetUrls.get(assetKey(resourceUrl(resource)));return cachedUrl?externalFetch(cachedUrl,resource,options):fetchWithFallback(resource,options)};
     window.XMLHttpRequest=function(){
@@ -224,7 +346,7 @@
       let externalGet=false;
       xhr.open=function(method,url){
         const target=assetUrls.get(assetKey(String(url)))||rewriteToServer(String(url),false);
-        externalGet=/^(GET|HEAD)$/i.test(method)&&(target.startsWith(JSDELIVR+"/")||target.startsWith("blob:"));
+        externalGet=/^(GET|HEAD)$/i.test(method)&&(target.startsWith(JSDELIVR+"/")||target.startsWith(WORKER_CDN_PROXY)||target.startsWith("blob:"));
         const args=Array.prototype.slice.call(arguments);args[1]=target;return originalOpen.apply(xhr,args);
       };
       xhr.setRequestHeader=function(name,value){if(externalGet&&!/^(accept|accept-language|range)$/i.test(String(name)))return;return originalSetRequestHeader.call(xhr,name,value)};
@@ -246,10 +368,10 @@
     async function start(){
       renderDownloadProgress();
       const [dataBlob,wasmBlob,loaderBlob,frameworkBlob]=await Promise.all([
-        finishDownloadGroup("data",combineParts(BUILD+"/AmongUsWeb.data",6,"application/octet-stream")),
-        finishDownloadGroup("wasm",combineParts(BUILD+"/AmongUsWeb.wasm",9,"application/wasm")),
-        downloadBlob(BUILD+"/AmongUsWeb.loader.js","text/javascript"),
-        downloadBlob(BUILD+"/AmongUsWeb.framework.js","text/javascript"),
+        finishDownloadGroup("data",combineParts(BUILD+"/AmongUsWeb.data",6,"application/octet-stream",0,EXPECTED_DATA_BYTES)),
+        finishDownloadGroup("wasm",combineParts(BUILD+"/AmongUsWeb.wasm",9,"application/wasm",0,EXPECTED_WASM_BYTES)),
+        downloadBlob(BUILD+"/AmongUsWeb.loader.js","text/javascript",20642),
+        downloadBlob(BUILD+"/AmongUsWeb.framework.js","text/javascript",523455),
         finishDownloadGroup("assets",preloadStreamingAssets())
       ]);
       if(progressFrame!==null){cancelAnimationFrame(progressFrame);progressFrame=null}

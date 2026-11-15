@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H&amp;H Launcher</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2.5' y='6.5' width='19' height='11' rx='5.5'/%3E%3Cpath d='M8.5 10v4M6.5 12h4'/%3E%3Ccircle cx='15.2' cy='10.8' r='0.9' fill='%233b82f6' stroke='none'/%3E%3Ccircle cx='17.6' cy='13.2' r='0.9' fill='%233b82f6' stroke='none'/%3E%3C/svg%3E">
-    <script src="coi-serviceworker.js"></script>
+    <script src="coi-serviceworker.js?v=2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -448,7 +448,7 @@ button {
     z-index: 1;
     max-width: 1320px;
     margin: 0 auto;
-    padding: 28px 32px 64px 32px;
+    padding: 24px 32px 56px 32px;
 }
 
 .view {
@@ -495,9 +495,9 @@ button {
     display: none;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    padding: 13px 16px;
-    margin-bottom: 18px;
+    gap: 16px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
     border-radius: var(--radius-xl);
     background: linear-gradient(125deg, rgba(34, 197, 94, 0.16) 0%, rgba(16, 185, 129, 0.08) 54%, rgba(22, 163, 74, 0.14) 100%), var(--card);
     border: 1px solid rgba(34, 197, 94, 0.28);
@@ -537,15 +537,15 @@ button {
 
 .owner-notice-left {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: center;
+    gap: 13px;
     min-width: 0;
     flex: 1;
 }
 
 .owner-notice-icon {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: var(--radius-md);
     background: rgba(34, 197, 94, 0.16);
     border: 1px solid rgba(34, 197, 94, 0.28);
@@ -554,7 +554,6 @@ button {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    margin-top: 1px;
 }
 
 [data-theme="light"] .owner-notice-icon {
@@ -571,8 +570,8 @@ button {
 .owner-notice-head {
     display: flex;
     align-items: center;
-    gap: 7px;
-    margin-bottom: 3px;
+    gap: 6px;
+    margin-bottom: 2px;
     font-size: 12.5px;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -581,14 +580,6 @@ button {
 
 [data-theme="light"] .owner-notice-head {
     color: #15803d;
-}
-
-.owner-notice-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
 }
 
 .owner-notice-text {
@@ -642,6 +633,9 @@ button {
         align-items: flex-start;
         padding: 13px 14px;
     }
+    .owner-notice-left {
+        align-items: flex-start;
+    }
     .owner-notice-close {
         align-self: flex-end;
     }
@@ -651,14 +645,14 @@ button {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
-    padding: 28px 32px;
-    margin-bottom: 36px;
+    padding: 26px 30px;
+    margin-bottom: 32px;
     position: relative;
     box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 32px;
+    gap: 28px;
     transition: border-color var(--transition-fast);
 }
 
@@ -676,7 +670,7 @@ button {
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     font-size: 12px;
     font-weight: 500;
     color: var(--foreground-secondary);
@@ -685,23 +679,15 @@ button {
 .badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 500;
     padding: 3px 9px;
-    border-radius: var(--radius-pill);
-    background: var(--muted);
-    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--accent-soft);
+    border: 1px solid rgba(59, 130, 246, 0.24);
     color: var(--foreground);
     line-height: 1.3;
-}
-
-.badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
+    letter-spacing: -0.005em;
 }
 
 .hero-meta-sep {
@@ -746,10 +732,10 @@ button {
     flex-shrink: 0;
     width: 112px;
     height: 112px;
-    border-radius: var(--radius-2xl);
+    border-radius: 16px;
     background: var(--muted);
     border: 1px solid var(--border);
-    padding: 12px;
+    padding: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -770,7 +756,7 @@ button {
 .hero-showcase-inner {
     width: 100%;
     height: 100%;
-    border-radius: var(--radius-lg);
+    border-radius: 10px;
     background: var(--surface);
     border: 1px solid var(--border);
     overflow: hidden;
@@ -866,8 +852,8 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 14px;
-    margin-top: 32px;
+    margin-bottom: 12px;
+    margin-top: 28px;
 }
 
 .section-title-wrap {
@@ -954,10 +940,10 @@ button {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
-    padding: 14px;
+    padding: 15px 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 11px;
     cursor: pointer;
     position: relative;
     box-shadow: var(--shadow-sm);
@@ -969,8 +955,8 @@ button {
 }
 
 .game-grid.compact-mode .game-card {
-    padding: 12px;
-    gap: 10px;
+    padding: 12px 13px;
+    gap: 9px;
     contain-intrinsic-size: auto 118px;
 }
 
@@ -994,7 +980,7 @@ button {
 .game-card:hover,
 .game-card.card-reveal.in-view:hover {
     border-color: var(--border-hover);
-    transform: translate3d(0, -3px, 0);
+    transform: translate3d(0, -2px, 0);
     background: var(--card-hover);
 }
 
@@ -1017,6 +1003,7 @@ button {
     border-radius: var(--radius-lg);
     background: var(--muted);
     border: 1px solid var(--border);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
     color: var(--foreground);
     display: flex;
     align-items: center;
@@ -1061,7 +1048,8 @@ button {
 .card-visual-actions {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    margin: -1px -2px 0 0;
 }
 
 .new-badge {
@@ -1125,13 +1113,14 @@ button {
 .card-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     min-width: 0;
 }
 
 .card-info h3 {
     font-size: 14px;
     font-weight: 500;
+    line-height: 1.35;
     letter-spacing: -0.01em;
     color: var(--foreground);
     white-space: nowrap;
@@ -1249,7 +1238,7 @@ button {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .library-title-wrap {
@@ -1276,7 +1265,7 @@ button {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .search-box {
@@ -1295,7 +1284,7 @@ button {
 
 #lib-search {
     width: 100%;
-    height: 36px;
+    height: 38px;
     background: var(--input);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
@@ -1366,8 +1355,8 @@ button {
 }
 
 .random-btn {
-    height: 36px;
-    padding: 0 12px;
+    height: 38px;
+    padding: 0 13px;
     border-radius: var(--radius-md);
     background: var(--secondary);
     border: 1px solid var(--border);
@@ -1407,8 +1396,8 @@ button {
 }
 
 .dropdown-trigger {
-    height: 36px;
-    padding: 0 12px;
+    height: 38px;
+    padding: 0 13px;
     border-radius: var(--radius-md);
     background: var(--secondary);
     border: 1px solid var(--border);
@@ -1525,21 +1514,21 @@ button {
     align-items: center;
     flex-wrap: wrap;
     gap: 6px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .category-pill {
-    height: 30px;
-    padding: 0 11px;
+    height: 31px;
+    padding: 0 12px;
     border-radius: var(--radius-md);
     background: transparent;
     border: 1px solid var(--border);
     color: var(--foreground-secondary);
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 500;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     cursor: pointer;
     white-space: nowrap;
     transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform 0.12s var(--ease-press);
@@ -1809,38 +1798,83 @@ button {
     transform: scale(0.96);
 }
 
+.settings-modal-content {
+    max-width: 700px;
+}
+
 .settings-group {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
 }
 
 .settings-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 11px;
+    transition: border-color var(--transition-fast), opacity 0.22s var(--ease-out), transform 0.24s var(--ease-spring);
 }
 
-.settings-section + .settings-section {
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
+.modal-wrapper:not(.open) .settings-section {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+}
+
+.modal-wrapper.open .settings-section {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.modal-wrapper.open .settings-section:nth-child(2) {
+    transition-delay: 28ms;
+}
+
+.modal-wrapper.open .settings-section:nth-child(3) {
+    transition-delay: 56ms;
+}
+
+.settings-section:hover {
+    border-color: var(--border-hover);
+}
+
+[data-theme="light"] .settings-section {
+    background: var(--background);
+}
+
+.settings-section-wide {
+    grid-column: 1 / -1;
+}
+
+.settings-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .settings-section-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted-foreground);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--foreground-secondary);
 }
 
 .setting-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 14px;
     font-size: 13px;
     color: var(--foreground);
     font-weight: 500;
+    min-height: 26px;
 }
 
 .setting-subtext {
@@ -1848,6 +1882,36 @@ button {
     font-weight: 400;
     color: var(--muted-foreground);
     margin-top: 2px;
+}
+
+.settings-inline-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.settings-saves-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.settings-action-btn-full {
+    width: 100%;
+    height: 34px;
+    gap: 6px;
+}
+
+@media (max-width: 640px) {
+    .settings-group {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .settings-saves-actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
 .switch {
@@ -2489,7 +2553,7 @@ html.reduce-animations {
             <div>
                 <span class="brand-title">H&amp;H Launcher</span>
             </div>
-            <span class="brand-tag">v2.0.1</span>
+            <span class="brand-tag">v2.0.2</span>
         </div>
 
         <nav class="nav-controls" id="nav-controls">
@@ -2545,7 +2609,6 @@ html.reduce-animations {
                 </div>
                 <div class="owner-notice-body">
                     <div class="owner-notice-head">
-                        <span class="owner-notice-dot" aria-hidden="true"></span>
                         <span>Message from Owner of H&amp;H Launcher</span>
                     </div>
                     <p class="owner-notice-text">Hey everyone! I fixed some backend logic and server stuff, so the games that were getting blocked should work again now. Thanks for hanging tight while I got it sorted out, and have fun playing! <span class="owner-notice-sign">- Haris</span></p>
@@ -2563,7 +2626,7 @@ html.reduce-animations {
             <div class="cinematic-hero" id="hero-spotlight">
                 <div class="hero-main">
                     <div class="hero-meta-row">
-                        <span class="badge" id="hero-badge"><span class="badge-dot"></span>Featured</span>
+                        <span class="badge" id="hero-badge">Featured</span>
                         <span id="hero-category-tag">Catalog</span>
                         <span class="hero-meta-sep" aria-hidden="true">/</span>
                         <span id="hero-engine-tag">HTML5</span>
@@ -2727,7 +2790,7 @@ html.reduce-animations {
                 <span class="footer-separator">&middot;</span>
                 <span>Engineered by Haris Abid</span>
                 <span class="footer-separator">&middot;</span>
-                <span>v2.0.1</span>
+                <span>v2.0.2</span>
             </div>
             <div class="footer-inner">
                 <button class="footer-shortcut-btn" onclick="toggleShortcutsModal(true)">
@@ -2805,7 +2868,7 @@ html.reduce-animations {
             <span id="hud-toast-text">Saved</span>
         </div>
         
-        <iframe id="game-frame" src="about:blank" scrolling="no" allow="cross-origin-isolated; autoplay; fullscreen; gamepad; keyboard-map; clipboard-read; clipboard-write"></iframe>
+        <iframe id="game-frame" src="about:blank" scrolling="no" allow="autoplay; fullscreen; gamepad; pointer-lock; keyboard-map; clipboard-read; clipboard-write; storage-access" allowfullscreen></iframe>
     </div>
 
     <div id="exit-modal" class="modal-wrapper">
@@ -2829,7 +2892,7 @@ html.reduce-animations {
 
     <div id="settings-modal" class="modal-wrapper">
         <div class="modal-backdrop" onclick="toggleSettings(false)"></div>
-        <div class="modal-content">
+        <div class="modal-content settings-modal-content">
             <div class="modal-header">
                 <h3>Settings</h3>
                 <button class="modal-close-btn" onclick="toggleSettings(false)" aria-label="Close settings">
@@ -2841,7 +2904,9 @@ html.reduce-animations {
             
             <div class="settings-group">
                 <div class="settings-section">
-                    <div class="settings-section-label">Appearance</div>
+                    <div class="settings-section-head">
+                        <div class="settings-section-label">Appearance</div>
+                    </div>
                     <div class="setting-row">
                         <div>
                             <div>Reduce motion</div>
@@ -2871,7 +2936,9 @@ html.reduce-animations {
                 </div>
 
                 <div class="settings-section">
-                    <div class="settings-section-label">Gameplay</div>
+                    <div class="settings-section-head">
+                        <div class="settings-section-label">Gameplay</div>
+                    </div>
                     <div class="setting-row">
                         <div>Auto fullscreen</div>
                         <label class="switch">
@@ -2888,43 +2955,26 @@ html.reduce-animations {
                         </label>
                     </div>
 
-                    <div class="setting-row">
-                        <div>Recent history</div>
-                        <button class="settings-action-btn" onclick="clearRecentHistory()">Clear</button>
-                    </div>
-
-                    <div class="setting-row">
-                        <div>Favorites</div>
-                        <button class="settings-action-btn danger" onclick="clearFavorites()">Reset</button>
+                    <div class="settings-inline-actions">
+                        <button class="settings-action-btn settings-action-btn-full" onclick="clearRecentHistory()">Clear history</button>
+                        <button class="settings-action-btn settings-action-btn-full danger" onclick="clearFavorites()">Reset favorites</button>
                     </div>
                 </div>
 
-                <div class="settings-section">
-                    <div class="settings-section-label">Saves</div>
-                    <div class="setting-row">
-                        <div>
-                            <div>Local saves</div>
-                            <div class="setting-subtext" id="setting-storage-status-text">Checking saved progress...</div>
-                        </div>
+                <div class="settings-section settings-section-wide">
+                    <div class="settings-section-head">
+                        <div class="settings-section-label">Local saves</div>
                         <span id="setting-storage-badge" class="settings-status-badge">Browser</span>
                     </div>
+                    <div class="setting-subtext" id="setting-storage-status-text" style="margin-top: -2px;">Checking saved progress...</div>
 
-                    <div class="setting-row">
-                        <div>Export saves</div>
-                        <button class="settings-action-btn" onclick="exportAllGameSaves()">Export</button>
-                    </div>
-
-                    <div class="setting-row">
-                        <div>Restore saves</div>
-                        <label class="settings-action-btn" style="margin: 0; cursor: pointer;">
-                            Import
+                    <div class="settings-saves-actions">
+                        <button class="settings-action-btn settings-action-btn-full" onclick="exportAllGameSaves()">Export saves</button>
+                        <label class="settings-action-btn settings-action-btn-full" style="margin: 0; cursor: pointer;">
+                            Import saves
                             <input type="file" id="restore-saves-input" accept=".json" style="display: none;" onchange="handleRestoreFile(this)">
                         </label>
-                    </div>
-
-                    <div class="setting-row">
-                        <div>Recover snapshot</div>
-                        <button class="settings-action-btn" onclick="restoreFromInternalVault()">Recover</button>
+                        <button class="settings-action-btn settings-action-btn-full" onclick="restoreFromInternalVault()">Recover snapshot</button>
                     </div>
                 </div>
             </div>
@@ -3750,9 +3800,19 @@ html.reduce-animations {
             }
         }
 
+        function isFrameSameOrigin(frame) {
+            if (!frame || !frame.src || frame.src === "about:blank") return false;
+            try {
+                const target = new URL(frame.src, window.location.href);
+                return target.origin === window.location.origin;
+            } catch (err) {
+                return false;
+            }
+        }
+
         async function safeFlushGameData(isUnloading = false) {
             const frame = document.getElementById("game-frame");
-            if (!frame || !frame.contentWindow || frame.src === "about:blank") {
+            if (!frame || !frame.contentWindow || !isFrameSameOrigin(frame)) {
                 await migrateAndSnapshotLocalStorage();
                 return;
             }
@@ -4611,43 +4671,72 @@ html.reduce-animations {
 
         const externalEmbedCache = new Map();
 
-        async function getExternalEmbedUrl(file) {
-            if (/^https?:\/\//i.test(file)) {
-                return file;
-            }
-            if (isFolder(file)) {
+        function extractExternalEmbedUrl(htmlText) {
+            if (!htmlText || htmlText.length >= 4096 || /<script\b/i.test(htmlText)) {
                 return null;
             }
-            if (externalEmbedCache.has(file)) {
-                return externalEmbedCache.get(file);
+            const iframeMatch = htmlText.match(/<iframe[^>]+src=["'](https?:\/\/[^"']+)["']/i);
+            if (iframeMatch && iframeMatch[1]) {
+                return iframeMatch[1].trim();
             }
+            const refreshMatch = htmlText.match(/<meta[^>]+http-equiv=["']?refresh["']?[^>]+content=["'][^"']*url=(https?:\/\/[^"'\s>]+)["']/i);
+            if (refreshMatch && refreshMatch[1]) {
+                return refreshMatch[1].trim();
+            }
+            return null;
+        }
+
+        async function readSmallWrapperText(response) {
+            const lengthHeader = Number(response.headers.get("content-length") || 0);
+            if (lengthHeader > 4096) return null;
+            if (!response.body || typeof response.body.getReader !== "function") {
+                const full = await response.text();
+                return full.length < 4096 ? full : null;
+            }
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let text = "";
+            let total = 0;
             try {
-                const response = await fetch(BASE_URL + file, { cache: "no-store" });
-                if (response.ok) {
-                    const text = await response.text();
-                    if (text.length < 2048 && !/<script\b/i.test(text)) {
-                        const match = text.match(/<iframe[^>]+src=["'](https?:\/\/[^"']+)["']/i);
-                        if (match && match[1]) {
-                            externalEmbedCache.set(file, match[1]);
-                            return match[1];
-                        }
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    total += value.byteLength;
+                    if (total >= 4096) {
+                        await reader.cancel().catch(() => {});
+                        return null;
                     }
+                    text += decoder.decode(value, { stream: true });
+                }
+                text += decoder.decode();
+                return text;
+            } catch (err) {
+                return null;
+            }
+        }
+
+        async function getExternalEmbedUrl(targetUrl) {
+            if (/^https?:\/\//i.test(targetUrl) && !targetUrl.startsWith(BASE_URL)) {
+                return targetUrl;
+            }
+            if (externalEmbedCache.has(targetUrl)) {
+                return externalEmbedCache.get(targetUrl);
+            }
+            let extracted = null;
+            try {
+                const response = await fetch(targetUrl, { cache: "no-store" });
+                if (response.ok) {
+                    const text = await readSmallWrapperText(response);
+                    extracted = extractExternalEmbedUrl(text);
                 }
             } catch (err) {}
-            externalEmbedCache.set(file, null);
-            return null;
+            externalEmbedCache.set(targetUrl, extracted);
+            return extracted;
         }
 
         async function launchGame(file, name) {
             playUiSound("launch");
             recordRecent(file, name);
-
-            const externalUrl = await getExternalEmbedUrl(file);
-            if (externalUrl) {
-                window.open(externalUrl, "_blank", "noopener,noreferrer");
-                populateDiscovery();
-                return;
-            }
 
             activeGameFile = file;
             activeGameName = name;
@@ -4674,9 +4763,12 @@ html.reduce-animations {
                 } catch (e) {}
             }
 
-            const finalUrl = await resolveGameUrl(file);
+            const resolvedUrl = await resolveGameUrl(file);
+            const externalUrl = await getExternalEmbedUrl(resolvedUrl);
+            const finalUrl = externalUrl || resolvedUrl;
             hudName.textContent = name;
-            frame.setAttribute("allow", "cross-origin-isolated; autoplay; fullscreen; gamepad; keyboard-map; clipboard-read; clipboard-write");
+            frame.setAttribute("allow", "autoplay; fullscreen; gamepad; pointer-lock; keyboard-map; clipboard-read; clipboard-write; storage-access");
+            frame.setAttribute("allowfullscreen", "true");
             frame.src = finalUrl;
 
             if (autoSaveInterval) clearInterval(autoSaveInterval);
@@ -4905,8 +4997,10 @@ html.reduce-animations {
             
             try {
                 if (frame && frame.contentWindow) {
-                    const mediaElements = frame.contentWindow.document.querySelectorAll("audio, video");
-                    mediaElements.forEach(media => { media.volume = globalGameVolume; });
+                    if (isFrameSameOrigin(frame) && frame.contentWindow.document) {
+                        const mediaElements = frame.contentWindow.document.querySelectorAll("audio, video");
+                        mediaElements.forEach(media => { media.volume = globalGameVolume; });
+                    }
                     frame.contentWindow.postMessage({ type: "SET_VOLUME", volume: globalGameVolume }, "*");
                 }
             } catch (err) {}
@@ -4922,6 +5016,7 @@ html.reduce-animations {
         }
 
         function suppressIframeScrollbars(frame) {
+            if (!isFrameSameOrigin(frame)) return;
             try {
                 if (frame && frame.contentDocument) {
                     const doc = frame.contentDocument;
@@ -4956,19 +5051,21 @@ html.reduce-animations {
         document.getElementById("game-frame").addEventListener("load", () => {
             const frame = document.getElementById("game-frame");
             updateGameVolume(document.getElementById("game-volume-slider").value);
-            suppressIframeScrollbars(frame);
-
             if (volumeEnforcerInterval) clearInterval(volumeEnforcerInterval);
+            if (!isFrameSameOrigin(frame)) return;
+            suppressIframeScrollbars(frame);
 
             volumeEnforcerInterval = setInterval(() => {
                 try {
-                    if (frame && frame.contentWindow) {
+                    if (frame && frame.contentWindow && isFrameSameOrigin(frame)) {
                         const mediaElements = frame.contentWindow.document.querySelectorAll("audio, video");
                         mediaElements.forEach(media => {
                             if (Math.abs(media.volume - globalGameVolume) > 0.01) {
                                 media.volume = globalGameVolume;
                             }
                         });
+                    } else {
+                        clearInterval(volumeEnforcerInterval);
                     }
                 } catch (err) {
                     clearInterval(volumeEnforcerInterval);

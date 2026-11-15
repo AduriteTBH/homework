@@ -1,6 +1,3 @@
-/*! coi-serviceworker - H&H hardened COOP/COEP + CDN failover worker */
-let coepCredentialless = true;
-
 if (typeof window === "undefined") {
   const AD_HOSTS = new Set([
     "cdn.intergient.com",
@@ -186,13 +183,7 @@ if (typeof window === "undefined") {
       headers.set("Cross-Origin-Resource-Policy", "cross-origin");
     }
 
-    if (isSameOrigin) {
-      headers.set("Cross-Origin-Embedder-Policy", coepCredentialless ? "credentialless" : "require-corp");
-      if (!coepCredentialless) {
-        headers.set("Cross-Origin-Resource-Policy", "cross-origin");
-      }
-      headers.set("Cross-Origin-Opener-Policy", "same-origin");
-    } else {
+    if (!isSameOrigin) {
       if (!headers.has("Access-Control-Allow-Origin")) {
         headers.set("Access-Control-Allow-Origin", "*");
       }
@@ -215,8 +206,6 @@ if (typeof window === "undefined") {
       self.registration.unregister()
         .then(() => self.clients.matchAll())
         .then(clients => clients.forEach(client => client.navigate(client.url)));
-    } else if (e.data.type === "coepCredentialless") {
-      coepCredentialless = Boolean(e.data.value);
     }
   });
 
@@ -237,7 +226,7 @@ if (typeof window === "undefined") {
     const isAd = !isSameOrigin && isAdOrAnalytics(url);
     const isCdn = !isSameOrigin && (JSDELIVR_HOSTS.has(url.hostname) || url.hostname === "rawcdn.githack.com");
 
-    if (!isSameOrigin && !isAd && !isCdn && coepCredentialless) {
+    if (!isAd && !isCdn) {
       return;
     }
 
@@ -297,57 +286,31 @@ if (typeof window === "undefined") {
   });
 } else {
   (() => {
-    const supportsCredentialless = () => {
-      const ua = navigator.userAgent || "";
-      const isSafari = /Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR|Firefox/i.test(ua);
-      return !isSafari;
+    const reloadFromStaleCoi = () => {
+      if (!window.crossOriginIsolated) return;
+      try {
+        if (sessionStorage.getItem("hh-coi-cleared") === "1") return;
+        sessionStorage.setItem("hh-coi-cleared", "1");
+      } catch {}
+      window.location.reload();
     };
 
-    const config = {
-      shouldRegister: () => true,
-      shouldDeregister: () => false,
-      coepCredentialless: supportsCredentialless,
-      doReload: () => {
-        try {
-          if (sessionStorage.getItem("coi-reloaded") === "1") return;
-          sessionStorage.setItem("coi-reloaded", "1");
-        } catch {}
-        window.location.reload();
-      },
-      quiet: true,
-      ...window.coi
-    };
-
-    const nav = navigator;
-    if (nav.serviceWorker && nav.serviceWorker.controller) {
-      nav.serviceWorker.controller.postMessage({
-        type: "coepCredentialless",
-        value: config.coepCredentialless()
-      });
-      if (config.shouldDeregister()) {
-        nav.serviceWorker.controller.postMessage({ type: "deregister" });
-      }
-    }
-
-    if (window.crossOriginIsolated === false && config.shouldRegister() && window.isSecureContext && nav.serviceWorker) {
-      const scriptUrl = window.document.currentScript ? window.document.currentScript.src : "coi-serviceworker.js";
-      nav.serviceWorker.register(scriptUrl).then(reg => {
-        if (!config.quiet) console.log("COOP/COEP Service Worker registered", reg.scope);
+    if (window.isSecureContext && navigator.serviceWorker) {
+      const scriptUrl = window.document.currentScript ? window.document.currentScript.src : "coi-serviceworker.js?v=2";
+      navigator.serviceWorker.register(scriptUrl).then(reg => {
         reg.addEventListener("updatefound", () => {
           const installing = reg.installing;
           if (!installing) return;
           installing.addEventListener("statechange", () => {
             if (installing.state === "activated") {
-              config.doReload();
+              reloadFromStaleCoi();
             }
           });
         });
-        if (reg.active && !nav.serviceWorker.controller) {
-          config.doReload();
+        if (reg.active) {
+          reloadFromStaleCoi();
         }
-      }).catch(err => {
-        if (!config.quiet) console.error("COOP/COEP Service Worker failed to register:", err);
-      });
+      }).catch(() => {});
     }
   })();
 }

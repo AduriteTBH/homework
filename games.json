@@ -14,7 +14,6 @@
   {"name":"Granny","file":"granny.html","icon":"icons/granny.jpg"},
   {"name":"Grand Theft Auto 1","file":"gta1.html","icon":"icons/gta1.png"},
   {"name":"Boxing Random","file":"boxingrandom.html","icon":"icons/boxingrandom.png"},
-  {"name":"1v1LOL Reloaded","file":"1v1lolreloaded","icon":"icons/source-1v1lolreloaded_com.ico"},
   {"name":"Super Mario 64","file":"sm64","icon":"icons/sm64.png"},
   {"name":"Donkey Kong Country","file":"dkcountry.html","icon":"icons/dkcountry.png"},
   {"name":"Donkey Kong Country 2","file":"dkcountry2.html","icon":"icons/dkcountry2.svg"},
@@ -399,5 +398,6 @@
   {"name":"Super Street Fighter II Turbo","file":"super-street-fighter-2-turbo","icon":"icons/super-street-fighter-2-turbo.jpg"},
   {"name":"Street Fighter Alpha 2","file":"street-fighter-alpha-2","icon":"icons/street-fighter-alpha-2.jpg"},
   {"name":"Street Fighter Alpha 3","file":"street-fighter-alpha-3","icon":"icons/street-fighter-alpha-3.jpg"},
-  {"name":"X-Men vs. Street Fighter","file":"x-men-vs-street-fighter","icon":"icons/x-men-vs-street-fighter.jpg"}
+  {"name":"X-Men vs. Street Fighter","file":"x-men-vs-street-fighter","icon":"icons/x-men-vs-street-fighter.jpg"},
+  {"name":"1v1LOL Reloaded","file":"1v1lolreloaded","icon":"icons/source-1v1lolreloaded_com.ico"}
 ]

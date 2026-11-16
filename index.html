@@ -2553,7 +2553,7 @@ html.reduce-animations {
             <div>
                 <span class="brand-title">H&amp;H Launcher</span>
             </div>
-            <span class="brand-tag">v2.0.2</span>
+            <span class="brand-tag">v2.0.3</span>
         </div>
 
         <nav class="nav-controls" id="nav-controls">
@@ -2790,7 +2790,7 @@ html.reduce-animations {
                 <span class="footer-separator">&middot;</span>
                 <span>Engineered by Haris Abid</span>
                 <span class="footer-separator">&middot;</span>
-                <span>v2.0.2</span>
+                <span>v2.0.3</span>
             </div>
             <div class="footer-inner">
                 <button class="footer-shortcut-btn" onclick="toggleShortcutsModal(true)">
@@ -3631,12 +3631,12 @@ html.reduce-animations {
 
         function getGameCategory(name, file) {
             const str = (name + " " + file).toLowerCase();
-            if (/shoot|gun|snip|1v1|war|tank|doom|fortnite|brawl|punch|combat|hit|strike|laser|epstein|knife/.test(str)) return "action";
+            if (/shoot|gun|snip|1v1|war|tank|doom|fortnite|brawl|punch|combat|hit|strike|laser|epstein|knife|mega man|smash|zelda|final fantasy|dragon quest|undertale|street fighter|x-men vs|half-life|ultrakill|hotline miami|cruelty squad|yomi|antonblast|fear & hunger/.test(str)) return "action";
             if (/car|drift|race|speed|moto|bike|kart|drive|traffic|park|crash|wheelie|truck/.test(str)) return "racing";
             if (/basket|soccer|football|baseball|volley|box|fifa|golf|hero|derby/.test(str)) return "sports";
-            if (/mario|pacman|tetris|sonic|dkcountry|retro|spaceinvaders|breakout|asteroid|dino|snake|flappy|crossy|run/.test(str)) return "arcade";
-            if (/2048|chess|mine|quiz|bloxorz|solitaire|wordle|puzzle|escape|room|draw|cut|trimps|idle|click/.test(str)) return "puzzle";
-            if (/minec|mc1|1\.12|backroom|granny|fnaf|baldi|paper|hole|slither|agar|snow|zombie|subway|slope|vex|hook/.test(str)) return "survival";
+            if (/mario|pacman|tetris|sonic|dkcountry|retro|spaceinvaders|breakout|asteroid|dino|snake|flappy|crossy|run|pizza tower|getting over it|just shapes|slime rancher|untitled goose/.test(str)) return "arcade";
+            if (/2048|chess|mine|quiz|bloxorz|solitaire|wordle|puzzle|escape|room|draw|cut|trimps|idle|click|neighbor|dead plate|cloverpit|buckshot|needy streamer|sally face/.test(str)) return "puzzle";
+            if (/minec|mc1|1\.12|backroom|granny|fnaf|baldi|paper|hole|slither|agar|snow|zombie|subway|slope|vex|hook|tattletail|bendy|miside|iron lung|schoolboy|amanda/.test(str)) return "survival";
             return "arcade";
         }
 
@@ -4464,12 +4464,12 @@ html.reduce-animations {
             ` : `<span class="emblem-initials">${esc(initials)}</span>`;
 
             return `
-                <div class="game-card card-reveal" style="--cat-color: var(--cat-${cat});" onclick="launchGame('${esc(game.file)}', '${esc(game.name)}')">
+                <div class="game-card card-reveal" style="--cat-color: var(--cat-${cat});" data-game-file="${esc(game.file)}" data-game-name="${esc(game.name)}" onclick="launchGame(this.dataset.gameFile, this.dataset.gameName)">
                     <div class="card-top">
                         <div class="emblem-token">${emblemContent}</div>
                         <div class="card-visual-actions">
                             ${badgeHTML}
-                            <button class="card-fav-btn ${favActive}" data-fav-file="${esc(game.file)}" onclick="toggleFavorite('${esc(game.file)}', event)" title="Toggle favorite" aria-label="Toggle favorite">
+                            <button class="card-fav-btn ${favActive}" data-fav-file="${esc(game.file)}" onclick="toggleFavorite(this.dataset.favFile, event)" title="Toggle favorite" aria-label="Toggle favorite">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 3.2c.5 0 .9.3 1.1.8l1.9 3.9 4.3.6c.5.1.9.5.9 1 0 .4-.2.8-.5 1.1l-3.1 3 .7 4.3c.1.5-.1 1-.5 1.3s-.9.3-1.4.1L12 17.3l-3.4 1.8c-.5.2-1 .2-1.4-.1s-.6-.8-.5-1.3l.7-4.3-3.1-3c-.4-.3-.5-.7-.5-1.1 0-.5.4-.9.9-1l4.3-.6 1.9-3.9c.2-.5.6-.8 1.1-.8z"/>
                                 </svg>

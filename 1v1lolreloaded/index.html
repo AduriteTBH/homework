@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1v1.LOL RELOADED</title>
+  <link rel="icon" href="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/favicon.ico">
+  <script src="proxy-shim.js"></script>
+  <style>
+    @font-face {
+      font-family: 'Dimbo';
+      src: url('https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/fonts/dimbo.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body { background: #0c0c16; color: #e8eaf0; font-family: sans-serif; }
+    main { position: fixed; inset: 0; }
+    #unity-container { position: fixed; inset: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
+    #unity-canvas { width: 100%; height: 100%; display: block; }
+    #unity-loading {
+      position: absolute; inset: 0; overflow: hidden; color: #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+      background: #0a0e1e;
+    }
+    #unity-loading::before {
+      content: ''; position: absolute; inset: -6%; z-index: 0;
+      background: #0a0e1e url('https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/loader-ch2-bg.jpg') center/cover no-repeat;
+      filter: blur(13px) brightness(0.5) saturate(1.18);
+      transform: scale(1.08);
+    }
+    #unity-loading::after {
+      content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        radial-gradient(ellipse 95% 78% at 50% 46%, rgba(6,9,22,0.15), rgba(6,9,22,0.86) 100%),
+        linear-gradient(180deg, rgba(6,9,22,0.42) 0%, rgba(6,9,22,0) 28%, rgba(6,9,22,0) 68%, rgba(6,9,22,0.5) 100%);
+    }
+    .loading-hero { display: flex; flex-direction: column; align-items: center; gap: 6px; line-height: 1; position: relative; z-index: 2; }
+    .loading-logo {
+      font-family: 'Dimbo', 'Impact', 'Arial Black', sans-serif;
+      font-size: clamp(78px, 14vw, 150px); font-weight: normal; letter-spacing: 4px; line-height: 1; color: #fff;
+      text-shadow: 0 3px 6px rgba(0,0,0,0.55), 0 0 22px rgba(255, 165, 95, 0.32), 0 0 48px rgba(255, 120, 50, 0.22);
+    }
+    .loading-logo .v { color: #ef4444; text-shadow: 0 3px 6px rgba(0,0,0,0.5), 0 0 16px rgba(239, 68, 68, 0.75), 0 0 34px rgba(239, 68, 68, 0.5); }
+    .loading-reloaded {
+      font-family: 'Dimbo', 'Impact', 'Arial Black', sans-serif;
+      font-size: clamp(24px, 4.6vw, 46px); letter-spacing: 11px; line-height: 1;
+      background: linear-gradient(135deg, #ffe0b0, #ff8c42, #ff6b35, #ffe0b0); background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: gradientShift 4s ease-in-out infinite; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+    @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    .loading-chapter {
+      position: relative; z-index: 2; margin-top: 4px;
+      font-family: 'Dimbo', 'Impact', 'Arial Black', sans-serif;
+      font-size: clamp(15px, 2.5vw, 24px); letter-spacing: 7px; color: #ffe0b0; padding: 7px 24px 6px;
+      border-radius: 999px; background: rgba(255, 140, 66, 0.10);
+      border: 1px solid rgba(255, 175, 110, 0.5);
+      box-shadow: 0 0 20px rgba(255, 130, 60, 0.2), inset 0 0 14px rgba(255, 150, 80, 0.08);
+      text-shadow: 0 0 9px rgba(255, 150, 80, 0.5);
+    }
+    .loading-chapter b { color: #ff8c42; font-weight: normal; }
+    .loading-bar-container {
+      position: relative; z-index: 2; margin-top: 4px;
+      width: min(360px, 72vw); height: 5px; background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255, 175, 110, 0.22); border-radius: 3px; overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.45);
+    }
+    .loading-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffd081, #ff8c42); background-size: 200% 100%;
+      animation: barShimmer 2s linear infinite; box-shadow: 0 0 16px rgba(255, 140, 66, 0.7); transition: width 0.18s ease-out;
+    }
+    @keyframes barShimmer { from { background-position: 0% 0; } to { background-position: 200% 0; } }
+    .loading-percent { position: relative; z-index: 2; font-family: 'Courier New', monospace; font-size: 12px; letter-spacing: 3px; color: rgba(255, 240, 225, 0.85); text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+    .loading-stage { position: relative; z-index: 2; margin-top: -10px; font-family: system-ui, sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,240,225,0.5); text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+    .err { color: #ef4444; padding: 16px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; font-family: monospace; font-size: 12px; white-space: pre-wrap; margin-top: 12px; max-width: 600px; max-height: 200px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="unity-container">
+      <canvas id="unity-canvas"></canvas>
+      <div id="unity-loading">
+        <div class="loading-hero">
+          <div class="loading-logo">1<span class="v">v</span>1.LOL</div>
+          <div class="loading-reloaded">RELOADED</div>
+        </div>
+        <div class="loading-chapter">CHAPTER&nbsp;<b>2</b></div>
+        <div class="loading-bar-container"><div id="loading-bar-fill" class="loading-bar-fill"></div></div>
+        <div id="progress-status" class="loading-percent">000%</div>
+        <div id="progress-stage" class="loading-stage">Downloading&hellip;</div>
+      </div>
+      <div id="unity-error" class="err" style="display:none;"></div>
+    </div>
+  </main>
+
+  <script>
+    try { Error.stackTraceLimit = 40; } catch (e) {}
+    (function () {
+      var noop = function () {};
+      console.log = noop; console.debug = noop; console.info = noop; console.warn = noop;
+      var origErr = console.error.bind(console);
+      var errCounts = {};
+      console.error = function () {
+        try {
+          var a0 = arguments[0];
+          if (typeof a0 === 'string') {
+            if (a0.indexOf('FMOD returns error code') >= 0) {
+              errCounts.FMOD = (errCounts.FMOD || 0) + 1;
+              if (errCounts.FMOD > 3) return;
+            }
+            if (a0.indexOf('FS.syncfs operations in flight') >= 0) {
+              errCounts.SYNC = (errCounts.SYNC || 0) + 1;
+              if (errCounts.SYNC > 2) return;
+            }
+          }
+        } catch (e) {}
+        return origErr.apply(null, arguments);
+      };
+    })();
+    try {
+      Object.defineProperty(navigator, 'language', { get: function () { return 'en-US'; }, configurable: true });
+      Object.defineProperty(navigator, 'languages', { get: function () { return ['en-US', 'en']; }, configurable: true });
+      var _origIntl = { DT: Intl.DateTimeFormat, NF: Intl.NumberFormat, C: Intl.Collator, PR: Intl.PluralRules, L: Intl.Locale };
+      function forceEnLocale(Orig) {
+        function Wrapper() {
+          var args = Array.prototype.slice.call(arguments);
+          if (args.length === 0 || args[0] == null || (Array.isArray(args[0]) && args[0].length === 0)) args[0] = 'en-US';
+          var inst = new (Function.prototype.bind.apply(Orig, [null].concat(args)))();
+          var origResolved = inst.resolvedOptions.bind(inst);
+          inst.resolvedOptions = function () { var r = origResolved(); r.locale = 'en-US'; return r; };
+          return inst;
+        }
+        Wrapper.prototype = Orig.prototype;
+        return Wrapper;
+      }
+      Intl.DateTimeFormat = forceEnLocale(_origIntl.DT);
+      Intl.NumberFormat = forceEnLocale(_origIntl.NF);
+      Intl.Collator = forceEnLocale(_origIntl.C);
+      Intl.PluralRules = forceEnLocale(_origIntl.PR);
+      if (_origIntl.L) Intl.Locale = forceEnLocale(_origIntl.L);
+    } catch (e) {}
+  </script>
+
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/www.gstatic.com/firebasejs/7.24.0/firebase-auth.js"></script>
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/www.gstatic.com/firebasejs/7.24.0/firebase-remote-config.js"></script>
+
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/mocks/server-mock.js?v=8d583a25"></script>
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/mocks/firebase.js?v=2054f8b4"></script>
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/mocks/login.js?v=958b82f1"></script>
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/mocks/firebase-config.js?v=38c23d42"></script>
+
+  <script>
+    (function () {
+      var origPush = history.pushState;
+      var origReplace = history.replaceState;
+      function isUnityUrlTrack() {
+        var stack = '';
+        try { throw new Error(); } catch (e) { stack = e.stack || ''; }
+        return stack.indexOf('_SetUrlPostfix') !== -1;
+      }
+      history.pushState = function () {
+        if (isUnityUrlTrack()) return;
+        return origPush.apply(history, arguments);
+      };
+      history.replaceState = function () {
+        if (isUnityUrlTrack()) return;
+        return origReplace.apply(history, arguments);
+      };
+    })();
+  </script>
+
+  <script>
+    window._rcDispatched = false;
+    window.onUnityReady = window.onUnityReady || function () {
+      if (window._rcDispatched) return;
+      var attempts = 0;
+      function firebaseDidInit() {
+        try {
+          var M = window.unityInstance && window.unityInstance.Module; if (!M) return false;
+          var h32 = M.HEAPU32, h8 = M.HEAPU8; if (!h32 || !h8) return false;
+          var HL = h32.length * 4;
+          var cp = h32[0x9ad118 >>> 2] >>> 0; if (cp <= 0x10000 || cp >= HL) return false;
+          var sf = h32[(cp + 0x5c) >>> 2] >>> 0; if (sf <= 0x10000 || sf >= HL) return false;
+          return h8[sf + 0x28] === 1;
+        } catch (e) { return false; }
+      }
+      function doDispatch() {
+        try {
+          var configJson = JSON.stringify(conf);
+          window.unityInstance.SendMessage('PersistantObjects', 'ActivateRemoteConfig', configJson);
+        } catch (e) {}
+      }
+      function tryDispatch() {
+        if (window._rcDispatched) return;
+        attempts++;
+        var ready = window.unityInstance && typeof conf !== 'undefined' && conf;
+        if (ready && firebaseDidInit()) {
+          window._rcDispatched = true;
+          setTimeout(doDispatch, 300);
+          return;
+        }
+        if (attempts < 1400) { setTimeout(tryDispatch, 50); return; }
+        window._rcDispatched = true;
+        doDispatch();
+      }
+      tryDispatch();
+    };
+  </script>
+
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/js/bridges.js?v=056fa8d4"></script>
+
+  <script>
+    if (typeof initializeFireBase === 'function') initializeFireBase();
+    if (typeof initRemoteConfig === 'function') initRemoteConfig();
+    window._DIAG_OFF = true;
+  </script>
+
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/js/cdn-mirror.js?v=410308a0"></script>
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/Build/WebGL.loader.js?v=a2f6fac2"></script>
+  <script src="https://homework-socket.hnhai.workers.dev/1v1/1v1lolreloaded.com/js/boot.js?v=c88ac32d"></script>
+</body>
+</html>

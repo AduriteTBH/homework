@@ -399,5 +399,6 @@
   {"name":"Street Fighter Alpha 2","file":"street-fighter-alpha-2","icon":"icons/street-fighter-alpha-2.jpg"},
   {"name":"Street Fighter Alpha 3","file":"street-fighter-alpha-3","icon":"icons/street-fighter-alpha-3.jpg"},
   {"name":"X-Men vs. Street Fighter","file":"x-men-vs-street-fighter","icon":"icons/x-men-vs-street-fighter.jpg"},
-  {"name":"1v1LOL Reloaded","file":"1v1lolreloaded","icon":"icons/source-1v1lolreloaded_com.ico"}
+  {"name":"1v1LOL Reloaded","file":"1v1lolreloaded","icon":"icons/source-1v1lolreloaded_com.ico"},
+  {"name":"WorldGuessr","file":"worldguessr.html","icon":"icons/WorldGuessr Ping.svg"}
 ]
